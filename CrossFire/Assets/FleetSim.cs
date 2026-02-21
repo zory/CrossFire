@@ -20,6 +20,13 @@ public class FleetSim : MonoBehaviour
 	[Header("Refs")]
 	public Transform player;
 
+	[Header("Ship Size (world units)")]
+	public Vector2 shipSize = new Vector2(0.35f, 0.8f);
+
+	[Header("Turning")]
+	public float turnSpeedDegPerSec = 180f; // like player
+
+
 	[Header("Counts")]
 	[Range(2, 8)] public int teamCount = 2;
 	[Range(100, 50000)] public int shipCount = 5000;
@@ -41,9 +48,12 @@ public class FleetSim : MonoBehaviour
 	[Header("Grid Broadphase")]
 	public float cellSize = 0.6f; // >= 2*shipRadius recommended
 
+	[Header("Spawn (no-overlap)")]
+	public int maxSpawnAttemptsPerShip = 25;
+	public float spawnSeparationMultiplier = 1.0f; // 1.0 => minDist = 2*shipRadius
+
 	[Header("Rendering")]
 	public Material sharedMaterial;
-	public float shipScale = 0.35f;
 	public Color[] teamColors;
 
 	// --- Simulation buffers (double-buffered) ---
@@ -52,6 +62,9 @@ public class FleetSim : MonoBehaviour
 
 	NativeArray<float2> posRead, posWrite;
 	NativeArray<float2> velRead, velWrite;
+
+	NativeArray<float> angA, angB;
+	NativeArray<float> angRead, angWrite;
 
 	// --- Team data ---
 	NativeArray<byte> teamId;      // ship -> team
@@ -100,6 +113,11 @@ public class FleetSim : MonoBehaviour
 		posRead = posA; posWrite = posB;
 		velRead = velA; velWrite = velB;
 
+		angA = new NativeArray<float>(shipCount, Allocator.Persistent);
+		angB = new NativeArray<float>(shipCount, Allocator.Persistent);
+
+		angRead = angA; angWrite = angB;
+
 		teamId = new NativeArray<byte>(shipCount, Allocator.Persistent);
 		teamOffsets = new NativeArray<int>(teamCount, Allocator.Persistent);
 		teamCounts = new NativeArray<int>(teamCount, Allocator.Persistent);
@@ -129,6 +147,7 @@ public class FleetSim : MonoBehaviour
 		// Sync write buffers initially
 		posWrite.CopyFrom(posRead);
 		velWrite.CopyFrom(velRead);
+		angWrite.CopyFrom(angRead);
 
 		// Rendering init
 		quadMesh = BuildQuadMesh();
@@ -172,6 +191,9 @@ public class FleetSim : MonoBehaviour
 			velRead = velRead,
 			posWrite = posWrite,
 			velWrite = velWrite,
+			turnSpeedRad = math.radians(turnSpeedDegPerSec),
+			angRead = angRead,
+			angWrite = angWrite,
 
 			grid = grid,
 			hitPlayer = hitPlayer
@@ -186,10 +208,11 @@ public class FleetSim : MonoBehaviour
 		handle.Complete();
 
 		// Render newest written buffers (posWrite/velWrite), then swap
-		RenderTeams(posWrite, velWrite);
+		RenderTeams(posWrite, angWrite);
 
 		var tmpP = posRead; posRead = posWrite; posWrite = tmpP;
 		var tmpV = velRead; velRead = velWrite; velWrite = tmpV;
+		var tmpA = angRead; angRead = angWrite; angWrite = tmpA;
 	}
 
 	void OnDisable()
@@ -200,6 +223,9 @@ public class FleetSim : MonoBehaviour
 		if (posB.IsCreated) posB.Dispose();
 		if (velA.IsCreated) velA.Dispose();
 		if (velB.IsCreated) velB.Dispose();
+
+		if (angA.IsCreated) angA.Dispose();
+		if (angB.IsCreated) angB.Dispose();
 
 		if (teamId.IsCreated) teamId.Dispose();
 		if (teamOffsets.IsCreated) teamOffsets.Dispose();
@@ -216,7 +242,7 @@ public class FleetSim : MonoBehaviour
 
 	void SpawnTeams()
 	{
-		// Collect areas per team (can have multiple areas per team)
+		// Collect areas per team (can have multiple per team)
 		var perTeam = new List<TeamSpawnArea>[teamCount];
 		for (int t = 0; t < teamCount; t++) perTeam[t] = new List<TeamSpawnArea>();
 
@@ -233,55 +259,79 @@ public class FleetSim : MonoBehaviour
 
 		var rng = new Unity.Mathematics.Random((uint)math.max(1, spawnSeed));
 
+		float minDist = (shipRadius * 2f) * math.max(0.1f, spawnSeparationMultiplier);
+		float minDistSq = minDist * minDist;
+
 		for (int t = 0; t < teamCount; t++)
 		{
 			int start = teamOffsets[t];
 			int count = teamCounts[t];
 
-			if (perTeam[t].Count == 0)
-			{
-				// Fallback: spawn in circle if no area assigned
-				for (int k = 0; k < count; k++)
-				{
-					float2 p = rng.NextFloat2Direction() * rng.NextFloat(0f, fallbackSpawnRadius);
-					posRead[start + k] = p;
-					velRead[start + k] = rng.NextFloat2Direction() * 0.5f;
-				}
-				continue;
-			}
+			// Determine spawn source (areas or fallback circle)
+			bool hasAreas = perTeam[t].Count > 0;
 
 			// Weighted pick by area size
 			float totalW = 0f;
-			float[] weights = new float[perTeam[t].Count];
-			for (int a = 0; a < perTeam[t].Count; a++)
+			float[] weights = null;
+			if (hasAreas)
 			{
-				var b = perTeam[t][a].box.bounds;
-				float w = Mathf.Max(0.0001f, b.size.x * b.size.y);
-				weights[a] = w;
-				totalW += w;
+				weights = new float[perTeam[t].Count];
+				for (int a = 0; a < perTeam[t].Count; a++)
+				{
+					var b = perTeam[t][a].box.bounds;
+					float w = Mathf.Max(0.0001f, b.size.x * b.size.y);
+					weights[a] = w;
+					totalW += w;
+				}
 			}
+
+			// Occupancy grid for THIS TEAM spawn (team-local, avoids team self-overlap)
+			// cell size = minDist => only need to check neighboring cells
+			float cellSize = minDist;
+			var grid = new Dictionary<long, List<int>>(count * 2);
+
+			int placed = 0;
 
 			for (int k = 0; k < count; k++)
 			{
-				int chosen = 0;
-				float r = rng.NextFloat(0f, totalW);
-				for (int a = 0; a < weights.Length; a++)
+				bool ok = false;
+				float2 candidate = 0f;
+
+				for (int attempt = 0; attempt < maxSpawnAttemptsPerShip; attempt++)
 				{
-					r -= weights[a];
-					if (r <= 0f) { chosen = a; break; }
+					candidate = hasAreas
+						? SamplePointInTeamAreas(perTeam[t], weights, totalW, ref rng)
+						: (rng.NextFloat2Direction() * rng.NextFloat(0f, fallbackSpawnRadius));
+
+					if (IsFree(candidate, start, placed, cellSize, minDistSq, posRead, grid))
+					{
+						ok = true;
+						break;
+					}
 				}
 
-				Bounds bnd = perTeam[t][chosen].box.bounds;
-				float x = rng.NextFloat(bnd.min.x, bnd.max.x);
-				float y = rng.NextFloat(bnd.min.y, bnd.max.y);
+				if (!ok)
+				{
+					// Fallback: accept overlap (rare) OR relax minDist if you prefer.
+					// Here: accept last candidate to guarantee progress.
+					// You can also log once for debugging.
+					// Debug.LogWarning($"Team {t}: spawn packing too dense; accepting overlap for ship {k}.");
+				}
 
-				posRead[start + k] = new float2(x, y);
-				velRead[start + k] = rng.NextFloat2Direction() * 0.5f;
+				int idx = start + k;
+				posRead[idx] = candidate;
+				velRead[idx] = rng.NextFloat2Direction() * 0.5f;
+				float angleRad = rng.NextFloat(0f, math.PI * 2f);
+				angRead[idx] = angleRad;
+
+				AddToGrid(candidate, idx, cellSize, grid);
+
+				placed++;
 			}
 		}
 	}
 
-	void RenderTeams(NativeArray<float2> pArr, NativeArray<float2> vArr)
+	void RenderTeams(NativeArray<float2> pArr, NativeArray<float> aArr)
 	{
 		if (!sharedMaterial || !quadMesh) return;
 
@@ -295,17 +345,11 @@ public class FleetSim : MonoBehaviour
 			int start = teamOffsets[t];
 			int count = teamCounts[t];
 
-			RenderRange(pArr, vArr, start, count, sharedMaterial, mpb);
+			RenderRange(pArr, aArr, start, count, sharedMaterial, mpb);
 		}
 	}
 
-	void RenderRange(
-		NativeArray<float2> pArr,
-		NativeArray<float2> vArr,
-		int start,
-		int count,
-		Material mat,
-		MaterialPropertyBlock props)
+	void RenderRange(NativeArray<float2> pArr, NativeArray<float> aArr, int start, int count, Material mat, MaterialPropertyBlock props)
 	{
 		int remaining = count;
 		int offset = start;
@@ -318,15 +362,15 @@ public class FleetSim : MonoBehaviour
 			{
 				int idx = offset + i;
 				float2 p = pArr[idx];
-				float2 v = vArr[idx];
+				float2 v = aArr[idx];
 
-				float angleDeg = math.degrees(math.atan2(v.y, v.x)) - 90f;
+				float angleDeg = math.degrees(aArr[idx]);   // NOT from velocity
 				Quaternion rot = Quaternion.Euler(0f, 0f, angleDeg);
 
 				matrices[i] = Matrix4x4.TRS(
 					new Vector3(p.x, p.y, 0f),
 					rot,
-					new Vector3(shipScale, shipScale, 1f));
+					new Vector3(shipSize.x, shipSize.y, 1f));
 			}
 
 			Graphics.DrawMeshInstanced(quadMesh, 0, mat, matrices, drawCount, props);
@@ -384,31 +428,54 @@ public class FleetSim : MonoBehaviour
 		public float playerRadius;
 		public float collisionPush;
 		public float cellSize;
+		public float turnSpeedRad; // set from turnSpeedDegPerSec
 
 		[ReadOnly] public NativeArray<float2> posRead;
 		[ReadOnly] public NativeArray<float2> velRead;
+		[ReadOnly] public NativeArray<float> angRead;
 
 		public NativeArray<float2> posWrite;
 		public NativeArray<float2> velWrite;
+		public NativeArray<float> angWrite;
 
 		[ReadOnly] public NativeParallelMultiHashMap<int, int> grid;
 		public NativeArray<byte> hitPlayer; // write only element i
 
 		public void Execute(int i)
 		{
+			// Read state
 			float2 p = posRead[i];
-			float2 v = velRead[i];
+			float theta = angRead[i]; // radians, 0 faces +Y, +theta is CCW
 
-			// Simple seek-player steering (placeholder)
+			// --- Turn toward player (forward+turn model) ---
 			float2 toPlayer = playerPos - p;
+
+			// Forward for our angle convention (theta=0 => (0,1), theta=+90deg => (-1,0))
+			float2 forward = new float2(-math.sin(theta), math.cos(theta));
+
 			float distSq = math.lengthsq(toPlayer);
-			float2 desiredDir = distSq > 1e-6f ? math.normalize(toPlayer) : new float2(0, 1);
-			float2 desiredVel = desiredDir * speed;
-			v = math.lerp(v, desiredVel, math.saturate(steerStrength * dt));
+			float2 desiredDir = distSq > 1e-6f ? math.normalize(toPlayer) : forward;
 
-			// Collide with neighbors (separate self only)
+			// Signed angle from forward -> desired (CCW positive)
+			float cross = forward.x * desiredDir.y - forward.y * desiredDir.x; // cross2D(forward, desired)
+			float dot = math.clamp(math.dot(forward, desiredDir), -1f, 1f);
+			float angleError = math.atan2(cross, dot); // radians
+
+			// Apply limited turn rate
+			float maxTurn = turnSpeedRad * dt;
+			theta += math.clamp(angleError, -maxTurn, maxTurn);
+
+			// Recompute forward after turning
+			forward = new float2(-math.sin(theta), math.cos(theta));
+
+			// Constant forward speed
+			float2 v = forward * speed;
+
+			// Integrate
+			p += v * dt;
+
+			// --- Collision: ship-ship (separate self only) ---
 			int2 myCell = WorldToCell(p, cellSize);
-
 			float minDist = shipRadius * 2f;
 			float minDistSq = minDist * minDist;
 
@@ -428,12 +495,14 @@ public class FleetSim : MonoBehaviour
 						{
 							if (j == i) continue;
 
-							float2 d = p - posRead[j];
+							float2 pj = posRead[j];
+							float2 d = p - pj;
 							float dsq = math.lengthsq(d);
+
 							if (dsq < 1e-8f || dsq >= minDistSq) continue;
 
 							float dist = math.sqrt(dsq);
-							float overlap = (minDist - dist);
+							float overlap = minDist - dist;
 							float2 n = d / dist;
 
 							push += n * overlap;
@@ -445,16 +514,20 @@ public class FleetSim : MonoBehaviour
 			if (!push.Equals(0f))
 			{
 				p += push * (collisionPush * dt);
-				// mild velocity bias away from crowd
+
 				float pushLenSq = math.lengthsq(push);
 				if (pushLenSq > 1e-8f)
-					v += (push / math.sqrt(pushLenSq)) * (0.5f * collisionPush * dt);
+				{
+					float2 pn = push / math.sqrt(pushLenSq);
+					v += pn * (0.5f * collisionPush * dt);
+				}
 			}
 
-			// Player overlap (flag + optional push-away)
+			// --- Collision: ship-player (flag + optional push away) ---
 			float minPlayerDist = shipRadius + playerRadius;
 			float2 dp = p - playerPos;
 			float dpsq = math.lengthsq(dp);
+
 			if (dpsq < minPlayerDist * minPlayerDist)
 			{
 				hitPlayer[i] = 1;
@@ -463,16 +536,87 @@ public class FleetSim : MonoBehaviour
 				{
 					float dist = math.sqrt(dpsq);
 					float2 n = dp / dist;
+
 					p += n * (minPlayerDist - dist) * 0.5f;
 					v += n * (collisionPush * dt);
 				}
 			}
 
-			// Integrate
-			p += v * dt;
-
+			// Write
 			posWrite[i] = p;
 			velWrite[i] = v;
+			angWrite[i] = theta;
+		}
+	}
+
+	float2 SamplePointInTeamAreas(List<TeamSpawnArea> areas, float[] weights, float totalW, ref Unity.Mathematics.Random rng)
+	{
+		int chosen = 0;
+		float r = rng.NextFloat(0f, totalW);
+		for (int a = 0; a < weights.Length; a++)
+		{
+			r -= weights[a];
+			if (r <= 0f) { chosen = a; break; }
+		}
+
+		Bounds b = areas[chosen].box.bounds;
+		float x = rng.NextFloat(b.min.x, b.max.x);
+		float y = rng.NextFloat(b.min.y, b.max.y);
+		return new float2(x, y);
+	}
+
+	bool IsFree(
+		float2 p,
+		int teamStart,
+		int placedSoFar,
+		float cellSize,
+		float minDistSq,
+		NativeArray<float2> positions,
+		Dictionary<long, List<int>> grid)
+	{
+		int2 c = WorldToCell(p, cellSize);
+
+		// check 3x3 neighbor cells
+		for (int oy = -1; oy <= 1; oy++)
+			for (int ox = -1; ox <= 1; ox++)
+			{
+				int2 nc = c + new int2(ox, oy);
+				long key = HashCell64(nc);
+
+				if (!grid.TryGetValue(key, out var list))
+					continue;
+
+				for (int i = 0; i < list.Count; i++)
+				{
+					int idx = list[i];
+					float2 d = p - positions[idx];
+					if (math.lengthsq(d) < minDistSq)
+						return false;
+				}
+			}
+
+		return true;
+	}
+
+	void AddToGrid(float2 p, int idx, float cellSize, Dictionary<long, List<int>> grid)
+	{
+		int2 c = WorldToCell(p, cellSize);
+		long key = HashCell64(c);
+
+		if (!grid.TryGetValue(key, out var list))
+		{
+			list = new List<int>(4);
+			grid.Add(key, list);
+		}
+		list.Add(idx);
+	}
+
+	static long HashCell64(int2 c)
+	{
+		// Pack two signed 32-bit ints into one 64-bit key
+		unchecked
+		{
+			return ((long)c.x << 32) ^ (uint)c.y;
 		}
 	}
 
