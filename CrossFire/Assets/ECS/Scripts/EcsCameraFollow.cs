@@ -7,30 +7,37 @@ public class EcsCameraFollow : MonoBehaviour
 	public float smooth = 10f;
 
 	EntityManager em;
-	EntityQuery qControlled;
 
 	void Awake()
 	{
-		em = World.DefaultGameObjectInjectionWorld.EntityManager;
-		qControlled = em.CreateEntityQuery(typeof(ControlledShip));
+		var world = World.DefaultGameObjectInjectionWorld;
+		if (world != null)
+			em = world.EntityManager;
 	}
 
 	void LateUpdate()
 	{
-		if (qControlled.CalculateEntityCount() == 0) return;
+		if (em == null) return;
 
-		var controlled = qControlled.GetSingleton<ControlledShip>().Value;
+		// Find ControlledShip singleton without keeping an EntityQuery alive
+		Entity controlledSingleton = Entity.Null;
+
+		using (var q = em.CreateEntityQuery(typeof(ControlledShip)))
+		{
+			if (q.CalculateEntityCount() == 0) return;
+			controlledSingleton = q.GetSingletonEntity();
+		}
+
+		var controlled = em.GetComponentData<ControlledShip>(controlledSingleton).Value;
 		if (controlled == Entity.Null || !em.Exists(controlled)) return;
 		if (!em.HasComponent<LocalTransform>(controlled)) return;
 
 		var lt = em.GetComponentData<LocalTransform>(controlled);
-		Vector3 desired = new Vector3(lt.Position.x, lt.Position.y, transform.position.z);
+		var desired = new Vector3(lt.Position.x, lt.Position.y, transform.position.z);
 
-		transform.position = Vector3.Lerp(transform.position, desired, 1f - Mathf.Exp(-smooth * Time.deltaTime));
-	}
-
-	void OnDestroy()
-	{
-		if (qControlled != null) qControlled.Dispose();
+		transform.position = Vector3.Lerp(
+			transform.position,
+			desired,
+			1f - Mathf.Exp(-smooth * Time.deltaTime));
 	}
 }

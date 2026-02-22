@@ -640,6 +640,7 @@ MonoBehaviour:
   teamCount: 3
   totalShips: 9
   shipPrefab: {fileID: 710218108567178225, guid: 7315a71b02fbb834387837133c302d4d, type: 3}
+  bulletPrefab: {fileID: 710218108567178225, guid: c6729005fbfbe9842941e00552e61624, type: 3}
   shipRadius: 0.25
   shipSpeed: 5
   turnSpeedDegPerSec: 180

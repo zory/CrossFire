@@ -89,3 +89,31 @@ public struct PlayerInput : IComponentData
 	public float Thrust;
 	public byte Fire;
 }
+
+public struct ShipHp : IComponentData
+{
+	public short Value;
+}
+
+public struct BulletTag : IComponentData { }
+
+public struct BulletVelocity : IComponentData
+{
+	public float2 Value;
+}
+
+public struct BulletDamage : IComponentData
+{
+	public short Value; // 1
+}
+
+public struct BulletLifetime : IComponentData
+{
+	public float Seconds;
+}
+
+// Prefab references baked from config
+public struct BulletPrefabRef : IComponentData
+{
+	public Entity Value;
+}

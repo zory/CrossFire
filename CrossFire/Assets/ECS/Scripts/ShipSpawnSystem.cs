@@ -142,6 +142,11 @@ public partial struct ShipSpawnSystem : ISystem
 					em.AddComponentData(e, new URPMaterialPropertyBaseColor { Value = c });
 				else
 					em.SetComponentData(e, new URPMaterialPropertyBaseColor { Value = c });
+
+				if (!em.HasComponent<ShipHp>(e))
+					em.AddComponentData(e, new ShipHp { Value = 3 }); // set default HP
+				else
+					em.SetComponentData(e, new ShipHp { Value = 3 });
 			}
 		}
 

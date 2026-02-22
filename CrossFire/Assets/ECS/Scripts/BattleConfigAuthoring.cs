@@ -10,6 +10,7 @@ public class BattleConfigAuthoring : MonoBehaviour
 
 	[Header("Ship")]
 	public GameObject shipPrefab;
+	public GameObject bulletPrefab;
 	public float shipRadius = 0.25f;
 	public float shipSpeed = 5f;
 	public float turnSpeedDegPerSec = 180f;
@@ -30,6 +31,9 @@ public class BattleConfigAuthoring : MonoBehaviour
 		public override void Bake(BattleConfigAuthoring authoring)
 		{
 			var e = GetEntity(TransformUsageFlags.None);
+
+			var bulletEntity = GetEntity(authoring.bulletPrefab, TransformUsageFlags.Dynamic);
+			AddComponent(e, new BulletPrefabRef { Value = bulletEntity });
 
 			var prefabEntity = GetEntity(authoring.shipPrefab, TransformUsageFlags.Dynamic);
 			AddComponent(e, new ShipPrefabRef { Value = prefabEntity });
