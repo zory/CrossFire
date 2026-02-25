@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 
 [BurstCompile]
@@ -9,77 +10,92 @@ using Unity.Mathematics;
 [UpdateBefore(typeof(ShipTransformSyncSystem))]
 public partial struct ShipSimSystem : ISystem
 {
-	NativeParallelMultiHashMap<int, Entity> grid;
-	int gridCapacity;
+	private NativeParallelMultiHashMap<int, Entity> _grid;
+	private int _gridCapacity;
 
 	public void OnCreate(ref SystemState state)
 	{
 		state.RequireForUpdate<BattleConfig>();
-		state.RequireForUpdate<PlayerInput>();
-		state.RequireForUpdate<ControlledShip>();
 		state.RequireForUpdate<ShipTag>();
 
-		grid = default;
-		gridCapacity = 0;
+		_grid = default;
+		_gridCapacity = 0;
 	}
 
 	public void OnDestroy(ref SystemState state)
 	{
-		if (grid.IsCreated) grid.Dispose();
+		if (_grid.IsCreated)
+		{
+			_grid.Dispose();
+		}
 	}
 
 	[BurstCompile]
 	public void OnUpdate(ref SystemState state)
 	{
-		var cfg = SystemAPI.GetSingleton<BattleConfig>();
-		var input = SystemAPI.GetSingleton<PlayerInput>();
-		var controlled = SystemAPI.GetSingleton<ControlledShip>().Value;
+		BattleConfig battleConfig = SystemAPI.GetSingleton<BattleConfig>();
+
+		PlayerInput playerInput = default;
+		if (SystemAPI.HasSingleton<PlayerInput>())
+		{
+			playerInput = SystemAPI.GetSingleton<PlayerInput>();
+		}
+		Entity controlledShip = default;
+		if (SystemAPI.HasSingleton<ControlledShip>())
+		{
+			controlledShip = SystemAPI.GetSingleton<ControlledShip>().Value;
+		}
 
 		float dt = SystemAPI.Time.DeltaTime;
 
 		// controlled ship target position (from snapshot)
 		float2 targetPos = 0f;
-		var prevLookupRO = SystemAPI.GetComponentLookup<ShipPrevPos>(true);
-		if (controlled != Entity.Null && state.EntityManager.Exists(controlled) && prevLookupRO.HasComponent(controlled))
-			targetPos = prevLookupRO[controlled].Value;
+		ComponentLookup<PrevPos> prevLookupRO = SystemAPI.GetComponentLookup<PrevPos>(true);
+		if (controlledShip != Entity.Null && state.EntityManager.Exists(controlledShip) && prevLookupRO.HasComponent(controlledShip))
+		{
+			targetPos = prevLookupRO[controlledShip].Value;
+		}
 
 		// Ensure grid capacity
 		int shipCount = SystemAPI.QueryBuilder().WithAll<ShipTag>().Build().CalculateEntityCount();
 		int needed = math.max(16, shipCount * 2);
 
-		if (!grid.IsCreated || needed > gridCapacity)
+		if (!_grid.IsCreated || needed > _gridCapacity)
 		{
-			if (grid.IsCreated) grid.Dispose();
-			grid = new NativeParallelMultiHashMap<int, Entity>(needed, Allocator.Persistent);
-			gridCapacity = needed;
+			if (_grid.IsCreated)
+			{
+				_grid.Dispose();
+			}
+			_grid = new NativeParallelMultiHashMap<int, Entity>(needed, Allocator.Persistent);
+			_gridCapacity = needed;
 		}
 		else
 		{
-			grid.Clear();
+			_grid.Clear();
 		}
 
 		// 1) Build grid from ShipPrevPos
-		var buildJob = new BuildGridJob
+		BuildGridJob buildJob = new BuildGridJob
 		{
-			CellSize = cfg.CellSize,
-			Writer = grid.AsParallelWriter()
+			CellSize = battleConfig.CellSize,
+			Writer = _grid.AsParallelWriter()
 		};
-		var buildHandle = buildJob.ScheduleParallel(state.Dependency);
+		JobHandle buildHandle = buildJob.ScheduleParallel(state.Dependency);
 
 		// 2) Sim job
-		var prevLookup = SystemAPI.GetComponentLookup<ShipPrevPos>(true);
+		ComponentLookup<PrevPos> prevLookup = SystemAPI.GetComponentLookup<PrevPos>(true);
 
 		var simJob = new SimJob
 		{
 			Dt = dt,
-			CellSize = cfg.CellSize,
+			CellSize = battleConfig.CellSize,
 
-			Controlled = controlled,
-			Input = input,
+			Controlled = controlledShip,
+			Input = playerInput,
 			TargetPos = targetPos,
 
 			PrevPosLookup = prevLookup,
-			Grid = grid
+			Grid = _grid
 		};
 
 		state.Dependency = simJob.ScheduleParallel(buildHandle);
@@ -91,7 +107,7 @@ public partial struct ShipSimSystem : ISystem
 		public float CellSize;
 		public NativeParallelMultiHashMap<int, Entity>.ParallelWriter Writer;
 
-		void Execute(Entity e, in ShipPrevPos prevPos, in ShipTag tag)
+		void Execute(Entity e, in PrevPos prevPos, in ShipTag tag)
 		{
 			int2 cell = (int2)math.floor(prevPos.Value / CellSize);
 			Writer.Add(HashCell(cell), e);
@@ -108,16 +124,16 @@ public partial struct ShipSimSystem : ISystem
 		public PlayerInput Input;  // copied into job
 		public float2 TargetPos;   // controlled ship snapshot
 
-		[ReadOnly] public ComponentLookup<ShipPrevPos> PrevPosLookup;
+		[ReadOnly] public ComponentLookup<PrevPos> PrevPosLookup;
 		[ReadOnly] public NativeParallelMultiHashMap<int, Entity> Grid;
 
 		void Execute(
 			Entity e,
-			ref ShipPos pos,
-			ref ShipAngle ang,
-			in ShipSpeed speed,
-			in ShipTurnSpeed turn,
-			in ShipRadius radius,
+			ref Pos pos,
+			ref Angle ang,
+			in Velocity speed,
+			in TurnSpeed turn,
+			in CollisionRadius radius,
 			in ShipTag tag)
 		{
 			float2 p = pos.Value;

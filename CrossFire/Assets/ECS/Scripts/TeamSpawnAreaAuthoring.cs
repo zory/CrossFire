@@ -4,36 +4,36 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class TeamSpawnAreaAuthoring : MonoBehaviour
 {
-	public int teamId = 0;
+	public int TeamId = 0;
 
 	class Baker : Baker<TeamSpawnAreaAuthoring>
 	{
 		public override void Bake(TeamSpawnAreaAuthoring authoring)
 		{
 			// Create / get a singleton entity to hold spawn area buffer
-			var holder = GetEntity(TransformUsageFlags.None);
+			Entity entity = GetEntity(TransformUsageFlags.None);
 
 			// Always add the buffer on THIS entity (one area entity => buffer length 1)
-			var buf = AddBuffer<SpawnAreaElement>(holder);
+			DynamicBuffer<SpawnAreaElement> buffer = AddBuffer<SpawnAreaElement>(entity);
 
-			var col = authoring.GetComponent<BoxCollider2D>();
-			var b = col.bounds; // world-space AABB
+			BoxCollider2D collider = authoring.GetComponent<BoxCollider2D>();
+			Bounds bounds = collider.bounds; // world-space AABB
 
-			buf.Add(new SpawnAreaElement
+			buffer.Add(new SpawnAreaElement
 			{
-				Team = (byte)Mathf.Clamp(authoring.teamId, 0, 255),
-				Min = new Unity.Mathematics.float2(b.min.x, b.min.y),
-				Max = new Unity.Mathematics.float2(b.max.x, b.max.y),
+				Team = (byte)Mathf.Clamp(authoring.TeamId, 0, 255),
+				Min = new Unity.Mathematics.float2(bounds.min.x, bounds.min.y),
+				Max = new Unity.Mathematics.float2(bounds.max.x, bounds.max.y),
 			});
 		}
 	}
 
-	void OnDrawGizmos()
+	private void OnDrawGizmos()
 	{
-		var col = GetComponent<BoxCollider2D>();
-		if (!col) return;
-		Gizmos.color = Color.white;
-		var b = col.bounds;
-		Gizmos.DrawWireCube(b.center, b.size);
+		BoxCollider2D collider = GetComponent<BoxCollider2D>();
+		Gizmos.color = Color.cyan;
+		Bounds bounds = collider.bounds;
+		Gizmos.DrawWireCube(bounds.center, bounds.size);
+		Gizmos.DrawWireCube(bounds.center, bounds.size * 0.98f);
 	}
 }

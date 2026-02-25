@@ -16,13 +16,13 @@ public partial struct ShipTransformSyncSystem : ISystem
 	[BurstCompile]
 	public void OnUpdate(ref SystemState state)
 	{
-		foreach (var (pos, ang, xform) in SystemAPI.Query<RefRO<ShipPos>, RefRO<ShipAngle>, RefRW<LocalTransform>>())
+		foreach (var (tag, pos, ang, localTransport) in SystemAPI.Query<RefRO<ShipTag>, RefRO<Pos>, RefRO<Angle>, RefRW<LocalTransform>>())
 		{
-			float2 p = pos.ValueRO.Value;
-			float theta = ang.ValueRO.Value;
+			float2 position = pos.ValueRO.Value;
+			localTransport.ValueRW.Position = new float3(position.x, position.y, 0f);
 
-			xform.ValueRW.Position = new float3(p.x, p.y, 0f);
-			xform.ValueRW.Rotation = quaternion.RotateZ(theta);
+			float theta = ang.ValueRO.Value;
+			localTransport.ValueRW.Rotation = quaternion.RotateZ(theta);
 		}
 	}
 }

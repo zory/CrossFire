@@ -1,64 +1,12 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-public struct ShipTag : IComponentData { }
-
-public struct TeamId : IComponentData
-{
-	public byte Value;
-}
-
-public struct ShipPos : IComponentData
-{
-	public float2 Value;
-}
-
-public struct ShipPrevPos : IComponentData
-{
-	public float2 Value;
-}
-
-public struct ShipAngle : IComponentData
-{
-	// radians, 0 faces +Y, + is CCW
-	public float Value;
-}
-
-public struct ShipSpeed : IComponentData
-{
-	public float Value;
-}
-
-public struct ShipTurnSpeed : IComponentData
-{
-	// radians per second
-	public float Value;
-}
-
-public struct ShipRadius : IComponentData
-{
-	public float Value;
-}
-
-// Singleton: player position (written by bridge MonoBehaviour)
-public struct PlayerPos : IComponentData
-{
-	public float2 Value;
-}
-
-// Singleton battle config (baked)
+//*************
+//Bake data
+//*************
 public struct BattleConfig : IComponentData
 {
-	public int TeamCount;
-	public int TotalShips;
-
-	public float ShipRadius;
-	public float ShipSpeed;
-	public float ShipTurnSpeedRad;
-
 	public float CellSize; // broadphase
-	public float2 ShipSizeXY; // for nonuniform scaling
-
 	public int SpawnSeed;
 	public int MaxSpawnAttemptsPerShip;
 }
@@ -66,7 +14,8 @@ public struct BattleConfig : IComponentData
 // Buffer element: team visual/config
 public struct TeamConfigElement : IBufferElementData
 {
-	public float4 ColorRGBA; // URP BaseColor
+	public float4 ColorRGBA;
+	public int TotalShips;
 }
 
 // Buffer element: spawn areas (AABB in world space)
@@ -75,6 +24,133 @@ public struct SpawnAreaElement : IBufferElementData
 	public byte Team;
 	public float2 Min;
 	public float2 Max;
+}
+
+
+//Ship
+public struct ShipPrefabRef : IComponentData
+{
+	public Entity Value;
+}
+
+public struct ShipTag : IComponentData
+{
+}
+
+public struct TurnSpeed : IComponentData
+{
+	// radians per second
+	public float Value;
+}
+
+public struct ThrustAcceleration : IComponentData
+{
+	public float Value;
+}
+
+public struct BrakeAcceleleration : IComponentData
+{
+	public float Value;
+}
+
+public struct MaxSpeed : IComponentData
+{
+	public float Value;
+}
+
+public struct ShootCooldown : IComponentData
+{
+	public float Value;
+}
+
+public struct ShootSpeed : IComponentData
+{
+	public float Value;
+}
+
+
+//Bulet
+public struct BulletPrefabRef : IComponentData
+{
+	public Entity Value;
+}
+
+public struct BulletTag : IComponentData
+{ 
+}
+
+public struct BulletLifetime : IComponentData
+{
+	public float Seconds;
+}
+
+public struct BulletDamage : IComponentData
+{
+	public short Value;
+}
+
+
+//Generic
+public struct TeamId : IComponentData
+{
+	public byte Value;
+}
+
+public struct Pos : IComponentData
+{
+	public float2 Value;
+}
+
+public struct PrevPos : IComponentData
+{
+	public float2 Value;
+}
+
+public struct Angle : IComponentData
+{
+	// radians, 0 faces +Y, + is CCW
+	public float Value;
+}
+
+public struct Velocity : IComponentData
+{
+	public float2 Value;
+}
+
+public struct Size : IComponentData
+{
+	public float2 Value;
+}
+
+public struct CollisionRadius : IComponentData
+{
+	public float Value;
+}
+
+public struct Health : IComponentData
+{
+	public short Value;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Singleton: player position (written by bridge MonoBehaviour)
+public struct PlayerPos : IComponentData
+{
+	public float2 Value;
 }
 
 public struct ControlledShip : IComponentData
@@ -90,30 +166,7 @@ public struct PlayerInput : IComponentData
 	public byte Fire;
 }
 
-public struct ShipHp : IComponentData
-{
-	public short Value;
-}
 
-public struct BulletTag : IComponentData { }
 
-public struct BulletVelocity : IComponentData
-{
-	public float2 Value;
-}
 
-public struct BulletDamage : IComponentData
-{
-	public short Value; // 1
-}
 
-public struct BulletLifetime : IComponentData
-{
-	public float Seconds;
-}
-
-// Prefab references baked from config
-public struct BulletPrefabRef : IComponentData
-{
-	public Entity Value;
-}
