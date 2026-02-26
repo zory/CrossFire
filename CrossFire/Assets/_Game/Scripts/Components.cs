@@ -14,4 +14,8 @@ namespace CrossFire
 	public struct TeamId : IComponentData { public byte Value; }
 
 	public struct NativeColor : IComponentData { public float4 Value; }
+
+	public struct PrevWorldPose : IComponentData { public Pose2D Value; }
+
+	public struct WorldPose : IComponentData { public Pose2D Value; }
 }

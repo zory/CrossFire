@@ -18,6 +18,9 @@ namespace CrossFire.DevelopmentTools
 		public bool ListenForSelectableWithMouse;
 		public float PickRadius = 0.5f;
 
+		[Header("Ship controll")]
+		public bool ShipControl;
+
 		public void Update()
 		{
 			EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -36,8 +39,8 @@ namespace CrossFire.DevelopmentTools
 				Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
 
 				EntityQuery query = entityManager.CreateEntityQuery(typeof(SpawnShipsCommandBufferTag));
-				Entity requestEntity = query.GetSingletonEntity();
-				DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(requestEntity);
+				Entity entity = query.GetSingletonEntity();
+				DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
 				commandBuffer.Add(command);
 			}
 
@@ -56,10 +59,37 @@ namespace CrossFire.DevelopmentTools
 					Debug.Log($"PlayerDebug: Select Selectable Command: {command}");
 
 					EntityQuery query = entityManager.CreateEntityQuery(typeof(SelectionRequestBufferTag));
-					Entity requestEntity = query.GetSingletonEntity();
-					DynamicBuffer<SelectionRequestCommand> commandBuffer = entityManager.GetBuffer<SelectionRequestCommand>(requestEntity);
+					Entity entity = query.GetSingletonEntity();
+					DynamicBuffer<SelectionRequestCommand> commandBuffer = entityManager.GetBuffer<SelectionRequestCommand>(entity);
 					commandBuffer.Add(command);
 				}
+			}
+
+			if (ShipControl)
+			{
+				float turn = 0f;
+				if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) turn += 1f;
+				if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) turn -= 1f;
+
+				float thrust = 0f;
+				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) thrust += 1f;
+				if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) thrust -= 1f;
+
+				bool fire = Input.GetKey(KeyCode.Space) ? true : false;
+
+				ShipControlIntentCommand command = new ShipControlIntentCommand
+				{
+					Turn = turn,
+					Thrust = thrust,
+					Fire = fire,
+				};
+				Debug.Log($"PlayerDebug: Movement Command: {command}");
+
+				// Just for testing, set the PlayerInput singleton to some constant values
+				EntityQuery query = entityManager.CreateEntityQuery(typeof(ShipControlIntentCommandBufferTag));
+				Entity entity = query.GetSingletonEntity();
+				DynamicBuffer<ShipControlIntentCommand> commandBuffer = entityManager.GetBuffer<ShipControlIntentCommand>(entity);
+				commandBuffer.Add(command);
 			}
 		}
 	}

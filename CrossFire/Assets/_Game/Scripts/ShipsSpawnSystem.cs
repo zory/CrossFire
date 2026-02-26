@@ -36,21 +36,21 @@ namespace CrossFire.Ships
 	{
 		public void OnCreate(ref SystemState state)
 		{
-			Entity commandBufferEntity = state.EntityManager.CreateEntity();
-			state.EntityManager.AddComponent<SpawnShipsCommandBufferTag>(commandBufferEntity);
-			state.EntityManager.AddBuffer<SpawnShipsCommand>(commandBufferEntity);
+			Entity entity = state.EntityManager.CreateEntity();
+			state.EntityManager.AddComponent<SpawnShipsCommandBufferTag>(entity);
+			state.EntityManager.AddBuffer<SpawnShipsCommand>(entity);
 		}
 
 		public void OnUpdate(ref SystemState state) { }
 	}
 
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateBefore(typeof(TransformSystemGroup))]
 	[BurstCompile]
 	public partial struct ShipsSpawnSystem : ISystem
 	{
 		private EntityQuery _requestQuery;
 
+		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
 			_requestQuery = state.GetEntityQuery(new EntityQueryDesc
@@ -65,7 +65,6 @@ namespace CrossFire.Ships
 			state.RequireForUpdate(_requestQuery);
 		}
 
-		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
 			EntityManager entityManager = state.EntityManager;
@@ -119,6 +118,9 @@ namespace CrossFire.Ships
 		{
 			float3 position = new float3(pose.Position.x, pose.Position.y, 0f);
 			quaternion rotation = quaternion.RotateZ(pose.Theta);
+			entityManager.SetComponentData(entity, new PrevWorldPose() { Value = pose });
+			entityManager.SetComponentData(entity, new WorldPose() { Value = pose });
+			entityManager.SetComponentData(entity, LocalTransform.FromPositionRotationScale(position, rotation, 1));
 			entityManager.SetComponentData(entity, LocalTransform.FromPositionRotationScale(position, rotation, 1));
 		}
 	}

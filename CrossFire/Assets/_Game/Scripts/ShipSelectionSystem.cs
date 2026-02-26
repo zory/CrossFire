@@ -1,3 +1,4 @@
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -36,10 +37,12 @@ namespace CrossFire.Ships
 		public void OnUpdate(ref SystemState state) { }
 	}
 
+	[BurstCompile]
 	public partial struct ShipSelectionSystem : ISystem
 	{
 		private EntityQuery _requestQuery;
 
+		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
 			_requestQuery = state.GetEntityQuery(new EntityQueryDesc
@@ -54,6 +57,7 @@ namespace CrossFire.Ships
 			state.RequireForUpdate(_requestQuery);
 		}
 
+		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
 			EntityManager entityManager = state.EntityManager;

@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Rendering;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace CrossFire.Ships
@@ -11,6 +12,9 @@ namespace CrossFire.Ships
 			public override void Bake(ShipPrefabAuthoring authoring)
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
+				AddComponent<PrevWorldPose>(prefabEntity);
+				AddComponent<WorldPose>(prefabEntity);
+				AddComponent<LocalTransform>(prefabEntity);
 				AddComponent<URPMaterialPropertyBaseColor>(prefabEntity);
 				AddComponent<ShipTag>(prefabEntity);
 				AddComponent<StableId>(prefabEntity);
