@@ -6,8 +6,6 @@ using Unity.Mathematics;
 
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateAfter(typeof(ShipSnapshotSystem))]
-[UpdateBefore(typeof(ShipTransformSyncSystem))]
 public partial struct ShipSimSystem : ISystem
 {
 	private NativeParallelMultiHashMap<int, Entity> _grid;
