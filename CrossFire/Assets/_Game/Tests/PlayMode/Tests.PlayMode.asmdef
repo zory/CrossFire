@@ -4,8 +4,12 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
+        "Unity.Mathematics",
         "Unity.Collections",
-        "Unity.Entities"
+        "Unity.Entities",
+        "CrossFire",
+        "Unity.Transforms",
+        "Unity.Entities.Graphics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
