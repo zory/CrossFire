@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99fe21cb757f3a24bacc43e27b3fa313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnShip: 0
+  SpawnShip: 1
   SpawnShip_Id: 0
   SpawnShip_Team: 0
   SpawnShip_Color: {r: 0.06157397, g: 0.49056602, b: 0, a: 1}
@@ -470,6 +470,7 @@ MonoBehaviour:
     Theta: 30
   ListenForSelectableWithMouse: 1
   PickRadius: 0.5
+  ShipControl: 1
 --- !u!4 &2010885622
 Transform:
   m_ObjectHideFlags: 0
