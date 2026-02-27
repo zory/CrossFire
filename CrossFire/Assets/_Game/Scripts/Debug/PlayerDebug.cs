@@ -21,6 +21,55 @@ namespace CrossFire.DevelopmentTools
 		[Header("Ship controll")]
 		public bool ShipControl;
 
+		[Header("Ship controll")]
+		public bool CreateBattleGround;
+
+		private void Start()
+		{
+			if (CreateBattleGround)
+			{
+				CreateBattleGround = false;
+
+				EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+				for (int i = 0; i < 100; i++)
+				{
+					byte team = (byte)UnityEngine.Random.Range(0, 2);
+					Color color = Color.white;
+					if (team == 0)
+					{
+						color = Color.blue;
+					}
+					else if (team == 1)
+					{
+						color = Color.red;
+					}
+					float4 colorRGBA = new float4(color.r, color.g, color.b, color.a);
+
+					Pose2D pose = new Pose2D
+					{
+						Position = UnityEngine.Random.insideUnitCircle * 50f,
+						Theta = UnityEngine.Random.Range(0f, 360f)
+					};
+					SpawnShipsCommand command = new SpawnShipsCommand()
+					{
+						Id = SpawnShip_Id,
+						Team = team,
+						ColorRGBA = colorRGBA,
+						Pose = pose
+					};
+					Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
+
+					EntityQuery query = entityManager.CreateEntityQuery(typeof(SpawnShipsCommandBufferTag));
+					Entity entity = query.GetSingletonEntity();
+					DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
+					commandBuffer.Add(command);
+
+					SpawnShip_Id++;
+				}
+			}
+		}
+
 		public void Update()
 		{
 			EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -42,6 +91,8 @@ namespace CrossFire.DevelopmentTools
 				Entity entity = query.GetSingletonEntity();
 				DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
 				commandBuffer.Add(command);
+
+				SpawnShip_Id++;
 			}
 
 			if (ListenForSelectableWithMouse)
@@ -83,7 +134,7 @@ namespace CrossFire.DevelopmentTools
 					Thrust = thrust,
 					Fire = fire,
 				};
-				Debug.Log($"PlayerDebug: Movement Command: {command}");
+				//Debug.Log($"PlayerDebug: Movement Command: {command}");
 
 				// Just for testing, set the PlayerInput singleton to some constant values
 				EntityQuery query = entityManager.CreateEntityQuery(typeof(ShipControlIntentCommandBufferTag));

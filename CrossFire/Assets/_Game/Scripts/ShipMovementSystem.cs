@@ -2,96 +2,71 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 namespace CrossFire.Ships
 {
-	public struct ShipControlIntentCommandBufferTag : IComponentData
-	{
-	}
-
-	public struct ShipControlIntentCommand : IBufferElementData
-	{
-		public float Turn;   // -1..+1
-		public float Thrust; // -1..+1
-		public bool Fire;
-
-		public override string ToString()
-		{
-			return
-				string.Format(
-					"ShipMoveCommand. " +
-					"Turn:{0} " +
-					"Thrust:{1} " +
-					"Fire:{2} ",
-					Turn, Thrust, Fire
-				);
-		}
-	}
-
-	public partial struct ShipControlIntentCommandBufferSystem : ISystem
-	{
-		public void OnCreate(ref SystemState state)
-		{
-			Entity entity = state.EntityManager.CreateEntity();
-			state.EntityManager.AddComponent<ShipControlIntentCommandBufferTag>(entity);
-			state.EntityManager.AddBuffer<ShipControlIntentCommand>(entity);
-		}
-
-		public void OnUpdate(ref SystemState state) { }
-	}
-
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(SnapshotSystem))]
+	[UpdateAfter(typeof(AIIntentSystem))]
 	[BurstCompile]
-	public partial struct ShipControlSystem : ISystem
+	public partial struct ShipMovementSystem : ISystem
 	{
-		private EntityQuery _requestQuery;
-
-		[BurstCompile]
-		public void OnCreate(ref SystemState state)
-		{
-			_requestQuery = state.GetEntityQuery(new EntityQueryDesc
-			{
-				All = new ComponentType[]
-				{
-					typeof(ShipControlIntentCommandBufferTag),
-					typeof(ShipControlIntentCommand)
-				}
-			});
-
-			state.RequireForUpdate(_requestQuery);
-		}
+		// Consider making this a component or singleton tuning later
+		private const float LinearDampingPerSecond = 3f;
 
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			EntityManager entityManager = state.EntityManager;
+			float dt = SystemAPI.Time.DeltaTime;
 
-			Entity commandEntity = _requestQuery.GetSingletonEntity();
-			DynamicBuffer<ShipControlIntentCommand> commandBuffer = entityManager.GetBuffer<ShipControlIntentCommand>(commandEntity);
-			if (commandBuffer.IsEmpty)
-				return;
-
-			// Take last command only (simplest behaviour)
-			ShipControlIntentCommand command = commandBuffer[commandBuffer.Length - 1];
-			commandBuffer.Clear();
-
-			float deltaTime = SystemAPI.Time.DeltaTime;
-
-			float turnSpeed = 3f;
-			float thrustSpeed = 5f;
-
-			foreach (RefRW<WorldPose> transform in
-					 SystemAPI.Query<RefRW<WorldPose>>()
-							  .WithAll<ControlledTag>())
+			foreach (var (pose, vel, intent, maxSpeed, turnSpeed, thrustAcc, brakeAcc) in
+					 SystemAPI.Query<
+						 RefRW<WorldPose>, RefRW<Velocity>, RefRO<ShipIntent>,
+						 RefRO<MaxSpeed>, RefRO<TurnSpeed>, RefRO<ThrustAcceleration>, RefRO<BrakeAcceleleration>>())
 			{
-				float theta = transform.ValueRW.Value.Theta;
-				float rotationDelta = command.Turn * turnSpeed * deltaTime;
-				theta += rotationDelta;
-				transform.ValueRW.Value.Theta = theta;
+				Pose2D p = pose.ValueRW.Value;
+				float2 v = vel.ValueRW.Value;
 
-				float2 forward = new float2(-math.sin(theta), math.cos(theta));
-				transform.ValueRW.Value.Position += forward * command.Thrust * thrustSpeed * deltaTime;
+				// Rotation
+				float turn = math.clamp(intent.ValueRO.Turn, -1f, 1f);
+				p.Theta += turn * turnSpeed.ValueRO.Value * dt;
+
+				float2 forward = new float2(-math.sin(p.Theta), math.cos(p.Theta));
+
+				// Thrust / brake
+				float thrust = math.clamp(intent.ValueRO.Thrust, -1f, 1f);
+				if (math.abs(thrust) > 1e-4f)
+				{
+					v += forward * (thrustAcc.ValueRO.Value * thrust) * dt;
+				}
+				else
+				{
+					// Brake when no thrust (your current behavior)
+					float speed = math.length(v);
+					if (speed > 1e-4f)
+					{
+						float decel = brakeAcc.ValueRO.Value * dt;
+						float newSpeed = math.max(0f, speed - decel);
+						v = v * (newSpeed / speed);
+					}
+				}
+
+				// Linear damping (frame-rate independent)
+				float d = math.max(0f, LinearDampingPerSecond);
+				v *= math.exp(-d * dt);
+
+				// Clamp
+				float maxV = math.max(0f, maxSpeed.ValueRO.Value);
+				float vSq = math.lengthsq(v);
+				if (vSq > maxV * maxV && vSq > 1e-8f)
+					v *= maxV * math.rsqrt(vSq);
+
+				// Integrate position (drift always happens because v persists)
+				p.Position += v * dt;
+
+				vel.ValueRW.Value = v;
+				pose.ValueRW.Value = p;
 			}
 		}
 	}

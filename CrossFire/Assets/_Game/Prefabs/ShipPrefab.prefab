@@ -99,3 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2eb928ae71298b4ba934498e73c62d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CollisionRadius: 0.5
+  MaxSpeed: 50
+  TurnSpeed: 3
+  ThrustAcceleration: 30
+  BrakeAcceleration: 10

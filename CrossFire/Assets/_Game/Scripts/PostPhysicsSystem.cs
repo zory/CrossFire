@@ -7,7 +7,7 @@ using Unity.Transforms;
 namespace CrossFire
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(ShipControlSystem))]
+	[UpdateAfter(typeof(ShipMovementSystem))]
 	[UpdateBefore(typeof(TransformSystemGroup))]
 	[BurstCompile]
 	public partial struct PostPhysicsSystem : ISystem

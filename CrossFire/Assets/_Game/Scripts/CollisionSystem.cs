@@ -5,7 +5,7 @@ using Unity.Entities;
 namespace CrossFire
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(ShipControlSystem))]
+	[UpdateAfter(typeof(ShipMovementSystem))]
 	[BurstCompile]
 	public partial struct CollisionSystem : ISystem
 	{
