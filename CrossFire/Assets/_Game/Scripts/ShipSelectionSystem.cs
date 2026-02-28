@@ -42,17 +42,12 @@ namespace CrossFire.Ships
 	{
 		private EntityQuery _requestQuery;
 
-		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
-			_requestQuery = state.GetEntityQuery(new EntityQueryDesc
-			{
-				All = new ComponentType[]
-				{
-					typeof(SelectionRequestBufferTag),
-					typeof(SelectionRequestCommand)
-				}
-			});
+			_requestQuery = state.GetEntityQuery(
+				ComponentType.ReadOnly<SelectionRequestBufferTag>(),
+				ComponentType.ReadOnly<SelectionRequestCommand>() // buffer type
+			);
 
 			state.RequireForUpdate(_requestQuery);
 		}

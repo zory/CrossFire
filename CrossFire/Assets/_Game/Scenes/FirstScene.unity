@@ -346,7 +346,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 50
+  orthographic size: 25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99fe21cb757f3a24bacc43e27b3fa313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnShip: 1
+  SpawnShip: 0
   SpawnShip_Id: 0
   SpawnShip_Team: 0
   SpawnShip_Color: {r: 0.06157397, g: 0.49056602, b: 0, a: 1}

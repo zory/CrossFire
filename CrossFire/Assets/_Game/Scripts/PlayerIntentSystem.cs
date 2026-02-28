@@ -48,7 +48,6 @@ namespace CrossFire.Ships
 	{
 		private EntityQuery _inputQuery;
 
-		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
 			_inputQuery = state.GetEntityQuery(new EntityQueryDesc

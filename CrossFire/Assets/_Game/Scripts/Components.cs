@@ -35,10 +35,6 @@ namespace CrossFire
 
 	public struct CollisionRadius : IComponentData { public float Value; }
 
-	public struct ShootCooldown : IComponentData { public float Value; }
-
-	public struct ShootSpeed : IComponentData { public float Value; }
-
 	public struct Health : IComponentData { public short Value; }
 
 	public struct Targetable : IComponentData { public Entity Value; }
@@ -50,5 +46,35 @@ namespace CrossFire
 		public float Turn;    // -1..+1
 		public float Thrust;  // -1..+1
 		public byte Fire;     // 0/1 (bool in IComponentData is fine but byte is safer/clearer)
+	}
+
+	public struct WeaponConfig : IComponentData
+	{
+		public float FireInterval;     // seconds between shots
+		public float BulletSpeed;
+		public float BulletLifetime;
+		public float MuzzleOffset;     // forward offset from ship position
+	}
+
+	public struct WeaponCooldown : IComponentData
+	{
+		public float TimeLeft; // seconds
+	}
+
+	public struct BulletTag : IComponentData { }
+
+	public struct Lifetime : IComponentData
+	{
+		public float TimeLeft;
+	}
+
+	public struct BulletOwner : IComponentData
+	{
+		public Entity Value;
+	}
+
+	public struct BulletDamage : IComponentData
+	{
+		public short Value;
 	}
 }

@@ -12,7 +12,11 @@ namespace CrossFire.Ships
 		public float TurnSpeed = 3f;
 		public float ThrustAcceleration = 5f;
 		public float BrakeAcceleration = 5f;
-
+		public short Health = 3;
+		public float BulletLifetime = 2f;
+		public float BulletSpeed = 10f;
+		public float FireInterval = 0.5f;
+		public float MuzzleOffset = 0.75f;
 		class Baker : Baker<ShipPrefabAuthoring>
 		{
 			public override void Bake(ShipPrefabAuthoring authoring)
@@ -32,12 +36,12 @@ namespace CrossFire.Ships
 				AddComponent<StableId>(prefabEntity);
 				AddComponent<TeamId>(prefabEntity);
 				AddComponent<NativeColor>(prefabEntity);
-				AddComponent<ShootCooldown>(prefabEntity);
-				AddComponent<ShootSpeed>(prefabEntity);
-				AddComponent<Health>(prefabEntity);
+				AddComponent<Health>(prefabEntity, new Health() { Value = authoring.Health, });
 				AddComponent<SelectableTag>(prefabEntity);
 				AddComponent<ShipIntent>(prefabEntity);
 				AddComponent<Targetable>(prefabEntity);
+				AddComponent<WeaponConfig>(prefabEntity, new WeaponConfig() { BulletLifetime = authoring.BulletLifetime, BulletSpeed = authoring.BulletSpeed, FireInterval = authoring.FireInterval, MuzzleOffset = authoring.MuzzleOffset });
+				AddComponent<WeaponCooldown>(prefabEntity);
 			}
 		}
 	}

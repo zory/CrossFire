@@ -49,18 +49,13 @@ namespace CrossFire.Ships
 	public partial struct ShipsSpawnSystem : ISystem
 	{
 		private EntityQuery _requestQuery;
-
-		[BurstCompile]
+ 
 		public void OnCreate(ref SystemState state)
 		{
-			_requestQuery = state.GetEntityQuery(new EntityQueryDesc
-			{
-				All = new ComponentType[]
-				{
-					typeof(SpawnShipsCommandBufferTag),
-					typeof(SpawnShipsCommand)
-				}
-			});
+			_requestQuery = state.GetEntityQuery(
+						ComponentType.ReadOnly<SpawnShipsCommandBufferTag>(),
+						ComponentType.ReadOnly<SpawnShipsCommand>() // buffer type
+					);
 
 			state.RequireForUpdate(_requestQuery);
 		}
