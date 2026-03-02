@@ -10,6 +10,7 @@ namespace CrossFire.DevelopmentTools
 		[Header("SpawnShip")]
 		public bool SpawnShip;
 		public int SpawnShip_Id;
+		public ShipType SpawnShip_Type;
 		public byte SpawnShip_Team;
 		public Color SpawnShip_Color;
 		public Pose2D SpawnShip_Pose;
@@ -34,6 +35,17 @@ namespace CrossFire.DevelopmentTools
 
 				for (int i = 0; i < 100; i++)
 				{
+					int shipTypeInt = UnityEngine.Random.Range(0, 3);
+					ShipType type;
+					if (shipTypeInt == 0)
+					{
+						type = ShipType.Frigate;
+					}
+					else
+					{
+						type = ShipType.Fighter;
+					}
+
 					byte team = (byte)UnityEngine.Random.Range(0, 2);
 					Color color = Color.white;
 					if (team == 0)
@@ -54,6 +66,7 @@ namespace CrossFire.DevelopmentTools
 					SpawnShipsCommand command = new SpawnShipsCommand()
 					{
 						Id = SpawnShip_Id,
+						Type = type,
 						Team = team,
 						ColorRGBA = colorRGBA,
 						Pose = pose
@@ -81,6 +94,7 @@ namespace CrossFire.DevelopmentTools
 				SpawnShipsCommand command = new SpawnShipsCommand()
 				{
 					Id = SpawnShip_Id,
+					Type = SpawnShip_Type,
 					Team = SpawnShip_Team,
 					ColorRGBA = new float4(SpawnShip_Color.r, SpawnShip_Color.g, SpawnShip_Color.b, SpawnShip_Color.a),
 					Pose = SpawnShip_Pose

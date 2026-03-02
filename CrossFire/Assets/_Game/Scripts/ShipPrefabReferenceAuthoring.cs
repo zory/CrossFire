@@ -1,28 +1,44 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
 namespace CrossFire.Ships
 {
-	public struct ShipPrefabReference : IComponentData
+	public struct ShipPrefabEntry : IBufferElementData
 	{
+		public ShipType Type;
 		public Entity Prefab;
 	}
 
 	public class ShipPrefabReferenceAuthoring : MonoBehaviour
 	{
-		public GameObject ShipPrefab;
+		[Serializable]
+		public struct Entry
+		{
+			public ShipType Type;
+			public GameObject Prefab;
+		}
+
+		public Entry[] Entries;
 
 		public class ShipPrefabReferenceBaker : Baker<ShipPrefabReferenceAuthoring>
 		{
 			public override void Bake(ShipPrefabReferenceAuthoring authoring)
 			{
-				Entity holderEntity = GetEntity(TransformUsageFlags.None);
-				Entity prefabEntity = GetEntity(authoring.ShipPrefab, TransformUsageFlags.Dynamic);
+				Entity registryEntity = GetEntity(TransformUsageFlags.None);
 
-				AddComponent(holderEntity, new ShipPrefabReference
+				DynamicBuffer<ShipPrefabEntry> buffer = AddBuffer<ShipPrefabEntry>(registryEntity);
+				for (int index = 0; index < authoring.Entries.Length; index++)
 				{
-					Prefab = prefabEntity
-				});
+					Entry entry = authoring.Entries[index];
+					Entity prefabEntity = GetEntity(entry.Prefab, TransformUsageFlags.Dynamic);
+
+					buffer.Add(new ShipPrefabEntry
+					{
+						Type = entry.Type,
+						Prefab = prefabEntity
+					});
+				}
 			}
 		}
 	}

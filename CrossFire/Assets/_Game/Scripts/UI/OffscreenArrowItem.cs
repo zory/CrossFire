@@ -1,3 +1,5 @@
+using CrossFire.Lookup;
+using CrossFire.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,12 +30,12 @@ public class OffscreenArrowItem : MonoBehaviour
 		uiCamera = (canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay) ? canvas.worldCamera : null;
 	}
 
-	public void UpdateArrow(Vector3 targetWorldPosition)
+	public void UpdateArrow(LookupUIResult lookupResult)
 	{
 		if (!worldCamera || !boundsRect || !arrowRect) return;
 
 		// World -> screen
-		Vector2 targetScreen = worldCamera.WorldToScreenPoint(targetWorldPosition);
+		Vector2 targetScreen = worldCamera.WorldToScreenPoint(lookupResult.WorldPos);
 
 		// Screen -> bounds local
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -42,19 +44,28 @@ public class OffscreenArrowItem : MonoBehaviour
 
 		Rect r = boundsRect.rect;
 
+		Color color;
+		if (lookupResult.Team == 0)
+		{
+			color = Color.blue;
+		}
+		else
+		{
+			color = Color.red;
+		}
 		// Inside => hide
 		if (r.Contains(targetLocal))
 		{
-			SetVisible(false);
+			SetVisible(false, color);
 			return;
 		}
-		SetVisible(true);
+		SetVisible(true, color);
 
 		Vector2 center = r.center;
 		Vector2 dir = targetLocal - center;
 		if (dir.sqrMagnitude < 0.0001f)
 		{
-			SetVisible(false);
+			SetVisible(false, color);
 			return;
 		}
 
@@ -68,9 +79,13 @@ public class OffscreenArrowItem : MonoBehaviour
 		arrowRect.rotation = Quaternion.Euler(0f, 0f, angle);
 	}
 
-	private void SetVisible(bool v)
+	private void SetVisible(bool v, Color color)
 	{
-		if (arrowImage) arrowImage.enabled = v;
+		if (arrowImage)
+		{
+			arrowImage.enabled = v;
+			arrowImage.color = color;
+		}
 		else gameObject.SetActive(v);
 	}
 

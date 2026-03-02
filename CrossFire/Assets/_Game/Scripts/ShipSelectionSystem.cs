@@ -89,7 +89,7 @@ namespace CrossFire.Ships
 				if (bestEntity != Entity.Null)
 				{
 					//This is debug colouring for selected units
-					ShipsSpawnSystem.SetColor(entityManager, bestEntity, new float4(0, 0, 0, 255));
+					ShipsSpawnSystem.SetColor(entityManager, bestEntity, new float4(255, 255, 255, 255));
 					ecb.AddComponent<ControlledTag>(bestEntity);
 				}
 			}

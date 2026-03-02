@@ -4,9 +4,16 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
+using static PlasticPipe.PlasticProtocol.Messages.NegotiationCommand;
 
 namespace CrossFire.Ships
 {
+	public enum ShipType : int
+	{
+		Fighter = 0,
+		Frigate = 1,
+	}
+
 	public struct SpawnShipsCommandBufferTag : IComponentData
 	{
 	}
@@ -14,6 +21,7 @@ namespace CrossFire.Ships
 	public struct SpawnShipsCommand : IBufferElementData
 	{
 		public int Id;
+		public ShipType Type;
 		public byte Team;
 		public float4 ColorRGBA;
 		public Pose2D Pose;
@@ -24,10 +32,11 @@ namespace CrossFire.Ships
 				string.Format(
 					"SpawnShipsCommand. " +
 					"Id:{0} " +
-					"Team:{1} " +
-					"Color:{2} " +
-					"Pose:{3}",
-					Id, Team, ColorRGBA, Pose
+					"Type:{1} " +
+					"Team:{2} " +
+					"Color:{3} " +
+					"Pose:{4}",
+					Id, Type, Team, ColorRGBA, Pose
 				);
 		}
 	}
@@ -71,13 +80,18 @@ namespace CrossFire.Ships
 			NativeArray<SpawnShipsCommand> commands = commandBuffer.ToNativeArray(Allocator.Temp);
 			commandBuffer.Clear();
 
-			ShipPrefabReference prefabReference = SystemAPI.GetSingleton<ShipPrefabReference>();
-
 			for (int index = 0; index < commands.Length; index++)
 			{
 				SpawnShipsCommand command = commands[index];
 
-				Entity shipEntity = entityManager.Instantiate(prefabReference.Prefab);
+				Entity prefabEntity = GetPrefabForType(ref state, command.Type);
+				if (prefabEntity == Entity.Null)
+				{
+					// unknown type: skip
+					continue;
+				}
+
+				Entity shipEntity = entityManager.Instantiate(prefabEntity);
 
 				SetId(entityManager, shipEntity, command.Id);
 				SetTeam(entityManager, shipEntity, command.Team);
@@ -87,6 +101,20 @@ namespace CrossFire.Ships
 			}
 
 			commands.Dispose();
+		}
+
+		private Entity GetPrefabForType(ref SystemState state, ShipType shipType)
+		{
+			DynamicBuffer<ShipPrefabEntry> entries = SystemAPI.GetSingletonBuffer<ShipPrefabEntry>(true);
+
+			for (int index = 0; index < entries.Length; index++)
+			{
+				ShipPrefabEntry entry = entries[index];
+				if (entry.Type == shipType)
+					return entry.Prefab;
+			}
+
+			return Entity.Null;
 		}
 
 		private static void SetId(EntityManager entityManager, Entity entity, int id)
@@ -115,7 +143,6 @@ namespace CrossFire.Ships
 			quaternion rotation = quaternion.RotateZ(pose.Theta);
 			entityManager.SetComponentData(entity, new PrevWorldPose() { Value = pose });
 			entityManager.SetComponentData(entity, new WorldPose() { Value = pose });
-			entityManager.SetComponentData(entity, LocalTransform.FromPositionRotationScale(position, rotation, 1));
 			entityManager.SetComponentData(entity, LocalTransform.FromPositionRotationScale(position, rotation, 1));
 		}
 	}

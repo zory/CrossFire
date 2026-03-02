@@ -1,9 +1,10 @@
+using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
-using CrossFire.Ships;
 
 namespace CrossFire.Bullets
 {
@@ -58,13 +59,30 @@ namespace CrossFire.Bullets
 				ecb.AddComponent(b, new BulletOwner { Value = entity });
 				ecb.AddComponent(b, new TeamId() { Value = em.GetComponentData<TeamId>(entity).Value });
 
+				float4 color;
+				if (em.GetComponentData<TeamId>(entity).Value == 0)
+				{
+					color = new float4(0, 0, 255, 255);
+				}
+				else
+				{
+					color = new float4(255, 0, 0, 255);
+				}
+				ecb.SetComponent(b, new URPMaterialPropertyBaseColor { Value = color });
+
 				// Transform
 				WorldPose worldPose = new WorldPose { Value = new Pose2D() { Position = bulletPos2, Theta = ship.Theta } };
 
 				ecb.SetComponent(b, worldPose);
 
 				// Velocity
-				var vel = new Velocity { Value = bulletVel };
+				float2 shipVel = float2.zero;
+				if (em.HasComponent<Velocity>(entity))
+				{
+					shipVel = em.GetComponentData<Velocity>(entity).Value;
+				}
+
+				var vel = new Velocity { Value = bulletVel + shipVel };
 				if (prefabHasVelocity) ecb.SetComponent(b, vel);
 				else ecb.AddComponent(b, vel);
 

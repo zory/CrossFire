@@ -1,3 +1,4 @@
+using CrossFire.UI;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,16 +20,16 @@ public class OffscreenArrowManager : MonoBehaviour
 	}
 
 	/// Call this from your game with any number of world positions.
-	public void SetTargets(IReadOnlyList<Vector3> worldPositions)
+	public void SetTargets(IReadOnlyList<LookupUIResult> lookupResults)
 	{
-		if (worldPositions == null) worldPositions = System.Array.Empty<Vector3>();
+		if (lookupResults == null) lookupResults = System.Array.Empty<LookupUIResult>();
 
 		// 1) Resize pool to match count
-		EnsureCount(worldPositions.Count);
+		EnsureCount(lookupResults.Count);
 
 		// 2) Update each arrow
-		for (int i = 0; i < worldPositions.Count; i++)
-			arrows[i].UpdateArrow(worldPositions[i]);
+		for (int i = 0; i < lookupResults.Count; i++)
+			arrows[i].UpdateArrow(lookupResults[i]);
 	}
 
 	private void EnsureCount(int needed)

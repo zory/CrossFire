@@ -1,3 +1,4 @@
+using CrossFire.UI;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +10,16 @@ public class ArrowTestFeeder : MonoBehaviour
 
 	void Update()
 	{
-		List<Vector3> targetPositions = new List<Vector3>();
+		List<LookupUIResult> targetPositions = new List<LookupUIResult>();
 		foreach (var target in targets)
 		{
-			targetPositions.Add(target.transform.position);
+			targetPositions.Add(
+				new LookupUIResult()
+				{
+					WorldPos = target.transform.position,
+					Team = 0,
+				}
+			);
 		}
 		manager.SetTargets(targetPositions);
 	}

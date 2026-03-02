@@ -1,10 +1,15 @@
 using CrossFire.Lookup;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 namespace CrossFire.UI
 {
+	public struct LookupUIResult
+	{
+		public byte Team;
+		public Vector3 WorldPos;
+	}
+
 	public class LookupUI : MonoBehaviour
 	{
 		public OffscreenArrowManager manager;
@@ -16,12 +21,18 @@ namespace CrossFire.UI
 
 			if (LookupBridge.TryGetResults(out var results))
 			{
-				List<Vector3> targetPositions = new List<Vector3>();
+				List<LookupUIResult> lookupResults = new List<LookupUIResult>();
 				foreach (var result in results)
 				{
-					targetPositions.Add(new Vector3(result.WorldPos.x, result.WorldPos.y, 0));
+					lookupResults.Add(
+						new LookupUIResult()
+						{
+							Team = result.Team,
+							WorldPos = new Vector3(result.WorldPos.x, result.WorldPos.y, 0),
+						}
+					);
 				}
-				manager.SetTargets(targetPositions);
+				manager.SetTargets(lookupResults);
 			}
 		}
 	}
