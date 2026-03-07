@@ -1,0 +1,18 @@
+{
+    "name": "CrossFire.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a8d41f8742852b442ac92278ec4fc0d0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -33,20 +33,9 @@ namespace CrossFire.DevelopmentTools
 
 				EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-				for (int i = 0; i < 100; i++)
+				for (int teamIdx = 0; teamIdx < 2; teamIdx++)
 				{
-					int shipTypeInt = UnityEngine.Random.Range(0, 3);
-					ShipType type;
-					if (shipTypeInt == 0)
-					{
-						type = ShipType.Frigate;
-					}
-					else
-					{
-						type = ShipType.Fighter;
-					}
-
-					byte team = (byte)UnityEngine.Random.Range(0, 2);
+					byte team = (byte)teamIdx;
 					Color color = Color.white;
 					if (team == 0)
 					{
@@ -58,27 +47,48 @@ namespace CrossFire.DevelopmentTools
 					}
 					float4 colorRGBA = new float4(color.r, color.g, color.b, color.a);
 
-					Pose2D pose = new Pose2D
+					for (int i = 0; i < 50; i++)
 					{
-						Position = UnityEngine.Random.insideUnitCircle * 50f,
-						Theta = UnityEngine.Random.Range(0f, 360f)
-					};
-					SpawnShipsCommand command = new SpawnShipsCommand()
-					{
-						Id = SpawnShip_Id,
-						Type = type,
-						Team = team,
-						ColorRGBA = colorRGBA,
-						Pose = pose
-					};
-					Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
+						ShipType type;
+						if (i == 0)
+						{
+							type = ShipType.Carrier;
+						}
+						else
+						{
+							int shipTypeInt = UnityEngine.Random.Range(0, 3);
+							if (shipTypeInt == 0)
+							{
+								type = ShipType.Bomber;
+							}
+							else
+							{
+								type = ShipType.Fighter;
+							}
+						}
 
-					EntityQuery query = entityManager.CreateEntityQuery(typeof(SpawnShipsCommandBufferTag));
-					Entity entity = query.GetSingletonEntity();
-					DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
-					commandBuffer.Add(command);
+						Pose2D pose = new Pose2D
+						{
+							Position = UnityEngine.Random.insideUnitCircle * 50f,
+							Theta = UnityEngine.Random.Range(0f, 360f)
+						};
+						SpawnShipsCommand command = new SpawnShipsCommand()
+						{
+							Id = SpawnShip_Id,
+							Type = type,
+							Team = team,
+							ColorRGBA = colorRGBA,
+							Pose = pose
+						};
+						Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
 
-					SpawnShip_Id++;
+						EntityQuery query = entityManager.CreateEntityQuery(typeof(SpawnShipsCommandBufferTag));
+						Entity entity = query.GetSingletonEntity();
+						DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
+						commandBuffer.Add(command);
+
+						SpawnShip_Id++;
+					}
 				}
 			}
 		}

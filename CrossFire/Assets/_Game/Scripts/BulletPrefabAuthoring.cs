@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Rendering;
 using Unity.Transforms;
@@ -10,7 +11,7 @@ namespace CrossFire.Bullets
 		class Baker : Baker<BulletPrefabAuthoring>
 		{
 			public short BulletDamage = 1;
-			public float CollisionRadius = 0.25f;
+
 			public override void Bake(BulletPrefabAuthoring authoring)
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
@@ -24,7 +25,8 @@ namespace CrossFire.Bullets
 				AddComponent<BulletOwner>(prefabEntity);
 				AddComponent<TeamId>(prefabEntity);
 				AddComponent<BulletDamage>(prefabEntity, new BulletDamage() { Value = BulletDamage });
-				AddComponent<CollisionRadius>(prefabEntity, new CollisionRadius() { Value = CollisionRadius });
+				AddComponent<CollisionLayer>(prefabEntity, new CollisionLayer() { Value = 1 });
+				AddComponent<CollisionMask>(prefabEntity, new CollisionMask() { Value = (1 << 0) | (1 << 1) });
 			}
 		}
 	}

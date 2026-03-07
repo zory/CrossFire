@@ -1,3 +1,4 @@
+using CrossFire.Lookup;
 using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Entities;
@@ -12,6 +13,13 @@ namespace CrossFire
 		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
+			var em = state.EntityManager;
+
+			// Filter singleton
+			{
+				Entity e = em.CreateEntity();
+				em.AddComponentData(e, new CollisionGridSettings { CellSize = 4f });
+			}
 		}
 
 		[BurstCompile]

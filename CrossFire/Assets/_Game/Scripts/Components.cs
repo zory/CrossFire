@@ -33,8 +33,6 @@ namespace CrossFire
 
 	public struct BrakeAcceleleration : IComponentData { public float Value; }
 
-	public struct CollisionRadius : IComponentData { public float Value; }
-
 	public struct Health : IComponentData { public short Value; }
 
 	public struct Targetable : IComponentData { public Entity Value; }

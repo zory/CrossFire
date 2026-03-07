@@ -12,7 +12,7 @@ namespace CrossFire.Ships
 	[BurstCompile]
 	public partial struct BulletHitSystem : ISystem
 	{
-		private EntityQuery _shipsQuery;
+		/*private EntityQuery _shipsQuery;
 
 		public void OnCreate(ref SystemState state)
 		{
@@ -92,6 +92,6 @@ namespace CrossFire.Ships
 
 			ecb.Playback(em);
 			ecb.Dispose();
-		}
+		}*/
 	}
 }

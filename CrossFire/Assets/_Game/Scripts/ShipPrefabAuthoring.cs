@@ -1,13 +1,14 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Rendering;
 using Unity.Transforms;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
 namespace CrossFire.Ships
 {
 	public class ShipPrefabAuthoring : MonoBehaviour
 	{
-		public float CollisionRadius = 0.5f;
 		public float MaxSpeed = 5f;
 		public float TurnSpeed = 3f;
 		public float ThrustAcceleration = 5f;
@@ -17,6 +18,7 @@ namespace CrossFire.Ships
 		public float BulletSpeed = 10f;
 		public float FireInterval = 0.5f;
 		public float MuzzleOffset = 0.75f;
+
 		class Baker : Baker<ShipPrefabAuthoring>
 		{
 			public override void Bake(ShipPrefabAuthoring authoring)
@@ -25,7 +27,6 @@ namespace CrossFire.Ships
 				AddComponent<PrevWorldPose>(prefabEntity);
 				AddComponent<WorldPose>(prefabEntity);
 				AddComponent<LocalTransform>(prefabEntity);
-				AddComponent<CollisionRadius>(prefabEntity, new CollisionRadius() { Value = authoring.CollisionRadius });
 				AddComponent<Velocity>(prefabEntity);
 				AddComponent<MaxSpeed>(prefabEntity, new MaxSpeed() { Value = authoring.MaxSpeed });
 				AddComponent<TurnSpeed>(prefabEntity, new TurnSpeed() { Value = authoring.TurnSpeed });
@@ -42,6 +43,9 @@ namespace CrossFire.Ships
 				AddComponent<Targetable>(prefabEntity);
 				AddComponent<WeaponConfig>(prefabEntity, new WeaponConfig() { BulletLifetime = authoring.BulletLifetime, BulletSpeed = authoring.BulletSpeed, FireInterval = authoring.FireInterval, MuzzleOffset = authoring.MuzzleOffset });
 				AddComponent<WeaponCooldown>(prefabEntity);
+				AddComponent<BulletTargetTag>(prefabEntity);
+				AddComponent<CollisionLayer>(prefabEntity, new CollisionLayer() { Value = 1 });
+				AddComponent<CollisionMask>(prefabEntity, new CollisionMask() { Value = (1 << 0) | (1 << 1) });
 			}
 		}
 	}

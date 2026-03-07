@@ -9,9 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4258186483021898134}
-  - component: {fileID: 8319372932771084742}
-  - component: {fileID: 4666363571977975342}
   - component: {fileID: 823646163044960884}
+  - component: {fileID: 3316845033982528947}
   m_Layer: 0
   m_Name: ShipBomberPrefab
   m_TagString: Untagged
@@ -29,26 +28,105 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8492481625143555756}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &823646163044960884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2eb928ae71298b4ba934498e73c62d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSpeed: 30
+  TurnSpeed: 2
+  ThrustAcceleration: 20
+  BrakeAcceleration: 10
+  Health: 7
+  BulletLifetime: 5
+  BulletSpeed: 10
+  FireInterval: 1
+  MuzzleOffset: 0.75
+--- !u!114 &3316845033982528947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3ad71a664d4f0449acdf8d65d0d4894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ColliderType: 1
+  AutoCalculateBoundRadius: 1
+  ColliderBoundRadius: 0.73824114
+  ColliderCircleRadius: 0.5
+  OutlineVertices:
+  - {x: -0.65, y: -0.35}
+  - {x: 0, y: 0.35}
+  - {x: 0.65, y: -0.35}
+  DrawBoundRadius: 1
+  DrawCircleRadius: 1
+  DrawOutline: 1
+  DrawTrianglesPreview: 1
+--- !u!1 &9070606738214520555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8492481625143555756}
+  - component: {fileID: 8612603236439781574}
+  - component: {fileID: 4355951319895580753}
+  m_Layer: 0
+  m_Name: Visuals
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8492481625143555756
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9070606738214520555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.3, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 4258186483021898134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8319372932771084742
+--- !u!33 &8612603236439781574
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 710218108567178225}
+  m_GameObject: {fileID: 9070606738214520555}
   m_Mesh: {fileID: -462981019419857548, guid: 54d1dcf174cc17043b3c2df9f9d0c206, type: 3}
---- !u!23 &4666363571977975342
+--- !u!23 &4355951319895580753
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 710218108567178225}
+  m_GameObject: {fileID: 9070606738214520555}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -87,25 +165,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &823646163044960884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 710218108567178225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2eb928ae71298b4ba934498e73c62d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionRadius: 0.7
-  MaxSpeed: 30
-  TurnSpeed: 2
-  ThrustAcceleration: 20
-  BrakeAcceleration: 10
-  Health: 7
-  BulletLifetime: 5
-  BulletSpeed: 10
-  FireInterval: 1
-  MuzzleOffset: 0.75
