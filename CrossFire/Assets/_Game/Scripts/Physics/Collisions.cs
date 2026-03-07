@@ -6,7 +6,7 @@
 //
 // You can reuse the same grid + filter + narrowphase dispatch for other collision pairs later.
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
 	using Unity.Burst;
 	using Unity.Collections;

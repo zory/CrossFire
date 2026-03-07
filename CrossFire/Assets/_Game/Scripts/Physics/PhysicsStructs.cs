@@ -1,7 +1,7 @@
 using System;
 using Unity.Mathematics;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
 	[Serializable]
 	public struct Pose2D

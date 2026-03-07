@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
-	public static class ConcaveColliderAuthoringDrawGizmo
+	public static class ColliderAuthoringDrawGizmo
 	{
 		[DrawGizmo(GizmoType.Selected | GizmoType.NonSelected | GizmoType.Pickable)]
-		private static void Draw(ConcaveColliderAuthoring authoring, GizmoType gizmoType)
+		private static void Draw(ColliderAuthoring authoring, GizmoType gizmoType)
 		{
 			Transform t = authoring.transform;
 

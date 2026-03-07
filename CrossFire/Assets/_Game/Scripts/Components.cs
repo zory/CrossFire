@@ -15,18 +15,9 @@ namespace CrossFire
 
 	public struct NativeColor : IComponentData { public float4 Value; }
 
-	public struct PrevWorldPose : IComponentData { public Pose2D Value; }
-
-	public struct WorldPose : IComponentData { public Pose2D Value; }
-
-	public struct Velocity : IComponentData { public float2 Value; }
-
-	public struct MaxSpeed : IComponentData { public float Value; }
-
 	public struct TurnSpeed : IComponentData
 	{
-		// radians per second
-		public float Value;
+		public float Value; // radians per second at full input
 	}
 
 	public struct ThrustAcceleration : IComponentData { public float Value; }

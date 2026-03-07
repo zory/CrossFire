@@ -1,13 +1,11 @@
-using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(ShipMovementSystem))]
 	[UpdateBefore(typeof(TransformSystemGroup))]
 	[BurstCompile]
 	public partial struct PostPhysicsSystem : ISystem

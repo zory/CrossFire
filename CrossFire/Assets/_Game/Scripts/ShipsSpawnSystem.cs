@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
+using CrossFire.Physics;
 using static PlasticPipe.PlasticProtocol.Messages.NegotiationCommand;
 
 namespace CrossFire.Ships
@@ -58,6 +59,7 @@ namespace CrossFire.Ships
 	}
 
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[UpdateBefore(typeof(SnapshotSystem))]
 	[BurstCompile]
 	public partial struct ShipsSpawnSystem : ISystem
 	{

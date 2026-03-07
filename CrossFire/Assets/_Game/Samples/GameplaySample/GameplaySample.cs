@@ -1,11 +1,12 @@
+using CrossFire.Physics;
 using CrossFire.Ships;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CrossFire.DevelopmentTools
+namespace CrossFire.Samples
 {
-	public class PlayerDebug : MonoBehaviour
+	public class GameplaySample : MonoBehaviour
 	{
 		[Header("SpawnShip")]
 		public bool SpawnShip;

@@ -4,11 +4,13 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using CrossFire.Physics;
 
 namespace CrossFire.Bullets
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[UpdateAfter(typeof(WeaponFireSystem))]
+	[UpdateBefore(typeof(PositionIntegrationSystem))]
 	[BurstCompile]
 	public partial struct BulletUpdateSystem : ISystem
 	{
@@ -18,19 +20,11 @@ namespace CrossFire.Bullets
 			float dt = SystemAPI.Time.DeltaTime;
 			var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-			foreach (var (ltRW, velRO, lifeRW, entity) in
-					 SystemAPI.Query<RefRW<WorldPose>, RefRO<Velocity>, RefRW<Lifetime>>()
+			foreach (var (lifeRW, entity) in
+					 SystemAPI.Query<RefRW<Lifetime>>()
 							  .WithAll<BulletTag>()
 							  .WithEntityAccess())
 			{
-				// Move
-				float2 p = ltRW.ValueRO.Value.Position;
-				float2 v = velRO.ValueRO.Value;
-				p.x += v.x * dt;
-				p.y += v.y * dt;
-				ltRW.ValueRW.Value.Position = p;
-
-				// Lifetime
 				float t = lifeRW.ValueRO.TimeLeft - dt;
 				lifeRW.ValueRW.TimeLeft = t;
 

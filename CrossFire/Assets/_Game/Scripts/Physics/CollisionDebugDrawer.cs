@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
 	public class CollisionDebugDrawer : MonoBehaviour
 	{

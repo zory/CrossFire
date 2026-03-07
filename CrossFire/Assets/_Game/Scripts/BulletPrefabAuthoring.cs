@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using CrossFire.Physics;
 
 namespace CrossFire.Bullets
 {
@@ -15,10 +16,6 @@ namespace CrossFire.Bullets
 			public override void Bake(BulletPrefabAuthoring authoring)
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
-				AddComponent<PrevWorldPose>(prefabEntity);
-				AddComponent<WorldPose>(prefabEntity);
-				AddComponent<LocalTransform>(prefabEntity);
-				AddComponent<Velocity>(prefabEntity);
 				AddComponent<URPMaterialPropertyBaseColor>(prefabEntity);
 				AddComponent<BulletTag>(prefabEntity);
 				AddComponent<Lifetime>(prefabEntity);

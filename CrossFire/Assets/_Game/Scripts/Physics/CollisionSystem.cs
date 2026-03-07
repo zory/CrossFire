@@ -3,7 +3,7 @@ using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Entities;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[UpdateAfter(typeof(ShipMovementSystem))]

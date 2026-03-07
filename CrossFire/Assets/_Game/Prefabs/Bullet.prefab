@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4258186483021898134}
+  - component: {fileID: 4045932995074927886}
+  - component: {fileID: 2303340720121625005}
   - component: {fileID: 4702405616136979101}
   - component: {fileID: 2875587680316400840}
   m_Layer: 0
@@ -34,6 +36,32 @@ Transform:
   - {fileID: 7392059457723351579}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4045932995074927886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4770db72eba77c4bb88d402d2dedc26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2303340720121625005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8102526e3921bc04baa69ee6b8366316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSpeed: 20
+  LinearDamping: 0
 --- !u!114 &4702405616136979101
 MonoBehaviour:
   m_ObjectHideFlags: 0

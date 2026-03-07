@@ -9,6 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4258186483021898134}
+  - component: {fileID: 4064725321452015349}
+  - component: {fileID: 7375525692914311119}
+  - component: {fileID: 3607885176484975666}
+  - component: {fileID: 7585939599461147353}
   - component: {fileID: 823646163044960884}
   - component: {fileID: 3316845033982528947}
   m_Layer: 0
@@ -34,6 +38,56 @@ Transform:
   - {fileID: 8492481625143555756}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4064725321452015349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4770db72eba77c4bb88d402d2dedc26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7375525692914311119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8102526e3921bc04baa69ee6b8366316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3607885176484975666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23bf7ea5dda81c8448f0fd534211bcf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSpeed: 7
+--- !u!114 &7585939599461147353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41775c8ac5bffae4cb6d5e4764b9365e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LinearDamping: 2
 --- !u!114 &823646163044960884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,7 +100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2eb928ae71298b4ba934498e73c62d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpeed: 30
   TurnSpeed: 2
   ThrustAcceleration: 20
   BrakeAcceleration: 10

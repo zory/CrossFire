@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
 	public enum Collider2DType : byte
 	{
@@ -12,7 +12,7 @@ namespace CrossFire
 		ConcaveTriangles = 1
 	}
 
-	public class ConcaveColliderAuthoring : MonoBehaviour
+	public class ColliderAuthoring : MonoBehaviour
 	{
 		public Collider2DType ColliderType = Collider2DType.ConcaveTriangles;
 
@@ -63,9 +63,9 @@ namespace CrossFire
 			return Mathf.Sqrt(maxSq);
 		}
 
-		class ConcaveColliderBaker : Baker<ConcaveColliderAuthoring>
+		class ConcaveColliderBaker : Baker<ColliderAuthoring>
 		{
-			public override void Bake(ConcaveColliderAuthoring authoring)
+			public override void Bake(ColliderAuthoring authoring)
 			{
 				var entity = GetEntity(TransformUsageFlags.Dynamic);
 

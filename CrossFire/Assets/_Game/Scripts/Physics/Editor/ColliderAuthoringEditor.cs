@@ -2,10 +2,10 @@ using CrossFire;
 using UnityEditor;
 using UnityEngine;
 
-namespace CrossFire
+namespace CrossFire.Physics
 {
-	[CustomEditor(typeof(ConcaveColliderAuthoring))]
-	public class ConcaveColliderAuthoringEditor : Editor
+	[CustomEditor(typeof(ColliderAuthoring))]
+	public class ColliderAuthoringEditor : Editor
 	{
 		SerializedProperty _colliderType;
 		SerializedProperty _autoCalculateBoundRadius;
@@ -34,7 +34,7 @@ namespace CrossFire
 		{
 			serializedObject.Update();
 
-			var authoring = (ConcaveColliderAuthoring)target;
+			var authoring = (ColliderAuthoring)target;
 			var colliderType = (Collider2DType)_colliderType.enumValueIndex;
 
 			EditorGUILayout.PropertyField(_colliderType);
