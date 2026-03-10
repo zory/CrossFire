@@ -56,14 +56,14 @@ namespace CrossFire.Ships
 				// So desired theta should be angle-from-+Y: atan2(-x, y)
 				float desiredTheta = math.atan2(-toT.x, toT.y);
 
-				float delta = NormalizeAngle(desiredTheta - self.Theta);
+				float delta = NormalizeAngle(desiredTheta - self.ThetaRad);
 
 				// Turn sign towards target
 				float turn = math.clamp(delta * 2.0f, -1f, 1f); // gain=2 for snappier steering
 				float thrust = 1f;
 
 				// Fire gating: within range and within cone
-				float2 forward = new float2(-math.sin(self.Theta), math.cos(self.Theta));
+				float2 forward = new float2(-math.sin(self.ThetaRad), math.cos(self.ThetaRad));
 				float2 dir = math.normalizesafe(toT);
 				float facing = math.dot(forward, dir);
 				byte fire = (byte)((distSq <= FireRange * FireRange && facing >= FireConeCos) ? 1 : 0);

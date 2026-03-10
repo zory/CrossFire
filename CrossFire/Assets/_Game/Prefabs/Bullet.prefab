@@ -60,8 +60,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8102526e3921bc04baa69ee6b8366316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpeed: 20
-  LinearDamping: 0
 --- !u!114 &4702405616136979101
 MonoBehaviour:
   m_ObjectHideFlags: 0

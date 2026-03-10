@@ -38,7 +38,7 @@ namespace CrossFire.Physics
 					math.max(0f, firstCollider.CircleRadius),
 					ref secondTriangleReference.Value.Value.Vertices,
 					secondWorldPose.Value.Position,
-					secondWorldPose.Value.Theta);
+					secondWorldPose.Value.ThetaRad);
 			}
 
 			if (firstCollider.Type == Collider2DType.ConcaveTriangles &&
@@ -54,7 +54,7 @@ namespace CrossFire.Physics
 					math.max(0f, secondCollider.CircleRadius),
 					ref firstTriangleReference.Value.Value.Vertices,
 					firstWorldPose.Value.Position,
-					firstWorldPose.Value.Theta);
+					firstWorldPose.Value.ThetaRad);
 			}
 
 			// Triangle-vs-triangle not implemented yet.
@@ -94,7 +94,7 @@ namespace CrossFire.Physics
 			float circleRadius,
 			ref BlobArray<float2> triangleVerticesLocalSpace,
 			float2 targetPositionWorld,
-			float targetRotationDegrees)
+			float targetRotationRad)
 		{
 			if (circleRadius < 0f)
 			{
@@ -103,14 +103,8 @@ namespace CrossFire.Physics
 
 			float circleRadiusSquared = circleRadius * circleRadius;
 
-			float targetRotationRadians =
-				targetRotationDegrees * math.TORADIANS;
-
-			float rotationCosine =
-				math.cos(targetRotationRadians);
-
-			float rotationSine =
-				math.sin(targetRotationRadians);
+			float rotationCosine = math.cos(targetRotationRad);
+			float rotationSine = math.sin(targetRotationRad);
 
 			for (int triangleVertexStartIndex = 0;
 				 triangleVertexStartIndex < triangleVerticesLocalSpace.Length;

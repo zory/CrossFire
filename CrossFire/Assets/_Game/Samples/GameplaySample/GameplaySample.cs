@@ -71,7 +71,7 @@ namespace CrossFire.Samples
 						Pose2D pose = new Pose2D
 						{
 							Position = UnityEngine.Random.insideUnitCircle * 50f,
-							Theta = UnityEngine.Random.Range(0f, 360f)
+							ThetaRad = UnityEngine.Random.Range(0f, 2 * math.PI)
 						};
 						SpawnShipsCommand command = new SpawnShipsCommand()
 						{

@@ -8,11 +8,11 @@ namespace CrossFire.Physics
 	public struct Pose2D
 	{
 		public float2 Position;
-		public float Theta;
+		public float ThetaRad;	//Radians
 
 		public override string ToString()
 		{
-			return string.Format("[{0}|{1}]", Position, Theta);
+			return string.Format("[{0}|{1}]", Position, ThetaRad);
 		}
 	}
 

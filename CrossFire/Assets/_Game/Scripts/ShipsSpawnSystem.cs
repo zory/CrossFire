@@ -146,7 +146,7 @@ namespace CrossFire.Ships
 		private static void SetPose(EntityManager entityManager, Entity entity, Pose2D pose)
 		{
 			float3 position = new float3(pose.Position.x, pose.Position.y, 0f);
-			quaternion rotation = quaternion.RotateZ(pose.Theta);
+			quaternion rotation = quaternion.RotateZ(pose.ThetaRad);
 			entityManager.SetComponentData(entity, new PrevWorldPose() { Value = pose });
 			entityManager.SetComponentData(entity, new WorldPose() { Value = pose });
 			entityManager.SetComponentData(entity, LocalTransform.FromPositionRotationScale(position, rotation, 1));

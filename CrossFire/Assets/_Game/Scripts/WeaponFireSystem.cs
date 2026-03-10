@@ -46,7 +46,7 @@ namespace CrossFire.Bullets
 
 				Pose2D ship = poseRO.ValueRO.Value;
 
-				float2 forward = new float2(-math.sin(ship.Theta), math.cos(ship.Theta));
+				float2 forward = new float2(-math.sin(ship.ThetaRad), math.cos(ship.ThetaRad));
 				float muzzleOffset = weaponRO.ValueRO.MuzzleOffset;
 				float2 bulletPos2 = ship.Position + forward * muzzleOffset;
 
@@ -71,7 +71,7 @@ namespace CrossFire.Bullets
 				ecb.SetComponent(b, new URPMaterialPropertyBaseColor { Value = color });
 
 				// Transform
-				WorldPose worldPose = new WorldPose { Value = new Pose2D() { Position = bulletPos2, Theta = ship.Theta } };
+				WorldPose worldPose = new WorldPose { Value = new Pose2D() { Position = bulletPos2, ThetaRad = ship.ThetaRad } };
 
 				ecb.SetComponent(b, worldPose);
 

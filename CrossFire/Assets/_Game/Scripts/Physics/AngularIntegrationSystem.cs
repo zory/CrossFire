@@ -15,7 +15,7 @@ namespace CrossFire.Physics
 					 SystemAPI.Query<RefRW<WorldPose>, RefRO<AngularVelocity>>())
 			{
 				var pose = poseRW.ValueRO.Value;
-				pose.Theta += angularVelRO.ValueRO.Value * dt;
+				pose.ThetaRad += angularVelRO.ValueRO.Value * dt;
 				poseRW.ValueRW.Value = pose;
 			}
 		}

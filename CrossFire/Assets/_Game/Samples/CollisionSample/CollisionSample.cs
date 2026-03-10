@@ -1,8 +1,9 @@
+using CrossFire.Physics;
 using CrossFire.Ships;
 using Unity.Entities;
+using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using UnityEngine;
-using CrossFire.Physics;
 
 namespace CrossFire.Samples
 {
@@ -29,7 +30,7 @@ namespace CrossFire.Samples
 				Pose2D pose = new Pose2D
 				{
 					Position = worldPose,
-					Theta = angle
+					ThetaRad = angle
 				};
 
 				SpawnShipsCommand command = new SpawnShipsCommand()
@@ -56,7 +57,7 @@ namespace CrossFire.Samples
 				Pose2D pose = new Pose2D
 				{
 					Position = worldPose,
-					Theta = 0
+					ThetaRad = math.PI * 0.5f
 				};
 
 				SpawnShipsCommand command = new SpawnShipsCommand()

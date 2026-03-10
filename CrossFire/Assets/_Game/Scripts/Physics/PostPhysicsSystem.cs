@@ -24,7 +24,7 @@ namespace CrossFire.Physics
 				float2 position = pose.ValueRO.Value.Position;
 				localTransport.ValueRW.Position = new float3(position.x, position.y, 0f);
 
-				float theta = pose.ValueRO.Value.Theta;
+				float theta = pose.ValueRO.Value.ThetaRad;
 				localTransport.ValueRW.Rotation = quaternion.RotateZ(theta);
 			}
 		}

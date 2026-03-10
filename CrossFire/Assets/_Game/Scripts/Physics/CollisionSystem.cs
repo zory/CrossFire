@@ -207,12 +207,9 @@ namespace CrossFire.Physics
 									CollisionMask secondCollisionMask =
 										colliderCollisionMasks[secondColliderIndex];
 
-									bool collisionFilterPassed =
-										CollisionFilterUtil.CanCollide(
-											firstCollisionLayer,
-											firstCollisionMask,
-											secondCollisionLayer,
-											secondCollisionMask);
+									bool collisionFilterPassed = PhysicsUtilities.CanCollide(
+											firstCollisionLayer, firstCollisionMask,
+											secondCollisionLayer, secondCollisionMask);
 
 									if (collisionFilterPassed)
 									{

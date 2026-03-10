@@ -39,7 +39,7 @@ namespace CrossFire.Ships
 				float turn = math.clamp(intentRO.ValueRO.Turn, -1f, 1f);
 				angularVelRW.ValueRW.Value = turn * turnSpeedRO.ValueRO.Value;
 
-				float2 forward = new float2(-math.sin(pose.Theta), math.cos(pose.Theta));
+				float2 forward = new float2(-math.sin(pose.ThetaRad), math.cos(pose.ThetaRad));
 
 				float thrust = math.clamp(intentRO.ValueRO.Thrust, -1f, 1f);
 				if (math.abs(thrust) > 1e-4f)
