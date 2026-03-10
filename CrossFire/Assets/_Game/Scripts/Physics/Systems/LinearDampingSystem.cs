@@ -1,23 +1,31 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace CrossFire.Physics
 {
+	/// <summary>
+	/// apply drag
+	/// </summary>
+	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[UpdateAfter(typeof(SnapshotSystem))]
 	[BurstCompile]
 	public partial struct LinearDampingSystem : ISystem
 	{
 		[BurstCompile]
+		public void OnCreate(ref SystemState state)
+		{
+		}
+
+		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			float dt = SystemAPI.Time.DeltaTime;
+			float deltaTime = SystemAPI.Time.DeltaTime;
 
-			foreach (var (velRW, dampingRO) in
-					 SystemAPI.Query<RefRW<Velocity>, RefRO<LinearDamping>>())
+			foreach (var (velRW, dampingRO) in SystemAPI.Query<RefRW<Velocity>, RefRO<LinearDamping>>())
 			{
-				float d = math.max(0f, dampingRO.ValueRO.Value);
-				velRW.ValueRW.Value *= math.exp(-d * dt);
+				float damping = math.max(0f, dampingRO.ValueRO.Value);
+				velRW.ValueRW.Value *= math.exp(-damping * deltaTime);
 			}
 		}
 	}

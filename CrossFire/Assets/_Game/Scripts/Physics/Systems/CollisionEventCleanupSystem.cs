@@ -1,10 +1,15 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 
 namespace CrossFire.Physics
 {
-	[BurstCompile]
+	/// <summary>
+	/// prevent events from persisting next frame
+	/// </summary>
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[UpdateAfter(typeof(PostPhysicsSystem))]
+	[UpdateBefore(typeof(TransformSystemGroup))]
 	public partial struct CollisionEventCleanupSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)
@@ -14,12 +19,8 @@ namespace CrossFire.Physics
 
 		public void OnUpdate(ref SystemState state)
 		{
-			Entity collisionEventBufferEntity =
-				SystemAPI.GetSingletonEntity<CollisionEventBufferTag>();
-
-			DynamicBuffer<CollisionEvent> collisionEventBuffer =
-				state.EntityManager.GetBuffer<CollisionEvent>(collisionEventBufferEntity);
-
+			Entity collisionEventBufferEntity = SystemAPI.GetSingletonEntity<CollisionEventBufferTag>();
+			DynamicBuffer<CollisionEvent> collisionEventBuffer = state.EntityManager.GetBuffer<CollisionEvent>(collisionEventBufferEntity);
 			collisionEventBuffer.Clear();
 		}
 	}

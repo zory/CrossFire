@@ -3,6 +3,9 @@ using Unity.Entities;
 
 namespace CrossFire.Physics
 {
+	/// <summary>
+	/// Store previous frame state for interpolation / rollback / debug.
+	/// </summary>
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[BurstCompile]
 	public partial struct SnapshotSystem : ISystem
@@ -15,10 +18,9 @@ namespace CrossFire.Physics
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			// Include ShipTag in the query so only entities that also have ShipTag are iterated.
 			foreach (var (pose, prevPose) in SystemAPI.Query<RefRO<WorldPose>, RefRW<PrevWorldPose>>())
 			{
-				//This just applies ship current position to previous position before new update
+				//This just current position to previous position before new update
 				prevPose.ValueRW.Value = pose.ValueRO.Value;
 			}
 		}

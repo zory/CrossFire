@@ -5,7 +5,11 @@ using Unity.Transforms;
 
 namespace CrossFire.Physics
 {
+	/// <summary>
+	/// sync physics pose
+	/// </summary>
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[UpdateAfter(typeof(CollisionDetectionSystem))]
 	[UpdateBefore(typeof(TransformSystemGroup))]
 	[BurstCompile]
 	public partial struct PostPhysicsSystem : ISystem

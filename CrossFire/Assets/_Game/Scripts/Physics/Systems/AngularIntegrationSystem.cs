@@ -3,19 +3,28 @@ using Unity.Entities;
 
 namespace CrossFire.Physics
 {
+	/// <summary>
+	/// rotates stuff
+	/// </summary>
+	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[UpdateAfter(typeof(LinearDampingSystem))]
 	[BurstCompile]
 	public partial struct AngularIntegrationSystem : ISystem
 	{
 		[BurstCompile]
+		public void OnCreate(ref SystemState state)
+		{
+		}
+
+		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			float dt = SystemAPI.Time.DeltaTime;
+			float deltaTime = SystemAPI.Time.DeltaTime;
 
-			foreach (var (poseRW, angularVelRO) in
-					 SystemAPI.Query<RefRW<WorldPose>, RefRO<AngularVelocity>>())
+			foreach (var (poseRW, angularVelRO) in SystemAPI.Query<RefRW<WorldPose>, RefRO<AngularVelocity>>())
 			{
-				var pose = poseRW.ValueRO.Value;
-				pose.ThetaRad += angularVelRO.ValueRO.Value * dt;
+				Pose2D pose = poseRW.ValueRO.Value;
+				pose.ThetaRad += angularVelRO.ValueRO.Value * deltaTime;
 				poseRW.ValueRW.Value = pose;
 			}
 		}
