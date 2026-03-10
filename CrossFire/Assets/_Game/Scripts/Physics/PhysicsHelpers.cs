@@ -27,12 +27,16 @@ namespace CrossFire.Physics
 		}
 
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static float DistanceSquaredPointToSegment(float2 point, float2 a, float2 b)
+		public static float DistanceSquaredPointToSegment(float2 point, float2 segmentStart, float2 segmentEnd)
 		{
-			float2 ab = b - a;
-			float abLengthSquared = math.max(1e-12f, math.dot(ab, ab));
-			float t = math.clamp(math.dot(point - a, ab) / abLengthSquared, 0f, 1f);
-			float2 closestPoint = a + ab * t;
+			float2 segmentVector = segmentEnd - segmentStart;
+			float segmentLengthSquared = math.max(1e-12f, math.dot(segmentVector, segmentVector));
+			float projectionFactor = math.clamp(
+				math.dot(point - segmentStart, segmentVector) / segmentLengthSquared, 
+				0f, 
+				1f);
+
+			float2 closestPoint = segmentStart + segmentVector * projectionFactor;
 			float2 delta = point - closestPoint;
 			return math.dot(delta, delta);
 		}
@@ -48,7 +52,6 @@ namespace CrossFire.Physics
 			bool hasPositive = (s1 > 0f) || (s2 > 0f) || (s3 > 0f);
 
 			return !(hasNegative && hasPositive);
-
 		}
 
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]

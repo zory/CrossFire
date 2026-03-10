@@ -49,7 +49,7 @@ namespace CrossFire.Physics
 				ComponentType.ReadOnly<Collider2D>(),
 				ComponentType.ReadOnly<ConcaveTrianglesRef>());
 
-			using EntityQuery circleColliderQuery = entityManager.CreateEntityQuery(
+			using EntityQuery allColliderQuery = entityManager.CreateEntityQuery(
 				ComponentType.ReadOnly<WorldPose>(),
 				ComponentType.ReadOnly<CollisionLayer>(),
 				ComponentType.ReadOnly<CollisionMask>(),
@@ -63,40 +63,41 @@ namespace CrossFire.Physics
 			using NativeArray<ConcaveTrianglesRef> concaveTriangleRefs =
 				concaveColliderQuery.ToComponentDataArray<ConcaveTrianglesRef>(Allocator.Temp);
 
-			using NativeArray<Entity> circleEntities = circleColliderQuery.ToEntityArray(Allocator.Temp);
-			using NativeArray<WorldPose> circlePoses = circleColliderQuery.ToComponentDataArray<WorldPose>(Allocator.Temp);
-			using NativeArray<CollisionLayer> circleLayers = circleColliderQuery.ToComponentDataArray<CollisionLayer>(Allocator.Temp);
-			using NativeArray<CollisionMask> circleMasks = circleColliderQuery.ToComponentDataArray<CollisionMask>(Allocator.Temp);
-			using NativeArray<Collider2D> circleColliders = circleColliderQuery.ToComponentDataArray<Collider2D>(Allocator.Temp);
+			using NativeArray<Entity> allEntities = allColliderQuery.ToEntityArray(Allocator.Temp);
+			using NativeArray<WorldPose> allPoses = allColliderQuery.ToComponentDataArray<WorldPose>(Allocator.Temp);
+			using NativeArray<CollisionLayer> allLayers = allColliderQuery.ToComponentDataArray<CollisionLayer>(Allocator.Temp);
+			using NativeArray<CollisionMask> allMasks = allColliderQuery.ToComponentDataArray<CollisionMask>(Allocator.Temp);
+			using NativeArray<Collider2D> allColliders = allColliderQuery.ToComponentDataArray<Collider2D>(Allocator.Temp);
 
 			using NativeParallelMultiHashMap<int, int> concaveGrid =
 				new NativeParallelMultiHashMap<int, int>(math.max(1, concaveEntities.Length * 2), Allocator.Temp);
 
 			BuildConcaveGrid(
-				in concaveGrid,
+				concaveGrid,
 				concavePoses,
+				concaveColliders,
 				inverseCellSize);
 
-			DrawAllColliders(
+			DrawColliderShapes(
 				concavePoses,
 				concaveColliders,
 				concaveTriangleRefs,
-				circlePoses,
-				circleColliders);
+				allPoses,
+				allColliders);
 
 			DrawBroadphaseAndHitTriangles(
-				in concaveGrid,
+				concaveGrid,
 				inverseCellSize,
 				concavePoses,
 				concaveLayers,
 				concaveMasks,
 				concaveColliders,
 				concaveTriangleRefs,
-				circleEntities,
-				circlePoses,
-				circleLayers,
-				circleMasks,
-				circleColliders);
+				allEntities,
+				allPoses,
+				allLayers,
+				allMasks,
+				allColliders);
 		}
 
 		private static float GetInverseCellSize(EntityManager entityManager)
@@ -117,29 +118,58 @@ namespace CrossFire.Physics
 		private static void BuildConcaveGrid(
 			in NativeParallelMultiHashMap<int, int> concaveGrid,
 			in NativeArray<WorldPose> concavePoses,
+			in NativeArray<Collider2D> concaveColliders,
 			float inverseCellSize)
 		{
 			for (int concaveIndex = 0; concaveIndex < concavePoses.Length; concaveIndex++)
 			{
+				if (concaveColliders[concaveIndex].Type != Collider2DType.ConcaveTriangles)
+				{
+					continue;
+				}
+
 				float2 concavePositionWorld = concavePoses[concaveIndex].Value.Position;
 				int2 cell = (int2)math.floor(concavePositionWorld * inverseCellSize);
 				concaveGrid.Add(Hash(cell), concaveIndex);
 			}
 		}
 
-		private static void DrawAllColliders(
+		private static void DrawColliderShapes(
 			in NativeArray<WorldPose> concavePoses,
 			in NativeArray<Collider2D> concaveColliders,
 			in NativeArray<ConcaveTrianglesRef> concaveTriangleRefs,
-			in NativeArray<WorldPose> circlePoses,
-			in NativeArray<Collider2D> circleColliders)
+			in NativeArray<WorldPose> allPoses,
+			in NativeArray<Collider2D> allColliders)
 		{
-			for (int concaveIndex = 0; concaveIndex < concavePoses.Length; concaveIndex++)
+			for (int colliderIndex = 0; colliderIndex < allColliders.Length; colliderIndex++)
 			{
-				float2 positionWorld = concavePoses[concaveIndex].Value.Position;
-				float thetaRad = concavePoses[concaveIndex].Value.ThetaRad;
-				float boundRadius = math.max(0f, concaveColliders[concaveIndex].BoundRadius);
+				Collider2D collider = allColliders[colliderIndex];
+				float2 positionWorld = allPoses[colliderIndex].Value.Position;
 
+				if (collider.Type == Collider2DType.Circle)
+				{
+					float circleRadius = math.max(0f, collider.CircleRadius);
+
+					DrawCircle(
+						positionWorld,
+						circleRadius,
+						Color.cyan,
+						CollisionDebugSettings.CircleSegments,
+						CollisionDebugSettings.ZOffset);
+				}
+			}
+
+			for (int concaveIndex = 0; concaveIndex < concaveColliders.Length; concaveIndex++)
+			{
+				if (concaveColliders[concaveIndex].Type != Collider2DType.ConcaveTriangles)
+				{
+					continue;
+				}
+
+				float2 positionWorld = concavePoses[concaveIndex].Value.Position;
+				float rotationRadians = concavePoses[concaveIndex].Value.ThetaRad;
+
+				float boundRadius = math.max(0f, concaveColliders[concaveIndex].BoundRadius);
 				DrawCircle(
 					positionWorld,
 					boundRadius,
@@ -148,27 +178,16 @@ namespace CrossFire.Physics
 					CollisionDebugSettings.ZOffset);
 
 				BlobAssetReference<TriangleSoupBlob> triangleBlob = concaveTriangleRefs[concaveIndex].Value;
-				if (triangleBlob.IsCreated)
+				if (!triangleBlob.IsCreated)
 				{
-					DrawTriangleSoupWorld(
-						ref triangleBlob.Value.Vertices,
-						positionWorld,
-						thetaRad,
-						Color.green,
-						CollisionDebugSettings.ZOffset);
+					continue;
 				}
-			}
 
-			for (int circleIndex = 0; circleIndex < circlePoses.Length; circleIndex++)
-			{
-				float2 positionWorld = circlePoses[circleIndex].Value.Position;
-				float radius = GetCircleDebugRadius(circleColliders[circleIndex]);
-
-				DrawCircle(
+				DrawTriangleSoupWorld(
+					ref triangleBlob.Value.Vertices,
 					positionWorld,
-					radius,
-					Color.cyan,
-					CollisionDebugSettings.CircleSegments,
+					rotationRadians,
+					Color.green,
 					CollisionDebugSettings.ZOffset);
 			}
 		}
@@ -181,18 +200,24 @@ namespace CrossFire.Physics
 			in NativeArray<CollisionMask> concaveMasks,
 			in NativeArray<Collider2D> concaveColliders,
 			in NativeArray<ConcaveTrianglesRef> concaveTriangleRefs,
-			in NativeArray<Entity> circleEntities,
-			in NativeArray<WorldPose> circlePoses,
-			in NativeArray<CollisionLayer> circleLayers,
-			in NativeArray<CollisionMask> circleMasks,
-			in NativeArray<Collider2D> circleColliders)
+			in NativeArray<Entity> allEntities,
+			in NativeArray<WorldPose> allPoses,
+			in NativeArray<CollisionLayer> allLayers,
+			in NativeArray<CollisionMask> allMasks,
+			in NativeArray<Collider2D> allColliders)
 		{
-			for (int circleIndex = 0; circleIndex < circleEntities.Length; circleIndex++)
+			for (int colliderIndex = 0; colliderIndex < allEntities.Length; colliderIndex++)
 			{
-				float2 circleCenterWorld = circlePoses[circleIndex].Value.Position;
-				float circleRadius = GetCircleDebugRadius(circleColliders[circleIndex]);
-				CollisionLayer circleLayer = circleLayers[circleIndex];
-				CollisionMask circleMask = circleMasks[circleIndex];
+				Collider2D collider = allColliders[colliderIndex];
+				if (collider.Type != Collider2DType.Circle)
+				{
+					continue;
+				}
+
+				float2 circleCenterWorld = allPoses[colliderIndex].Value.Position;
+				float circleRadius = math.max(0f, collider.CircleRadius);
+				CollisionLayer circleLayer = allLayers[colliderIndex];
+				CollisionMask circleMask = allMasks[colliderIndex];
 
 				int2 baseCell = (int2)math.floor(circleCenterWorld * inverseCellSize);
 
@@ -206,14 +231,19 @@ namespace CrossFire.Physics
 						NativeParallelMultiHashMapIterator<int> iterator;
 						int concaveIndex;
 
-						bool found =
-							concaveGrid.TryGetFirstValue(
-								cellHash,
-								out concaveIndex,
-								out iterator);
+						bool found = concaveGrid.TryGetFirstValue(
+							cellHash,
+							out concaveIndex,
+							out iterator);
 
 						while (found)
 						{
+							if (concaveColliders[concaveIndex].Type != Collider2DType.ConcaveTriangles)
+							{
+								found = concaveGrid.TryGetNextValue(out concaveIndex, ref iterator);
+								continue;
+							}
+
 							if (!PhysicsUtilities.CanCollide(
 									circleLayer,
 									circleMask,
@@ -281,40 +311,29 @@ namespace CrossFire.Physics
 			}
 		}
 
-		private static float GetCircleDebugRadius(in Collider2D collider)
-		{
-			float radius = math.max(0f, collider.CircleRadius);
-			if (radius <= 0f)
-			{
-				radius = math.max(0f, collider.BoundRadius);
-			}
-
-			return radius;
-		}
-
 		private static bool TryFindHitTriangle(
 			float2 circleCenterWorld,
 			float circleRadius,
 			ref BlobArray<float2> trianglesLocal,
 			float2 shapePositionWorld,
-			float shapeRotationRad,
+			float shapeRotationRadians,
 			out int hitTriangleStartIndex)
 		{
 			hitTriangleStartIndex = -1;
 
-			float cosine = math.cos(shapeRotationRad);
-			float sine = math.sin(shapeRotationRad);
-			float radiusSquared = circleRadius * circleRadius;
+			float rotationCosine = math.cos(shapeRotationRadians);
+			float rotationSine = math.sin(shapeRotationRadians);
+			float circleRadiusSquared = circleRadius * circleRadius;
 
 			for (int triangleStartIndex = 0;
 				 triangleStartIndex + 2 < trianglesLocal.Length;
 				 triangleStartIndex += 3)
 			{
-				float2 a = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 0], cosine, sine) + shapePositionWorld;
-				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], cosine, sine) + shapePositionWorld;
-				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], cosine, sine) + shapePositionWorld;
+				float2 a = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 0], rotationCosine, rotationSine) + shapePositionWorld;
+				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], rotationCosine, rotationSine) + shapePositionWorld;
+				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], rotationCosine, rotationSine) + shapePositionWorld;
 
-				if (CircleIntersectsTriangleWorld(circleCenterWorld, radiusSquared, a, b, c))
+				if (CircleIntersectsTriangleWorld(circleCenterWorld, circleRadiusSquared, a, b, c))
 				{
 					hitTriangleStartIndex = triangleStartIndex;
 					return true;
@@ -327,20 +346,20 @@ namespace CrossFire.Physics
 		private static void DrawTriangleSoupWorld(
 			ref BlobArray<float2> trianglesLocal,
 			float2 positionWorld,
-			float rotationRad,
+			float rotationRadians,
 			Color color,
 			float z)
 		{
-			float cosine = math.cos(rotationRad);
-			float sine = math.sin(rotationRad);
+			float rotationCosine = math.cos(rotationRadians);
+			float rotationSine = math.sin(rotationRadians);
 
 			for (int triangleStartIndex = 0;
 				 triangleStartIndex + 2 < trianglesLocal.Length;
 				 triangleStartIndex += 3)
 			{
-				float2 a = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 0], cosine, sine) + positionWorld;
-				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], cosine, sine) + positionWorld;
-				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], cosine, sine) + positionWorld;
+				float2 a = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 0], rotationCosine, rotationSine) + positionWorld;
+				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], rotationCosine, rotationSine) + positionWorld;
+				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], rotationCosine, rotationSine) + positionWorld;
 
 				Debug.DrawLine(ToV3(a, z), ToV3(b, z), color);
 				Debug.DrawLine(ToV3(b, z), ToV3(c, z), color);
@@ -352,7 +371,7 @@ namespace CrossFire.Physics
 			ref BlobArray<float2> trianglesLocal,
 			int startIndex,
 			float2 positionWorld,
-			float rotationRad,
+			float rotationRadians,
 			Color color,
 			float z)
 		{
@@ -361,12 +380,12 @@ namespace CrossFire.Physics
 				return;
 			}
 
-			float cosine = math.cos(rotationRad);
-			float sine = math.sin(rotationRad);
+			float rotationCosine = math.cos(rotationRadians);
+			float rotationSine = math.sin(rotationRadians);
 
-			float2 a = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 0], cosine, sine) + positionWorld;
-			float2 b = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 1], cosine, sine) + positionWorld;
-			float2 c = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 2], cosine, sine) + positionWorld;
+			float2 a = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 0], rotationCosine, rotationSine) + positionWorld;
+			float2 b = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 1], rotationCosine, rotationSine) + positionWorld;
+			float2 c = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 2], rotationCosine, rotationSine) + positionWorld;
 
 			Debug.DrawLine(ToV3(a, z), ToV3(b, z), color);
 			Debug.DrawLine(ToV3(b, z), ToV3(c, z), color);
@@ -393,23 +412,25 @@ namespace CrossFire.Physics
 			}
 		}
 
-		private static bool CircleIntersectsTriangleWorld(float2 point, float radiusSquared, float2 a, float2 b, float2 c)
+
+		private static bool CircleIntersectsTriangleWorld(
+			float2 circleCenterWorld,
+			float circleRadiusSquared,
+			float2 a,
+			float2 b,
+			float2 c)
 		{
-			if (PhysicsUtilities.PointInTriangle(point, a, b, c))
+			if (PhysicsUtilities.PointInTriangle(circleCenterWorld, a, b, c))
 			{
 				return true;
 			}
 
-			if (PhysicsUtilities.DistanceSquaredPointToSegment(point, a, b) <= radiusSquared) return true;
-			if (PhysicsUtilities.DistanceSquaredPointToSegment(point, b, c) <= radiusSquared) return true;
-			if (PhysicsUtilities.DistanceSquaredPointToSegment(point, c, a) <= radiusSquared) return true;
+			if (PhysicsUtilities.DistanceSquaredPointToSegment(circleCenterWorld, a, b) <= circleRadiusSquared) return true;
+			if (PhysicsUtilities.DistanceSquaredPointToSegment(circleCenterWorld, b, c) <= circleRadiusSquared) return true;
+			if (PhysicsUtilities.DistanceSquaredPointToSegment(circleCenterWorld, c, a) <= circleRadiusSquared) return true;
 
 			return false;
 		}
-
-
-
-
 
 		private static Vector3 ToV3(float2 point, float z)
 		{
