@@ -27,8 +27,7 @@ namespace CrossFire.Physics
 
 			EntityManager entityManager = state.EntityManager;
 
-			using EntityQuery gridQuery =
-				entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>());
+			using EntityQuery gridQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>());
 
 			if (gridQuery.IsEmptyIgnoreFilter)
 			{
@@ -65,17 +64,15 @@ namespace CrossFire.Physics
 			using NativeArray<CollisionLayer> concaveLayers = concaveColliderQuery.ToComponentDataArray<CollisionLayer>(Allocator.Temp);
 			using NativeArray<CollisionMask> concaveMasks = concaveColliderQuery.ToComponentDataArray<CollisionMask>(Allocator.Temp);
 			using NativeArray<Collider2D> concaveColliders = concaveColliderQuery.ToComponentDataArray<Collider2D>(Allocator.Temp);
-			using NativeArray<ConcaveTrianglesRef> concaveTriangleRefs =
-				concaveColliderQuery.ToComponentDataArray<ConcaveTrianglesRef>(Allocator.Temp);
-
+			using NativeArray<ConcaveTrianglesRef> concaveTriangleRefs = concaveColliderQuery.ToComponentDataArray<ConcaveTrianglesRef>(Allocator.Temp);
 			using NativeArray<Entity> allEntities = allColliderQuery.ToEntityArray(Allocator.Temp);
+
 			using NativeArray<WorldPose> allPoses = allColliderQuery.ToComponentDataArray<WorldPose>(Allocator.Temp);
 			using NativeArray<CollisionLayer> allLayers = allColliderQuery.ToComponentDataArray<CollisionLayer>(Allocator.Temp);
 			using NativeArray<CollisionMask> allMasks = allColliderQuery.ToComponentDataArray<CollisionMask>(Allocator.Temp);
 			using NativeArray<Collider2D> allColliders = allColliderQuery.ToComponentDataArray<Collider2D>(Allocator.Temp);
 
-			using NativeParallelMultiHashMap<int, int> concaveGrid =
-				new NativeParallelMultiHashMap<int, int>(math.max(1, concaveEntities.Length * 2), Allocator.Temp);
+			using NativeParallelMultiHashMap<int, int> concaveGrid = new NativeParallelMultiHashMap<int, int>(math.max(1, concaveEntities.Length * 2), Allocator.Temp);
 
 			BuildConcaveGrid(
 				concaveGrid,
@@ -107,8 +104,7 @@ namespace CrossFire.Physics
 
 		private static float GetCellSize(EntityManager entityManager)
 		{
-			using EntityQuery gridQuery =
-				entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>());
+			using EntityQuery gridQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>());
 
 			if (gridQuery.IsEmptyIgnoreFilter)
 			{
@@ -298,8 +294,8 @@ namespace CrossFire.Physics
 							if (CollisionDebugSettings.DrawBroadphase && broadphasePass)
 							{
 								Debug.DrawLine(
-									ToVector3(circleCenterWorld, CollisionDebugSettings.ZOffset),
-									ToVector3(concavePositionWorld, CollisionDebugSettings.ZOffset),
+									PhysicsUtilities.ToFloat3(circleCenterWorld, CollisionDebugSettings.ZOffset),
+									PhysicsUtilities.ToFloat3(concavePositionWorld, CollisionDebugSettings.ZOffset),
 									CollisionDebugSettings.BroadphaseLinkColor);
 							}
 
@@ -367,7 +363,7 @@ namespace CrossFire.Physics
 				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], rotationCosine, rotationSine) + shapePositionWorld;
 				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], rotationCosine, rotationSine) + shapePositionWorld;
 
-				if (PhysicsUtilities.CircleIntersectsTriangleWorld(circleCenterWorld, circleRadiusSquared, a, b, c))
+				if (GeometryUtilities.CircleIntersectsTriangleWorld(circleCenterWorld, circleRadiusSquared, a, b, c))
 				{
 					hitTriangleStartIndex = triangleStartIndex;
 					return true;
@@ -384,21 +380,16 @@ namespace CrossFire.Physics
 			Color color,
 			float z)
 		{
-			float rotationCosine = math.cos(rotationRadians);
-			float rotationSine = math.sin(rotationRadians);
-
-			for (int triangleStartIndex = 0;
-				 triangleStartIndex + 2 < trianglesLocal.Length;
-				 triangleStartIndex += 3)
-			{
-				float2 a = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 0], rotationCosine, rotationSine) + positionWorld;
-				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], rotationCosine, rotationSine) + positionWorld;
-				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], rotationCosine, rotationSine) + positionWorld;
-
-				Debug.DrawLine(ToVector3(a, z), ToVector3(b, z), color);
-				Debug.DrawLine(ToVector3(b, z), ToVector3(c, z), color);
-				Debug.DrawLine(ToVector3(c, z), ToVector3(a, z), color);
-			}
+			GeometryUtilities.ForEachTriangleSoupEdgeWorld(
+				ref trianglesLocal,
+				positionWorld,
+				rotationRadians,
+				(a, b) => Debug.DrawLine(
+					PhysicsUtilities.ToFloat3(a, z),
+					PhysicsUtilities.ToFloat3(b, z),
+					color
+				)
+			);
 		}
 
 		private static void DrawSingleTriangleWorld(
@@ -409,46 +400,31 @@ namespace CrossFire.Physics
 			Color color,
 			float z)
 		{
-			if (startIndex < 0 || startIndex + 2 >= trianglesLocal.Length)
-			{
-				return;
-			}
-
-			float rotationCosine = math.cos(rotationRadians);
-			float rotationSine = math.sin(rotationRadians);
-
-			float2 a = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 0], rotationCosine, rotationSine) + positionWorld;
-			float2 b = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 1], rotationCosine, rotationSine) + positionWorld;
-			float2 c = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 2], rotationCosine, rotationSine) + positionWorld;
-
-			Debug.DrawLine(ToVector3(a, z), ToVector3(b, z), color);
-			Debug.DrawLine(ToVector3(b, z), ToVector3(c, z), color);
-			Debug.DrawLine(ToVector3(c, z), ToVector3(a, z), color);
+			GeometryUtilities.ForSingleTriangleEdgeWorld(
+				ref trianglesLocal,
+				startIndex,
+				positionWorld,
+				rotationRadians,
+				(a, b) => Debug.DrawLine(
+					PhysicsUtilities.ToFloat3(a, z),
+					PhysicsUtilities.ToFloat3(b, z),
+					color
+				)
+			);
 		}
 
 		private static void DrawCircle(float2 center, float radius, Color color, int segments, float z)
 		{
-			if (radius <= 0f || segments < 3)
-			{
-				return;
-			}
-
-			float step = math.PI * 2f / segments;
-			float2 previousPoint = center + new float2(math.cos(0f), math.sin(0f)) * radius;
-
-			for (int index = 1; index <= segments; index++)
-			{
-				float angle = index * step;
-				float2 nextPoint = center + new float2(math.cos(angle), math.sin(angle)) * radius;
-
-				Debug.DrawLine(ToVector3(previousPoint, z), ToVector3(nextPoint, z), color);
-				previousPoint = nextPoint;
-			}
-		}
-
-		private static Vector3 ToVector3(float2 point, float z)
-		{
-			return new Vector3(point.x, point.y, z);
+			GeometryUtilities.ForEachCircleSegment(
+				center,
+				radius,
+				segments,
+				(a, b) => Debug.DrawLine(
+					PhysicsUtilities.ToFloat3(a, z),
+					PhysicsUtilities.ToFloat3(b, z),
+					color
+				)
+			);
 		}
 
 		private static int Hash(int2 cell)

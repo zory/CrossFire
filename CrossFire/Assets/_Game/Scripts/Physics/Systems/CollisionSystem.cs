@@ -240,7 +240,7 @@ namespace CrossFire.Physics
 										if (broadPhasePassed)
 										{
 											bool narrowPhasePassed =
-												Narrowphase2D.Intersects(
+												GeometryUtilities.Intersects(
 													colliders[firstColliderIndex],
 													colliderWorldPoses[firstColliderIndex],
 													colliderTriangleReferences[firstColliderIndex],

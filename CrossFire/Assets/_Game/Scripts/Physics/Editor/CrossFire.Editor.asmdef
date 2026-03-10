@@ -2,6 +2,7 @@
     "name": "CrossFire.Editor",
     "rootNamespace": "",
     "references": [
+        "GUID:d8b63aba1907145bea998dd612889d6b",
         "GUID:9929d5f5782412441a025d92d14fd89f"
     ],
     "includePlatforms": [
