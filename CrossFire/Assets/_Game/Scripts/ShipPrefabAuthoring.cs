@@ -39,7 +39,6 @@ namespace CrossFire.Ships
 				AddComponent<Targetable>(prefabEntity);
 				AddComponent<WeaponConfig>(prefabEntity, new WeaponConfig() { BulletLifetime = authoring.BulletLifetime, BulletSpeed = authoring.BulletSpeed, FireInterval = authoring.FireInterval, MuzzleOffset = authoring.MuzzleOffset });
 				AddComponent<WeaponCooldown>(prefabEntity);
-				AddComponent<BulletTargetTag>(prefabEntity);
 				AddComponent<CollisionLayer>(prefabEntity, new CollisionLayer() { Value = 1 });
 				AddComponent<CollisionMask>(prefabEntity, new CollisionMask() { Value = (1 << 0) | (1 << 1) });
 			}

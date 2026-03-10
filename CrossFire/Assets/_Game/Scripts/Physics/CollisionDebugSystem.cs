@@ -5,67 +5,59 @@ using UnityEngine;
 
 namespace CrossFire.Physics
 {
-	public class CollisionDebugDrawer : MonoBehaviour
+	//For now only draws hardcoded bullets vs targets
+	[UpdateInGroup(typeof(PresentationSystemGroup))]
+	public partial struct CollisionDebugSystem : ISystem
 	{
-		[Header("Enable")]
-		public bool DrawBullets = true;
-		public bool DrawTargets = true;
-		public bool DrawBroadphase = true;
-		public bool DrawHitTriangles = true;
-
-		[Header("Colors")]
-		public Color BulletColor = Color.cyan;
-		public Color TargetBoundColor = Color.yellow;
-		public Color TriangleColor = Color.green;
-		public Color BroadphaseColor = new Color(1f, 0.5f, 0f, 1f);
-		public Color HitTriangleColor = Color.red;
-
-		[Header("Sizes")]
-		public int CircleSegments = 24;
-		public float ZOffset = 0f;
-
-		[Header("Grid")]
-		public bool UseGridLikeCollisionSystem = true;
-
-		private void Update()
+		public void OnUpdate(ref SystemState state)
 		{
-			var world = World.DefaultGameObjectInjectionWorld;
-			if (world == null || !world.IsCreated)
-				return;
-
-			var em = world.EntityManager;
-
-			if (!em.CreateEntityQuery(typeof(CollisionGridSettings)).IsEmptyIgnoreFilter)
+#if !UNITY_EDITOR
+			return;
+#else
+			if (!Application.isPlaying)
 			{
-				DrawCollisionDebug(em);
+				return;
 			}
+
+			if (!CollisionDebugSettings.Enabled)
+			{
+				return;
+			}
+
+			EntityManager entityManager = state.EntityManager;
+
+			using var gridQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>());
+			if (gridQuery.IsEmptyIgnoreFilter)
+			{
+				return;
+			}
+
+			DrawCollisionDebug(entityManager);
+#endif
 		}
 
-		private void DrawCollisionDebug(EntityManager em)
+		private static void DrawCollisionDebug(EntityManager entityManager)
 		{
-			float cellSize = 1f;
 			float invCell = 1f;
 
-			using (var gridQuery = em.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>()))
+			using (var gridQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>()))
 			{
 				if (!gridQuery.IsEmptyIgnoreFilter)
 				{
-					var g = gridQuery.GetSingleton<CollisionGridSettings>();
-					cellSize = math.max(0.0001f, g.CellSize);
+					CollisionGridSettings collisionGridSettings = gridQuery.GetSingleton<CollisionGridSettings>();
+					float cellSize = math.max(0.0001f, collisionGridSettings.CellSize);
 					invCell = 1f / cellSize;
 				}
 			}
 
-			using var targetQuery = em.CreateEntityQuery(
-				ComponentType.ReadOnly<BulletTargetTag>(),
+			using var targetQuery = entityManager.CreateEntityQuery(
 				ComponentType.ReadOnly<WorldPose>(),
 				ComponentType.ReadOnly<CollisionLayer>(),
 				ComponentType.ReadOnly<CollisionMask>(),
 				ComponentType.ReadOnly<Collider2D>(),
 				ComponentType.ReadOnly<ConcaveTrianglesRef>());
 
-			using var bulletQuery = em.CreateEntityQuery(
-				ComponentType.ReadOnly<BulletTag>(),
+			using var bulletQuery = entityManager.CreateEntityQuery(
 				ComponentType.ReadOnly<WorldPose>(),
 				ComponentType.ReadOnly<CollisionLayer>(),
 				ComponentType.ReadOnly<CollisionMask>(),
@@ -93,39 +85,33 @@ namespace CrossFire.Physics
 				grid.Add(Hash(cell), i);
 			}
 
-			if (DrawTargets)
+			for (int i = 0; i < tEntities.Length; i++)
 			{
-				for (int i = 0; i < tEntities.Length; i++)
+				float2 tp = tPoses[i].Value.Position;
+				float tr = math.max(0f, tColliders[i].BoundRadius);
+
+				DrawCircle(tp, tr, Color.yellow, CollisionDebugSettings.CircleSegments, CollisionDebugSettings.ZOffset);
+
+				var triRef = tTriRefs[i].Value;
+				if (triRef.IsCreated)
 				{
-					float2 tp = tPoses[i].Value.Position;
-					float tr = math.max(0f, tColliders[i].BoundRadius);
-
-					DrawCircle(tp, tr, TargetBoundColor, CircleSegments, ZOffset);
-
-					var triRef = tTriRefs[i].Value;
-					if (triRef.IsCreated)
-					{
-						DrawTriangleSoupWorld(
-							ref triRef.Value.Vertices,
-							tp,
-							tPoses[i].Value.Theta,
-							TriangleColor,
-							ZOffset);
-					}
+					DrawTriangleSoupWorld(
+						ref triRef.Value.Vertices,
+						tp,
+						tPoses[i].Value.Theta,
+						Color.green,
+						CollisionDebugSettings.ZOffset);
 				}
 			}
 
-			if (DrawBullets)
+			for (int i = 0; i < bEntities.Length; i++)
 			{
-				for (int i = 0; i < bEntities.Length; i++)
-				{
-					float2 bp = bPoses[i].Value.Position;
-					float br = math.max(0f, bColliders[i].CircleRadius);
-					if (br <= 0f)
-						br = math.max(0f, bColliders[i].BoundRadius);
+				float2 bp = bPoses[i].Value.Position;
+				float br = math.max(0f, bColliders[i].CircleRadius);
+				if (br <= 0f)
+					br = math.max(0f, bColliders[i].BoundRadius);
 
-					DrawCircle(bp, br, BulletColor, CircleSegments, ZOffset);
-				}
+				DrawCircle(bp, br, Color.cyan, CollisionDebugSettings.CircleSegments, CollisionDebugSettings.ZOffset);
 			}
 
 			for (int bi = 0; bi < bEntities.Length; bi++)
@@ -161,9 +147,12 @@ namespace CrossFire.Physics
 							float rr = tr + br;
 							bool broadphasePass = math.dot(d, d) <= rr * rr;
 
-							if (DrawBroadphase && broadphasePass)
+							if (CollisionDebugSettings.DrawBroadphase && broadphasePass)
 							{
-								Debug.DrawLine(ToV3(bp, ZOffset), ToV3(tp, ZOffset), BroadphaseColor);
+								Debug.DrawLine(
+									ToV3(bp, CollisionDebugSettings.ZOffset),
+									ToV3(tp, CollisionDebugSettings.ZOffset),
+									new Color(1f, 0.5f, 0f, 1f));
 							}
 
 							if (!broadphasePass)
@@ -173,29 +162,24 @@ namespace CrossFire.Physics
 							if (!triRef.IsCreated)
 								continue;
 
-							bool hit = false;
-							int hitTriIndex = -1;
-
-							if (TryFindHitTriangle(
+							int hitTriIndex;
+							bool hit = TryFindHitTriangle(
 								bp,
 								br,
 								ref triRef.Value.Vertices,
 								tp,
 								tPoses[ti].Value.Theta,
-								out hitTriIndex))
-							{
-								hit = true;
-							}
+								out hitTriIndex);
 
-							if (hit && DrawHitTriangles && hitTriIndex >= 0)
+							if (hit && CollisionDebugSettings.DrawHitTriangles && hitTriIndex >= 0)
 							{
 								DrawSingleTriangleWorld(
 									ref triRef.Value.Vertices,
 									hitTriIndex,
 									tp,
 									tPoses[ti].Value.Theta,
-									HitTriangleColor,
-									ZOffset);
+									Color.red,
+									CollisionDebugSettings.ZOffset);
 							}
 						}
 					}

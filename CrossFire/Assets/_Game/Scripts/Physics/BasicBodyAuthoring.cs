@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace CrossFire.Physics
 
 				AddComponent<PrevWorldPose>(prefabEntity);
 				AddComponent<WorldPose>(prefabEntity);
-				AddComponent<LocalTransform>(prefabEntity);
+				AddComponent<LocalTransform>(prefabEntity, LocalTransform.Identity);
 			}
 		}
 	}

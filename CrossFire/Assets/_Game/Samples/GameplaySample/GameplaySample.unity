@@ -472,7 +472,7 @@ MonoBehaviour:
   ListenForSelectableWithMouse: 1
   PickRadius: 0.5
   ShipControl: 1
-  CreateBattleGround: 0
+  CreateBattleGround: 1
 --- !u!4 &2010885622
 Transform:
   m_ObjectHideFlags: 0

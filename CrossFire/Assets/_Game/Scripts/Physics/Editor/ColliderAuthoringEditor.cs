@@ -1,6 +1,4 @@
-using CrossFire;
 using UnityEditor;
-using UnityEngine;
 
 namespace CrossFire.Physics
 {

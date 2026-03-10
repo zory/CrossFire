@@ -377,7 +377,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1480912566
+--- !u!1 &1351810020
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -385,38 +385,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1480912568}
-  - component: {fileID: 1480912567}
+  - component: {fileID: 1351810021}
   m_Layer: 0
-  m_Name: SampleScript
+  m_Name: ---
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1480912567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1480912566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5de0f2f5bec669041b961bedae9769c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShipCount: 20
---- !u!4 &1480912568
+--- !u!4 &1351810021
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1480912566}
+  m_GameObject: {fileID: 1351810020}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.5642875, y: 2.4825032, z: 0.034232672}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -484,7 +470,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1996032962}
-  - component: {fileID: 1996032961}
+  - component: {fileID: 1996032963}
   m_Layer: 0
   m_Name: CollisionDebugger
   m_TagString: Untagged
@@ -492,30 +478,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1996032961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1996032960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51fc9e7c6b3a0034f9cc3036342adbbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DrawBullets: 1
-  DrawTargets: 1
-  DrawBroadphase: 1
-  DrawHitTriangles: 1
-  BulletColor: {r: 0, g: 1, b: 1, a: 1}
-  TargetBoundColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  TriangleColor: {r: 0, g: 1, b: 0, a: 1}
-  BroadphaseColor: {r: 1, g: 0.5, b: 0, a: 1}
-  HitTriangleColor: {r: 1, g: 0, b: 0, a: 1}
-  CircleSegments: 24
-  ZOffset: 0
-  UseGridLikeCollisionSystem: 1
 --- !u!4 &1996032962
 Transform:
   m_ObjectHideFlags: 0
@@ -531,12 +493,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1996032963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996032960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5de0f2f5bec669041b961bedae9769c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShipCount: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 961739753}
   - {fileID: 203844589}
-  - {fileID: 1480912568}
+  - {fileID: 1351810021}
   - {fileID: 1996032962}
   - {fileID: 1961170322}

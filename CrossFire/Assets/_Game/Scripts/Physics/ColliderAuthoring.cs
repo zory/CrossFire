@@ -6,21 +6,16 @@ using UnityEngine;
 
 namespace CrossFire.Physics
 {
-	public enum Collider2DType : byte
-	{
-		Circle = 0,
-		ConcaveTriangles = 1
-	}
-
 	public class ColliderAuthoring : MonoBehaviour
 	{
 		public Collider2DType ColliderType = Collider2DType.ConcaveTriangles;
 
+		//This is only for concave triangles collider
 		public bool AutoCalculateBoundRadius = true;
-
 		[Min(0f)]
 		public float ColliderBoundRadius = 1f;
 
+		//This is only for circle collider
 		[Min(0f)]
 		public float ColliderCircleRadius = 0.5f;
 
