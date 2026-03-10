@@ -16,7 +16,7 @@ namespace CrossFire.Physics
 
 			if (authoring.DrawBoundRadius && authoring.ColliderBoundRadius > 0f)
 			{
-				Handles.color = new Color(1f, 1f, 0f, 0.95f);
+				Handles.color = CollisionDebugSettings.BoundRadiusColor;
 				Handles.DrawWireDisc(Vector3.zero, Vector3.forward, authoring.ColliderBoundRadius);
 			}
 
@@ -24,7 +24,7 @@ namespace CrossFire.Physics
 			{
 				if (authoring.DrawCircleRadius && authoring.ColliderCircleRadius > 0f)
 				{
-					Handles.color = new Color(0f, 1f, 1f, 0.95f);
+					Handles.color = CollisionDebugSettings.CircleShapeColor;
 					Handles.DrawWireDisc(Vector3.zero, Vector3.forward, authoring.ColliderCircleRadius);
 				}
 			}
@@ -34,7 +34,7 @@ namespace CrossFire.Physics
 				{
 					if (authoring.DrawOutline)
 					{
-						Handles.color = new Color(0f, 1f, 0f, 0.95f);
+						Handles.color = CollisionDebugSettings.ConcaveShapeColor;
 
 						for (int i = 0; i < authoring.OutlineVertices.Length; i++)
 						{
@@ -48,7 +48,7 @@ namespace CrossFire.Physics
 					{
 						List<Vector2> tris = Triangulate(authoring.OutlineVertices);
 
-						Handles.color = new Color(0f, 0.7f, 1f, 0.8f);
+						Handles.color = CollisionDebugSettings.TrianglesPreviewColor;
 						for (int i = 0; i + 2 < tris.Count; i += 3)
 						{
 							Vector3 a = tris[i + 0];

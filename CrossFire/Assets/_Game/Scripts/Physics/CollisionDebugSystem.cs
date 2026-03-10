@@ -153,7 +153,7 @@ namespace CrossFire.Physics
 					DrawCircle(
 						positionWorld,
 						circleRadius,
-						Color.cyan,
+						CollisionDebugSettings.CircleShapeColor,
 						CollisionDebugSettings.CircleSegments,
 						CollisionDebugSettings.ZOffset);
 				}
@@ -173,7 +173,7 @@ namespace CrossFire.Physics
 				DrawCircle(
 					positionWorld,
 					boundRadius,
-					Color.yellow,
+					CollisionDebugSettings.BoundRadiusColor,
 					CollisionDebugSettings.CircleSegments,
 					CollisionDebugSettings.ZOffset);
 
@@ -187,7 +187,7 @@ namespace CrossFire.Physics
 					ref triangleBlob.Value.Vertices,
 					positionWorld,
 					rotationRadians,
-					Color.green,
+					CollisionDebugSettings.ConcaveShapeColor,
 					CollisionDebugSettings.ZOffset);
 			}
 		}
@@ -266,7 +266,7 @@ namespace CrossFire.Physics
 								Debug.DrawLine(
 									ToV3(circleCenterWorld, CollisionDebugSettings.ZOffset),
 									ToV3(concavePositionWorld, CollisionDebugSettings.ZOffset),
-									new Color(1f, 0.5f, 0f, 1f));
+									CollisionDebugSettings.BroadphaseLinkColor);
 							}
 
 							if (!broadphasePass)
@@ -300,7 +300,7 @@ namespace CrossFire.Physics
 									hitTriangleStartIndex,
 									concavePositionWorld,
 									concavePoses[concaveIndex].Value.ThetaRad,
-									Color.red,
+									CollisionDebugSettings.HitTriangleColor,
 									CollisionDebugSettings.ZOffset);
 							}
 
