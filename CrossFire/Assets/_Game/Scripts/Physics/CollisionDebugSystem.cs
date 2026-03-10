@@ -8,6 +8,8 @@ namespace CrossFire.Physics
 	[UpdateInGroup(typeof(PresentationSystemGroup))]
 	public partial struct CollisionDebugSystem : ISystem
 	{
+		private const float WorldGridHalfExtent = 100f;
+
 		public void OnUpdate(ref SystemState state)
 		{
 #if !UNITY_EDITOR
@@ -40,7 +42,10 @@ namespace CrossFire.Physics
 #if UNITY_EDITOR
 		private static void DrawCollisionDebug(EntityManager entityManager)
 		{
-			float inverseCellSize = GetInverseCellSize(entityManager);
+			float cellSize = GetCellSize(entityManager);
+			float inverseCellSize = 1f / cellSize;
+
+			DrawWorldGrid(cellSize);
 
 			using EntityQuery concaveColliderQuery = entityManager.CreateEntityQuery(
 				ComponentType.ReadOnly<WorldPose>(),
@@ -78,7 +83,7 @@ namespace CrossFire.Physics
 				concaveColliders,
 				inverseCellSize);
 
-			DrawColliderShapes(
+			DrawColliderVisuals(
 				concavePoses,
 				concaveColliders,
 				concaveTriangleRefs,
@@ -100,7 +105,7 @@ namespace CrossFire.Physics
 				allColliders);
 		}
 
-		private static float GetInverseCellSize(EntityManager entityManager)
+		private static float GetCellSize(EntityManager entityManager)
 		{
 			using EntityQuery gridQuery =
 				entityManager.CreateEntityQuery(ComponentType.ReadOnly<CollisionGridSettings>());
@@ -111,8 +116,37 @@ namespace CrossFire.Physics
 			}
 
 			CollisionGridSettings collisionGridSettings = gridQuery.GetSingleton<CollisionGridSettings>();
-			float cellSize = math.max(0.0001f, collisionGridSettings.CellSize);
-			return 1f / cellSize;
+			return math.max(0.0001f, collisionGridSettings.CellSize);
+		}
+
+		private static void DrawWorldGrid(float cellSize)
+		{
+			int halfCellCount = math.max(1, (int)math.ceil(WorldGridHalfExtent / cellSize));
+			float minWorld = -halfCellCount * cellSize;
+			float maxWorld = halfCellCount * cellSize;
+
+			Color color = CollisionDebugSettings.GridCellColor;
+			float z = CollisionDebugSettings.ZOffset;
+
+			for (int x = -halfCellCount; x <= halfCellCount; x++)
+			{
+				float xWorld = x * cellSize;
+
+				Debug.DrawLine(
+					new Vector3(xWorld, minWorld, z),
+					new Vector3(xWorld, maxWorld, z),
+					color);
+			}
+
+			for (int y = -halfCellCount; y <= halfCellCount; y++)
+			{
+				float yWorld = y * cellSize;
+
+				Debug.DrawLine(
+					new Vector3(minWorld, yWorld, z),
+					new Vector3(maxWorld, yWorld, z),
+					color);
+			}
 		}
 
 		private static void BuildConcaveGrid(
@@ -134,7 +168,7 @@ namespace CrossFire.Physics
 			}
 		}
 
-		private static void DrawColliderShapes(
+		private static void DrawColliderVisuals(
 			in NativeArray<WorldPose> concavePoses,
 			in NativeArray<Collider2D> concaveColliders,
 			in NativeArray<ConcaveTrianglesRef> concaveTriangleRefs,
@@ -264,8 +298,8 @@ namespace CrossFire.Physics
 							if (CollisionDebugSettings.DrawBroadphase && broadphasePass)
 							{
 								Debug.DrawLine(
-									ToV3(circleCenterWorld, CollisionDebugSettings.ZOffset),
-									ToV3(concavePositionWorld, CollisionDebugSettings.ZOffset),
+									ToVector3(circleCenterWorld, CollisionDebugSettings.ZOffset),
+									ToVector3(concavePositionWorld, CollisionDebugSettings.ZOffset),
 									CollisionDebugSettings.BroadphaseLinkColor);
 							}
 
@@ -333,7 +367,7 @@ namespace CrossFire.Physics
 				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], rotationCosine, rotationSine) + shapePositionWorld;
 				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], rotationCosine, rotationSine) + shapePositionWorld;
 
-				if (CircleIntersectsTriangleWorld(circleCenterWorld, circleRadiusSquared, a, b, c))
+				if (PhysicsUtilities.CircleIntersectsTriangleWorld(circleCenterWorld, circleRadiusSquared, a, b, c))
 				{
 					hitTriangleStartIndex = triangleStartIndex;
 					return true;
@@ -361,9 +395,9 @@ namespace CrossFire.Physics
 				float2 b = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 1], rotationCosine, rotationSine) + positionWorld;
 				float2 c = PhysicsUtilities.Rotate(trianglesLocal[triangleStartIndex + 2], rotationCosine, rotationSine) + positionWorld;
 
-				Debug.DrawLine(ToV3(a, z), ToV3(b, z), color);
-				Debug.DrawLine(ToV3(b, z), ToV3(c, z), color);
-				Debug.DrawLine(ToV3(c, z), ToV3(a, z), color);
+				Debug.DrawLine(ToVector3(a, z), ToVector3(b, z), color);
+				Debug.DrawLine(ToVector3(b, z), ToVector3(c, z), color);
+				Debug.DrawLine(ToVector3(c, z), ToVector3(a, z), color);
 			}
 		}
 
@@ -387,9 +421,9 @@ namespace CrossFire.Physics
 			float2 b = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 1], rotationCosine, rotationSine) + positionWorld;
 			float2 c = PhysicsUtilities.Rotate(trianglesLocal[startIndex + 2], rotationCosine, rotationSine) + positionWorld;
 
-			Debug.DrawLine(ToV3(a, z), ToV3(b, z), color);
-			Debug.DrawLine(ToV3(b, z), ToV3(c, z), color);
-			Debug.DrawLine(ToV3(c, z), ToV3(a, z), color);
+			Debug.DrawLine(ToVector3(a, z), ToVector3(b, z), color);
+			Debug.DrawLine(ToVector3(b, z), ToVector3(c, z), color);
+			Debug.DrawLine(ToVector3(c, z), ToVector3(a, z), color);
 		}
 
 		private static void DrawCircle(float2 center, float radius, Color color, int segments, float z)
@@ -407,32 +441,12 @@ namespace CrossFire.Physics
 				float angle = index * step;
 				float2 nextPoint = center + new float2(math.cos(angle), math.sin(angle)) * radius;
 
-				Debug.DrawLine(ToV3(previousPoint, z), ToV3(nextPoint, z), color);
+				Debug.DrawLine(ToVector3(previousPoint, z), ToVector3(nextPoint, z), color);
 				previousPoint = nextPoint;
 			}
 		}
 
-
-		private static bool CircleIntersectsTriangleWorld(
-			float2 circleCenterWorld,
-			float circleRadiusSquared,
-			float2 a,
-			float2 b,
-			float2 c)
-		{
-			if (PhysicsUtilities.PointInTriangle(circleCenterWorld, a, b, c))
-			{
-				return true;
-			}
-
-			if (PhysicsUtilities.DistanceSquaredPointToSegment(circleCenterWorld, a, b) <= circleRadiusSquared) return true;
-			if (PhysicsUtilities.DistanceSquaredPointToSegment(circleCenterWorld, b, c) <= circleRadiusSquared) return true;
-			if (PhysicsUtilities.DistanceSquaredPointToSegment(circleCenterWorld, c, a) <= circleRadiusSquared) return true;
-
-			return false;
-		}
-
-		private static Vector3 ToV3(float2 point, float z)
+		private static Vector3 ToVector3(float2 point, float z)
 		{
 			return new Vector3(point.x, point.y, z);
 		}

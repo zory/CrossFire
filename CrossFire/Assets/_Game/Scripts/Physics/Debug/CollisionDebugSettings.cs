@@ -9,6 +9,8 @@ namespace CrossFire.Physics
 		private const string DrawBroadphaseKey = "CrossFire.Physics.CollisionDebug.DrawBroadphase";
 		private const string DrawHitTrianglesKey = "CrossFire.Physics.CollisionDebug.DrawHitTriangles";
 
+
+		private const string GridCellColorKey = "CrossFire.Physics.CollisionDebug.GridCellColor";
 		private const string CircleShapeColorKey = "CrossFire.Physics.CollisionDebug.CircleShapeColor";
 		private const string ConcaveShapeColorKey = "CrossFire.Physics.CollisionDebug.ConcaveShapeColor";
 		private const string BoundRadiusColorKey = "CrossFire.Physics.CollisionDebug.BoundRadiusColor";
@@ -20,6 +22,7 @@ namespace CrossFire.Physics
 		public static bool DrawBroadphase => UnityEditor.EditorPrefs.GetBool(DrawBroadphaseKey, true);
 		public static bool DrawHitTriangles => UnityEditor.EditorPrefs.GetBool(DrawHitTrianglesKey, true);
 
+		public static Color GridCellColor => GetColor(GridCellColorKey, new Color(1f, 1f, 1f, 0.95f));
 		public static Color CircleShapeColor => GetColor(CircleShapeColorKey, new Color(0f, 1f, 1f, 0.95f));
 		public static Color ConcaveShapeColor => GetColor(ConcaveShapeColorKey, new Color(0f, 1f, 0f, 0.95f));
 		public static Color BoundRadiusColor => GetColor(BoundRadiusColorKey, new Color(1f, 1f, 0f, 0.95f));
@@ -27,6 +30,7 @@ namespace CrossFire.Physics
 		public static Color HitTriangleColor => GetColor(HitTriangleColorKey, new Color(1f, 0f, 0f, 1f));
 		public static Color TrianglesPreviewColor => GetColor(TrianglesPreviewColorKey, new Color(0f, 0.7f, 1f, 0.8f));
 
+		public static void SetGridCellColor(Color value) => SetColor(GridCellColorKey, value);
 		public static void SetCircleShapeColor(Color value) => SetColor(CircleShapeColorKey, value);
 		public static void SetConcaveShapeColor(Color value) => SetColor(ConcaveShapeColorKey, value);
 		public static void SetBoundRadiusColor(Color value) => SetColor(BoundRadiusColorKey, value);

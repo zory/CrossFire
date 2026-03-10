@@ -27,6 +27,26 @@ namespace CrossFire.Physics
 		}
 
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static bool CircleIntersectsTriangleWorld(
+			float2 circleCenterWorld,
+			float circleRadiusSquared,
+			float2 a,
+			float2 b,
+			float2 c)
+		{
+			if (PointInTriangle(circleCenterWorld, a, b, c))
+			{
+				return true;
+			}
+
+			if (DistanceSquaredPointToSegment(circleCenterWorld, a, b) <= circleRadiusSquared) return true;
+			if (DistanceSquaredPointToSegment(circleCenterWorld, b, c) <= circleRadiusSquared) return true;
+			if (DistanceSquaredPointToSegment(circleCenterWorld, c, a) <= circleRadiusSquared) return true;
+
+			return false;
+		}
+
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static float DistanceSquaredPointToSegment(float2 point, float2 segmentStart, float2 segmentEnd)
 		{
 			float2 segmentVector = segmentEnd - segmentStart;
