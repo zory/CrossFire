@@ -1,5 +1,4 @@
 using CrossFire.Core;
-using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -18,19 +17,19 @@ namespace CrossFire.Combat
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			var ecb = new EntityCommandBuffer(Allocator.Temp);
+			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-			foreach (var (healthRO, entity) in
-					 SystemAPI.Query<RefRO<Health>>()
-							  .WithAll<ShipTag>()
-							  .WithEntityAccess())
+			foreach (var (healthRO, entity) in SystemAPI.Query<RefRO<Health>>().WithEntityAccess())
 			{
-				if (healthRO.ValueRO.Value <= 0f)
-					ecb.DestroyEntity(entity);
+				int health = healthRO.ValueRO.Value;
+				if (health <= 0f)
+				{
+					entityCommandBuffer.DestroyEntity(entity);
+				}
 			}
 
-			ecb.Playback(state.EntityManager);
-			ecb.Dispose();
+			entityCommandBuffer.Playback(state.EntityManager);
+			entityCommandBuffer.Dispose();
 		}
 	}
 }
