@@ -21,8 +21,6 @@ namespace CrossFire.Samples
 			{
 				ShipType type = ShipType.Sample1;
 				byte team = 0;
-				Color color = Color.white;
-				float4 colorRGBA = new float4(color.r, color.g, color.b, color.a);
 				float spawningAngle = (i / (float)ShipCount) * (math.PI * 2f);
 				float2 worldPose = originPoint + new float2(math.cos(spawningAngle), math.sin(spawningAngle)) * distanceFromOrigin;
 				float2 dir = originPoint - worldPose;
@@ -38,7 +36,6 @@ namespace CrossFire.Samples
 					Id = i,
 					Type = type,
 					Team = team,
-					ColorRGBA = colorRGBA,
 					Pose = pose
 				};
 
@@ -51,8 +48,6 @@ namespace CrossFire.Samples
 			{
 				ShipType type = ShipType.Sample2;
 				byte team = 1;
-				Color color = Color.green;
-				float4 colorRGBA = new float4(color.r, color.g, color.b, color.a);
 				float2 worldPose = originPoint;
 				Pose2D pose = new Pose2D
 				{
@@ -65,7 +60,6 @@ namespace CrossFire.Samples
 					Id = ShipCount,
 					Type = type,
 					Team = team,
-					ColorRGBA = colorRGBA,
 					Pose = pose
 				};
 

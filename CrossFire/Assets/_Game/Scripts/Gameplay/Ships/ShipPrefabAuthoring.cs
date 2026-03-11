@@ -1,11 +1,8 @@
 using CrossFire.Core;
 using CrossFire.Physics;
 using CrossFire.Player;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Rendering;
-using Unity.Transforms;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
 namespace CrossFire.Ships
@@ -22,18 +19,24 @@ namespace CrossFire.Ships
 			public override void Bake(ShipPrefabAuthoring authoring)
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
+
+				AddComponent<ShipTag>(prefabEntity);
+
+				AddComponent<StableId>(prefabEntity);
+				AddComponent<TeamId>(prefabEntity);
+
+				AddComponent<NativeColor>(prefabEntity);
+
+				AddComponent<Health>(prefabEntity, new Health() { Value = authoring.Health, });
+
 				AddComponent<TurnSpeed>(prefabEntity, new TurnSpeed() { Value = authoring.TurnSpeed });
 				AddComponent<ThrustAcceleration>(prefabEntity, new ThrustAcceleration() { Value = authoring.ThrustAcceleration });
 				AddComponent<BrakeAcceleration>(prefabEntity, new BrakeAcceleration() { Value = authoring.BrakeAcceleration });
-				AddComponent<URPMaterialPropertyBaseColor>(prefabEntity);
-				AddComponent<ShipTag>(prefabEntity);
-				AddComponent<StableId>(prefabEntity);
-				AddComponent<TeamId>(prefabEntity);
-				AddComponent<NativeColor>(prefabEntity);
+
 				AddComponent<SelectableTag>(prefabEntity);
-				AddComponent<Health>(prefabEntity, new Health() { Value = authoring.Health, });
 				AddComponent<ControlIntent>(prefabEntity);
 				AddComponent<Targetable>(prefabEntity);
+
 				AddComponent<CollisionLayer>(prefabEntity, new CollisionLayer() { Value = 1 });
 				AddComponent<CollisionMask>(prefabEntity, new CollisionMask() { Value = (1 << 0) | (1 << 1) });
 			}

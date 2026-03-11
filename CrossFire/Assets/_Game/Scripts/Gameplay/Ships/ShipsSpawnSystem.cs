@@ -29,7 +29,6 @@ namespace CrossFire.Ships
 		public int Id;
 		public ShipType Type;
 		public byte Team;
-		public float4 ColorRGBA;
 		public Pose2D Pose;
 
 		public override string ToString()
@@ -40,9 +39,8 @@ namespace CrossFire.Ships
 					"Id:{0} " +
 					"Type:{1} " +
 					"Team:{2} " +
-					"Color:{3} " +
-					"Pose:{4}",
-					Id, Type, Team, ColorRGBA, Pose
+					"Pose:{3}",
+					Id, Type, Team, Pose
 				);
 		}
 	}
@@ -82,8 +80,12 @@ namespace CrossFire.Ships
 
 			Entity commandEntity = _requestQuery.GetSingletonEntity();
 			DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(commandEntity);
+
 			if (commandBuffer.IsEmpty)
+			{
 				return;
+			}
+
 			NativeArray<SpawnShipsCommand> commands = commandBuffer.ToNativeArray(Allocator.Temp);
 			commandBuffer.Clear();
 
@@ -94,16 +96,24 @@ namespace CrossFire.Ships
 				Entity prefabEntity = GetPrefabForType(ref state, command.Type);
 				if (prefabEntity == Entity.Null)
 				{
-					// unknown type: skip
 					continue;
 				}
 
 				Entity shipEntity = entityManager.Instantiate(prefabEntity);
 
+				byte teamId = command.Team;
 				SetId(entityManager, shipEntity, command.Id);
-				SetTeam(entityManager, shipEntity, command.Team);
-				SetNativeColor(entityManager, shipEntity, command.ColorRGBA);
-				CoreHelpers.SetColor(entityManager, shipEntity, command.ColorRGBA);
+				SetTeam(entityManager, shipEntity, teamId);
+
+				float4 teamColor = CoreHelpers.GetTeamColor(entityManager, teamId);
+				SetNativeColor(entityManager, shipEntity, teamColor);
+				entityManager.AddComponentData<NeedsColorRefresh>(shipEntity,
+					new NeedsColorRefresh()
+					{
+						Value = CoreHelpers.GetTeamColor(entityManager, teamId)
+					}
+				);
+
 				SetPose(entityManager, shipEntity, command.Pose);
 			}
 

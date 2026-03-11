@@ -1,9 +1,7 @@
 using CrossFire.Core;
 using CrossFire.Physics;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Rendering;
-using Unity.Transforms;
 using UnityEngine;
 
 namespace CrossFire.Combat
@@ -17,11 +15,15 @@ namespace CrossFire.Combat
 			public override void Bake(BulletPrefabAuthoring authoring)
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
-				AddComponent<URPMaterialPropertyBaseColor>(prefabEntity);
+
 				AddComponent<BulletTag>(prefabEntity);
-				AddComponent<Lifetime>(prefabEntity);
-				AddComponent<Owner>(prefabEntity);
+
+				AddComponent<StableId>(prefabEntity);
 				AddComponent<TeamId>(prefabEntity);
+				AddComponent<Owner>(prefabEntity);
+
+				AddComponent<Lifetime>(prefabEntity);
+
 				AddComponent<BulletDamage>(prefabEntity, new BulletDamage() { Value = authoring.BulletDamage });
 				AddComponent<CollisionLayer>(prefabEntity, new CollisionLayer() { Value = 1 });
 				AddComponent<CollisionMask>(prefabEntity, new CollisionMask() { Value = (1 << 0) | (1 << 1) });

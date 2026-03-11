@@ -463,12 +463,11 @@ MonoBehaviour:
   SpawnShip_Id: 0
   SpawnShip_Type: 0
   SpawnShip_Team: 0
-  SpawnShip_Color: {r: 0.06157397, g: 0.49056602, b: 0, a: 1}
   SpawnShip_Pose:
     Position:
       x: 2
       y: 0
-    Theta: 30
+    ThetaRad: 0
   ListenForSelectableWithMouse: 1
   PickRadius: 0.5
   ShipControl: 1

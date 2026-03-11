@@ -72,6 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8326a7fcdf42eb4ab0597e500aa5581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BulletDamage: 1
 --- !u!114 &2875587680316400840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,14 +86,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ColliderType: 0
-  AutoCalculateBoundRadius: 0
+  OutlineVertices: []
   ColliderBoundRadius: 0.05
   ColliderCircleRadius: 0.05
-  OutlineVertices: []
-  DrawBoundRadius: 1
-  DrawCircleRadius: 1
-  DrawOutline: 1
-  DrawTrianglesPreview: 1
 --- !u!1 &5988961175368306518
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,6 +100,7 @@ GameObject:
   - component: {fileID: 7392059457723351579}
   - component: {fileID: 3848420343498606062}
   - component: {fileID: 4865542159632280350}
+  - component: {fileID: 6497038415575344780}
   m_Layer: 0
   m_Name: Visuals
   m_TagString: Untagged
@@ -179,3 +176,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6497038415575344780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5988961175368306518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9834363679087c64ba6dc42c058645ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitialColor: {r: 1, g: 1, b: 1, a: 1}

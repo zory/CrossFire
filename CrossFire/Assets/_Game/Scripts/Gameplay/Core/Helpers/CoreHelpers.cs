@@ -6,61 +6,74 @@ namespace CrossFire.Core
 {
 	public static class CoreHelpers
 	{
-		public static float4 GetTeamColor(EntityManager em, int team)
+		public static float4 GetTeamColor(EntityManager entityManager, byte teamId)
 		{
-			using var query = em.CreateEntityQuery(typeof(TeamColor));
+			using var query = entityManager.CreateEntityQuery(typeof(TeamColor));
 
 			if (query.IsEmpty)
-				return new float4(1, 1, 1, 1);
+			{
+				return new float4(255, 255, 255, 255);
+			}
 
 			var entity = query.GetSingletonEntity();
-			var buffer = em.GetBuffer<TeamColor>(entity);
+			var buffer = entityManager.GetBuffer<TeamColor>(entity);
 
-			if (team < 0 || team >= buffer.Length)
-				return new float4(1, 1, 1, 1);
-
-			return buffer[team].Value;
+			return buffer[teamId].Value;
 		}
 
 		public static void SetColor(EntityManager entityManager, Entity entity, float4 color)
 		{
+			//Just created or not existing
+			if (!entityManager.Exists(entity))
+			{
+				return;
+			}
+
 			//Tries setting for this entity
-			if (entityManager.HasComponent<URPMaterialPropertyBaseColor>(entity))
+			if (entityManager.HasComponent<MaterialMeshInfo>(entity) && entityManager.HasComponent<URPMaterialPropertyBaseColor>(entity))
 			{
-				entityManager.SetComponentData(entity, new URPMaterialPropertyBaseColor { Value = color });
-			}
-
-			if (entityManager.HasBuffer<LinkedEntityGroup>(entity))
-			{
-				var linked = entityManager.GetBuffer<LinkedEntityGroup>(entity);
-				var linkedLength = linked.Length;
-
-				for (int i = 0; i < linkedLength; i++)
+				entityManager.SetComponentData(entity, new URPMaterialPropertyBaseColor
 				{
-					var child = linked[i].Value;
-
-					if (!entityManager.HasComponent<MaterialMeshInfo>(child))
-						continue;
-
-					if (!entityManager.HasComponent<URPMaterialPropertyBaseColor>(child))
-					{
-						entityManager.AddComponentData(child,
-							new URPMaterialPropertyBaseColor
-							{
-								Value = color
-							});
-					}
-					else
-					{
-						entityManager.SetComponentData(child,
-							new URPMaterialPropertyBaseColor
-							{
-								Value = color
-							});
-					}
-				}
+					Value = color
+				});
 			}
 
+			//Tries settings for children entities
+			if (!entityManager.HasBuffer<LinkedEntityGroup>(entity))
+			{
+				return;
+			}
+
+			DynamicBuffer<LinkedEntityGroup> linked = entityManager.GetBuffer<LinkedEntityGroup>(entity);
+			int linkedLength = linked.Length;
+			for (int i = 0; i < linkedLength; i++)
+			{
+				Entity child = linked[i].Value;
+
+				//Just created or not existing
+				if (!entityManager.Exists(child))
+				{
+					continue;
+				}
+
+				//No mesh
+				if (!entityManager.HasComponent<MaterialMeshInfo>(child))
+				{
+					continue;
+				}
+
+				//Not marked for color
+				if (!entityManager.HasComponent<URPMaterialPropertyBaseColor>(child))
+				{
+					continue;
+				}
+
+				//Set color
+				entityManager.SetComponentData(child, new URPMaterialPropertyBaseColor
+				{
+					Value = color
+				});
+			}
 		}
 	}
 }

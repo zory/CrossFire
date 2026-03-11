@@ -14,7 +14,6 @@ namespace CrossFire.Samples
 		public int SpawnShip_Id;
 		public ShipType SpawnShip_Type;
 		public byte SpawnShip_Team;
-		public Color SpawnShip_Color;
 		public Pose2D SpawnShip_Pose;
 
 		[Header("Selectable")]
@@ -38,16 +37,6 @@ namespace CrossFire.Samples
 				for (int teamIdx = 0; teamIdx < 2; teamIdx++)
 				{
 					byte team = (byte)teamIdx;
-					Color color = Color.white;
-					if (team == 0)
-					{
-						color = Color.blue;
-					}
-					else if (team == 1)
-					{
-						color = Color.red;
-					}
-					float4 colorRGBA = new float4(color.r, color.g, color.b, color.a);
 
 					for (int i = 0; i < 50; i++)
 					{
@@ -79,7 +68,6 @@ namespace CrossFire.Samples
 							Id = SpawnShip_Id,
 							Type = type,
 							Team = team,
-							ColorRGBA = colorRGBA,
 							Pose = pose
 						};
 						Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
@@ -108,7 +96,6 @@ namespace CrossFire.Samples
 					Id = SpawnShip_Id,
 					Type = SpawnShip_Type,
 					Team = SpawnShip_Team,
-					ColorRGBA = new float4(SpawnShip_Color.r, SpawnShip_Color.g, SpawnShip_Color.b, SpawnShip_Color.a),
 					Pose = SpawnShip_Pose
 				};
 				Debug.Log($"PlayerDebug: SpawnShip Command: {command}");

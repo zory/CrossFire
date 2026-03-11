@@ -403,5 +403,10 @@ namespace CrossFire.Physics
 		{
 			return new float3(point.x, point.y, z);
 		}
+
+		public static float2 Forward(float rotationRadians)
+		{
+			return new float2(-math.sin(rotationRadians), math.cos(rotationRadians));
+		}
 	}
 }
