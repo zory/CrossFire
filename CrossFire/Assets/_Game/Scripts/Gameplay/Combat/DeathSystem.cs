@@ -3,14 +3,18 @@ using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using UnityEngine;
 
 namespace CrossFire.Combat
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[UpdateAfter(typeof(BulletDestroyOnCollisionSystem))]
 	[BurstCompile]
 	public partial struct DeathSystem : ISystem
 	{
+		public void OnCreate(ref SystemState state)
+		{
+		}
+
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{

@@ -1,10 +1,7 @@
+using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
-using UnityEngine;
-using CrossFire.Physics;
 
 namespace CrossFire.Combat
 {
@@ -14,6 +11,11 @@ namespace CrossFire.Combat
 	[BurstCompile]
 	public partial struct BulletUpdateSystem : ISystem
 	{
+		[BurstCompile]
+		public void OnCreate(ref SystemState state)
+		{
+		}
+
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{

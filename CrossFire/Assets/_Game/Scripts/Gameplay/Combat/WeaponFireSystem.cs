@@ -1,16 +1,17 @@
 using CrossFire.Core;
 using CrossFire.Physics;
 using CrossFire.Player;
-using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
-using static PlasticPipe.PlasticProtocol.Messages.NegotiationCommand;
 
 namespace CrossFire.Combat
 {
+	/// <summary>
+	/// Fires bullets when ControlIntent.Fire is present nad cooldown allows it
+	/// </summary>
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[UpdateAfter(typeof(WeaponCooldownSystem))]
 	[BurstCompile]

@@ -1,4 +1,5 @@
 using CrossFire.Core;
+using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -8,12 +9,12 @@ namespace CrossFire.Combat
 	[BurstCompile]
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[UpdateAfter(typeof(BulletDamageOnCollisionSystem))]
-	[UpdateBefore(typeof(CrossFire.Physics.CollisionEventCleanupSystem))]
+	[UpdateBefore(typeof(CollisionEventCleanupSystem))]
 	public partial struct BulletDestroyOnCollisionSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)
 		{
-			state.RequireForUpdate<CrossFire.Physics.CollisionEventBufferTag>();
+			state.RequireForUpdate<CollisionEventBufferTag>();
 		}
 
 		public void OnUpdate(ref SystemState state)
