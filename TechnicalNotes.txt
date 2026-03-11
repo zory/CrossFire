@@ -1,0 +1,67 @@
+Code Requirements:
+Explicit types everywhere;
+Explicit understandable variable names;
+Dont remove comments;
+Add comments where needed;
+Always brackets even with one liners;
+---
+5 asmdefs:
+Physics (see: nothing)
+Core (see: Physics)
+Player (see: Physics, Core)
+Ships (see: Physics, Core, Player)
+Combat (see: Physics, Core, Player, Ships)
+---
+Components:
+Combat:
+BulletDamage
+BulletTag
+Health
+Lifetime
+NeedsTargetTag
+WeaponConfig
+WeaponCooldown
+
+Core:
+HealthNativeColor
+Owner
+StableId
+Targetable
+TeamId
+
+Player:
+ControlIntent
+ControlledTag
+SelectableTag
+
+Ships:
+BrakeAcceleration
+ShipIntent
+ShipTag
+ThrustAcceleration
+TurnSpeed
+---
+PhysicsScripts:
+BasicBodyAuthoring
+ColliderAuthoring
+CollisionGridSettingsAuthoring
+DynamicBodyAuthoring
+LinearDampingAuthoring
+MaxVelocityAuthoring
+CollisionDebugSettings
+CollisionDebugSystem
+ColliderAuthoringDrawGizmo
+ColliderAuthoringEditor
+CollisionDebugMenu
+PhysicsComponents
+PhysicsHelpers
+PhysicsStructs
+AngularIntegrationSystem
+CollisionDetectionSystem
+CollisionEventBufferBootstrapSystem
+CollisionEventCleanupSystem
+LinearDampingSystem
+MaxVelocityClampSystem
+PositionIntegrationSystem
+PostPhysicsSystem
+SnapshotSystem

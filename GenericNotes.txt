@@ -1,0 +1,69 @@
+I am creating 2D video game in Unity engine.
+It will be a game about space shooting with a lot of simple shaped spaceships.
+I am doing it to learn ECS, Burts, Dots. But still using normal monobehaviours as well.
+
+Game idea:
+Aetherium is rare — but not that rare. The real scarcity is control of extraction corridors and refinement patents. All three factions manipulate scarcity to maintain power. The public believes this is a survival war. In reality, it’s a power-structure war.
+1. Terran Union (Earth)
+Objective Truth - Earth truly is resource-starved. Billions depend on imported Aetherium energy. But Earth leadership quietly sabotages efficiency upgrades. Why? Because constant crisis keeps the population unified and controllable. A stabilized Earth would: Demand political reform. Break oligarchic control. Reduce emergency powers. Earth leadership needs tension.
+Why They’re Right - Most humans live there. Outer factions absolutely price-gouge. Earth would collapse without access. Their demand for redistribution is morally intuitive.
+Why They’re Wrong - They inflate shortages to justify authoritarian measures. They stage or exaggerate attacks on supply lines. They weaponize poverty as leverage. They secretly profit from black-market Aetherium flows. They are not incompetent. They are crisis-managing deliberately.
+Propaganda - “We Fight So Humanity Eats.” Outer factions are hoarders. “No child should freeze for corporate profit.” They frame every military action as defensive necessity.
+
+2. Helios Directorate (Outer Technocracy)
+Objective Truth - They did build and secure most mines. They are efficient. They genuinely believe centralized control prevents chaos. But: They restrict production intentionally to maintain price stability. If Aetherium becomes abundant: Their political leverage disappears. Earth becomes independent. Frontier gains autonomy. Controlled scarcity preserves order.
+Why They’re Right - Sudden abundance would crash economies. Over-expansion could destabilize the system. Earth governance is volatile. They prevent reckless exploitation. They see themselves as adults in a room of emotional factions.
+Why They’re Wrong - They manipulate markets. They let shortages happen to discipline Earth. They fund proxy conflicts to weaken rivals. They suppress new mining tech to avoid losing monopoly. They are calm, rational, and morally insulated.
+Propaganda - “Stability Is Civilization.” Earth wastes resources. Frontier breeds instability. “We maintain balance so humanity survives.” They position themselves as reluctant stewards.
+
+3. Frontier Collective (Belters / Outer Fringe)
+Remove moral superiority.
+
+Objective Truth - They were historically exploited. They operate in dangerous mining zones. They value autonomy. But: Their economy depends on smuggling and destabilization. If peace stabilizes trade: They lose leverage. Central powers absorb them. Their identity dissolves. War keeps them relevant.
+Why They’re Right - Both Earth and Directorate exploit peripheral labor. Centralized control historically erased frontier communities. They defend self-governance. Their emotional appeal is strong: dignity and survival.
+Why They’re Wrong - They attack civilian transports to disrupt markets. They exaggerate oppression to recruit. Pirate factions operate with quiet approval. Leadership profits from black-market arbitrage. Freedom rhetoric masks economic dependency on chaos.
+Propaganda - “No Masters, No Chains.” Earth is a collapsing empire. Directorate is a technocratic monarchy. “We protect the small from the giants.” They glorify resistance while quietly sustaining instability. The Emotional Equality
+
+Faction	Core Fears:
+Earth - Being abandoned and left to die
+Directorate	- Civilization collapsing into chaos
+Frontier - Being absorbed and erased
+
+None are wrong. None are clean.
+
+Gradual Uncovering Structure:
+Phase 1 – Clear Moral Frames
+Earth = desperate majority.
+Directorate = cold elite.
+Frontier = scrappy underdogs.
+Readers pick sides.
+
+Phase 2 – Economic Leaks
+Evidence of price manipulation.
+Evidence of staged attacks.
+Evidence of black-market collusion between all three.
+Each faction accuses the others — correctly.
+
+Phase 3 – The Ugly Symmetry
+Reveal:
+Leaders from all three factions meet secretly.
+They maintain controlled conflict because:
+Total war would destroy infrastructure.
+Total peace would destroy their power.
+Managed hostility sustains hierarchy.
+The public war is real.
+The leadership competition is calculated.
+
+Final Moral Fracture
+Now characters must confront:
+If they defeat one faction, another fills the same role.
+The system of controlled scarcity is the true enemy.
+But dismantling it risks total economic collapse.
+Helping any side reinforces the structure.
+Fighting all three means:
+Being labeled terrorist by everyone.
+Potentially triggering real systemic collapse.
+Possibly causing more suffering than maintaining the lie.
+That is where the emotional tension becomes equal.
+No faction is the villain.
+The structure is.
