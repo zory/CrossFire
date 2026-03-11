@@ -62,12 +62,18 @@ namespace CrossFire.Combat
 				entityCommandBuffer.SetComponent<TeamId>(bullet, new TeamId() { Value = teamId });
 
 				//Request color change when possible
-				entityCommandBuffer.AddComponent<NeedsColorRefresh>(bullet,
-					new NeedsColorRefresh()
-					{
-						Value = CoreHelpers.GetTeamColor(entityManager, teamId)
-					}
-				);
+				if (SystemAPI.HasSingleton<TeamColor>())
+				{
+					Entity teamColorEntity = SystemAPI.GetSingletonEntity<TeamColor>();
+					DynamicBuffer<TeamColor> teamColors = SystemAPI.GetBuffer<TeamColor>(teamColorEntity);
+					float4 color = CoreHelpers.GetTeamColor(teamColors, teamId);
+					entityCommandBuffer.AddComponent<NeedsColorRefresh>(bullet,
+						new NeedsColorRefresh()
+						{
+							Value = color,
+						}
+					);
+				}
 
 				//set world pose
 				Pose2D shipWorldPose = worldPoseRO.ValueRO.Value;

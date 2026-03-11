@@ -1,12 +1,13 @@
+using CrossFire.Combat;
+using CrossFire.Core;
+using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
-using CrossFire.Physics;
 using static PlasticPipe.PlasticProtocol.Messages.NegotiationCommand;
-using CrossFire.Core;
 
 namespace CrossFire.Ships
 {
@@ -18,6 +19,7 @@ namespace CrossFire.Ships
 
 		Sample1 = 3,
 		Sample2 = 4,
+		Sample3 = 5,
 	}
 
 	public struct SpawnShipsCommandBufferTag : IComponentData
@@ -115,6 +117,11 @@ namespace CrossFire.Ships
 				);
 
 				SetPose(entityManager, shipEntity, command.Pose);
+
+				if (!entityManager.HasComponent<NeedsTargetTag>(shipEntity))
+				{
+					entityManager.AddComponent<NeedsTargetTag>(shipEntity);
+				}
 			}
 
 			commands.Dispose();

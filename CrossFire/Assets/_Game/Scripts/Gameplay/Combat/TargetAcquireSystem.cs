@@ -5,111 +5,228 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
-using static UnityEngine.GraphicsBuffer;
 
 namespace CrossFire.Combat
 {
-	// Assumed components/tags:
-	// public struct NeedsTargetTag : IComponentData {}
-	// public struct Target : IComponentData { public Entity Value; }
-	// public struct TeamId : IComponentData { public byte Value; }
-	// public struct SelectableTag : IComponentData {}    // optional filter if only some are targetable
-	// public struct DeadTag : IComponentData {}          // optional
-	// You are using LocalTransform elsewhere; if you use Pos instead, swap it in.
-
 	/// <summary>
-	/// For each entity that NeedsTargetTag, finds the nearest enemy and sets Target.Value.
-	/// Then removes NeedsTargetTag.
-	///
-	/// MVP implementation: O(N^2) worst-case. Use for ~1k–2k ships.
-	/// Later replace with spatial hash / broadphase.
+	/// Processes entities with NeedsTargetTag.
+	/// - StickyNearest: nearest valid enemy
+	/// - ThreatRetarget: highest threat score
+	/// - Manual: ignored here
 	/// </summary>
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[BurstCompile]
+	[UpdateAfter(typeof(ManualTargetApplySystem))]
+	[UpdateAfter(typeof(TargetRetargetTimerSystem))]
+	//[BurstCompile]
 	public partial struct TargetAcquireSystem : ISystem
 	{
-		private EntityQuery _candidatesQuery;
+		private EntityQuery _candidateQuery;
 
 		public void OnCreate(ref SystemState state)
 		{
-			// Candidate targets: have position + TeamId, and are not dead.
-			// If you don't have DeadTag or SelectableTag, remove those filters.
-			_candidatesQuery = state.GetEntityQuery(new EntityQueryDesc
+			_candidateQuery = state.GetEntityQuery(new EntityQueryDesc
 			{
-				All = new[]
+				All = new ComponentType[]
 				{
 					ComponentType.ReadOnly<WorldPose>(),
 					ComponentType.ReadOnly<TeamId>(),
-					ComponentType.ReadOnly<SelectableTag>(),
-				},
-				//None = new[]
-				//{
-					//ComponentType.ReadOnly<DeadTag>(),
-				//}
+					ComponentType.ReadOnly<TargetableTag>(),
+				}
 			});
 
 			state.RequireForUpdate<NeedsTargetTag>();
-			state.RequireForUpdate(_candidatesQuery);
+			state.RequireForUpdate(_candidateQuery);
+		}
+
+		//[BurstCompile]
+		public void OnUpdate(ref SystemState state)
+		{
+			EntityManager entityManager = state.EntityManager;
+
+			using NativeArray<Entity> candidateEntities = _candidateQuery.ToEntityArray(Allocator.Temp);
+			using NativeArray<WorldPose> candidatePoses = _candidateQuery.ToComponentDataArray<WorldPose>(Allocator.Temp);
+			using NativeArray<TeamId> candidateTeams = _candidateQuery.ToComponentDataArray<TeamId>(Allocator.Temp);
+
+			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+			foreach ((RefRO<WorldPose> selfPose, RefRO<TeamId> selfTeam, RefRO<TargetingProfile> targetingProfile, RefRW<CurrentTarget> currentTarget, Entity selfEntity) in
+					 SystemAPI.Query<RefRO<WorldPose>, RefRO<TeamId>, RefRO<TargetingProfile>, RefRW<CurrentTarget>>()
+						.WithAll<NeedsTargetTag>()
+						.WithEntityAccess())
+			{
+				if (targetingProfile.ValueRO.Mode == TargetingMode.Manual)
+				{
+					continue;
+				}
+
+				Entity bestTarget = Entity.Null;
+
+				if (targetingProfile.ValueRO.Mode == TargetingMode.StickyNearest)
+				{
+					bestTarget = FindNearestEnemy(
+						entityManager,
+						selfEntity,
+						selfTeam.ValueRO.Value,
+						selfPose.ValueRO.Value.Position,
+						candidateEntities,
+						candidatePoses,
+						candidateTeams
+					);
+				}
+				else if (targetingProfile.ValueRO.Mode == TargetingMode.ThreatRetarget)
+				{
+					bestTarget = FindHighestThreatEnemy(
+						entityManager,
+						selfEntity,
+						selfTeam.ValueRO.Value,
+						selfPose.ValueRO.Value.Position,
+						candidateEntities,
+						candidatePoses,
+						candidateTeams
+					);
+				}
+
+				currentTarget.ValueRW.Value = bestTarget;
+
+				if (bestTarget != Entity.Null)
+				{
+					entityCommandBuffer.RemoveComponent<NeedsTargetTag>(selfEntity);
+				}
+			}
+
+			entityCommandBuffer.Playback(entityManager);
+			entityCommandBuffer.Dispose();
+		}
+
+		//[BurstCompile]
+		private static Entity FindNearestEnemy(
+			EntityManager entityManager,
+			Entity selfEntity,
+			byte selfTeamId,
+			float2 selfPosition,
+			NativeArray<Entity> candidateEntities,
+			NativeArray<WorldPose> candidatePoses,
+			NativeArray<TeamId> candidateTeams)
+		{
+			Entity bestEntity = Entity.Null;
+			float bestDistanceSq = float.MaxValue;
+
+			for (int index = 0; index < candidateEntities.Length; index++)
+			{
+				Entity candidateEntity = candidateEntities[index];
+
+				if (!IsCandidateValid(entityManager, selfEntity, selfTeamId, candidateEntity, candidateTeams[index].Value))
+				{
+					continue;
+				}
+
+				float2 candidatePosition = candidatePoses[index].Value.Position;
+				float2 delta = candidatePosition - selfPosition;
+				float distanceSq = math.dot(delta, delta);
+
+				if (distanceSq < bestDistanceSq)
+				{
+					bestDistanceSq = distanceSq;
+					bestEntity = candidateEntity;
+				}
+			}
+
+			return bestEntity;
+		}
+
+		//[BurstCompile]
+		private static Entity FindHighestThreatEnemy(
+			EntityManager entityManager,
+			Entity selfEntity,
+			byte selfTeamId,
+			float2 selfPosition,
+			NativeArray<Entity> candidateEntities,
+			NativeArray<WorldPose> candidatePoses,
+			NativeArray<TeamId> candidateTeams)
+		{
+			Entity bestEntity = Entity.Null;
+			float bestScore = float.MinValue;
+
+			for (int index = 0; index < candidateEntities.Length; index++)
+			{
+				Entity candidateEntity = candidateEntities[index];
+
+				if (!IsCandidateValid(entityManager, selfEntity, selfTeamId, candidateEntity, candidateTeams[index].Value))
+				{
+					continue;
+				}
+
+				float2 candidatePosition = candidatePoses[index].Value.Position;
+				float score = CalculateThreatScore(entityManager, candidateEntity, selfPosition, candidatePosition);
+
+				if (score > bestScore)
+				{
+					bestScore = score;
+					bestEntity = candidateEntity;
+				}
+			}
+
+			return bestEntity;
+		}
+
+		//[BurstCompile]
+		private static bool IsCandidateValid(
+			EntityManager entityManager,
+			Entity selfEntity,
+			byte selfTeamId,
+			Entity candidateEntity,
+			byte candidateTeamId)
+		{
+			if (candidateEntity == Entity.Null)
+			{
+				return false;
+			}
+
+			if (candidateEntity == selfEntity)
+			{
+				return false;
+			}
+
+			if (!entityManager.Exists(candidateEntity))
+			{
+				return false;
+			}
+
+			if (candidateTeamId == selfTeamId)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		[BurstCompile]
-		public void OnUpdate(ref SystemState state)
+		private static float CalculateThreatScore(
+			EntityManager entityManager,
+			Entity candidateEntity,
+			float2 selfPosition,
+			float2 candidatePosition)
 		{
-			var em = state.EntityManager;
+			float2 delta = candidatePosition - selfPosition;
+			float distanceSq = math.dot(delta, delta);
 
-			// Snapshot candidates into arrays once per update.
-			// (Brute force but avoids nested entity queries.)
-			using var candidates = _candidatesQuery.ToEntityArray(Allocator.Temp);
-			using var candXforms = _candidatesQuery.ToComponentDataArray<WorldPose>(Allocator.Temp);
-			using var candTeams = _candidatesQuery.ToComponentDataArray<TeamId>(Allocator.Temp);
+			// Distance contribution.
+			// Closer targets are more threatening.
+			float score = 1f / (distanceSq + 1f);
 
-			var ecb = new EntityCommandBuffer(Allocator.Temp);
-
-			foreach ((RefRO<WorldPose> selfXform, RefRO<TeamId> selfTeam, RefRW<Targetable> target, Entity self) in
-					 SystemAPI.Query<RefRO<WorldPose>, RefRO<TeamId>, RefRW<Targetable>>()
-							  .WithAll<NeedsTargetTag>()
-							  .WithEntityAccess())
+			// Weapon bonus.
+			if (entityManager.HasComponent<WeaponConfig>(candidateEntity))
 			{
-				float2 selfPos = selfXform.ValueRO.Value.Position;
-
-				byte team = selfTeam.ValueRO.Value;
-
-				Entity best = Entity.Null;
-				float bestDistSq = float.MaxValue;
-
-				for (int i = 0; i < candidates.Length; i++)
-				{
-					Entity cand = candidates[i];
-
-					if (cand == self)
-						continue;
-
-					if (candTeams[i].Value == team)
-						continue;
-
-					float2 p = candXforms[i].Value.Position;
-
-					float2 d = p - selfPos;
-					float dsq = math.dot(d, d);
-
-					if (dsq < bestDistSq)
-					{
-						bestDistSq = dsq;
-						best = cand;
-					}
-				}
-
-				// Write result (explicit state)
-				target.ValueRW.Value = best;
-
-				// If no target found, keep NeedsTargetTag so we try again next frame (or remove—your choice).
-				if (best != Entity.Null)
-					ecb.RemoveComponent<NeedsTargetTag>(self);
+				score += 2f;
 			}
 
-			ecb.Playback(em);
-			ecb.Dispose();
+			// Player-controlled bonus.
+			if (entityManager.HasComponent<ControlledTag>(candidateEntity))
+			{
+				score += 4f;
+			}
+
+			return score;
 		}
 	}
 }

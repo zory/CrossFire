@@ -1,78 +1,78 @@
-using CrossFire.Core;
-using Unity.Burst;
-using Unity.Entities;
-using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+//using CrossFire.Core;
+//using Unity.Burst;
+//using Unity.Entities;
+//using UnityEngine;
+//using static UnityEngine.GraphicsBuffer;
 
-namespace CrossFire.Combat
-{
-	/// <summary>
-	/// Adds NeedsTargetTag when the current Target is invalid:
-	/// - Target is Entity.Null
-	/// - Target entity no longer exists
-	/// - (Optional) Target has DeadTag
-	/// - (Optional) Target is same TeamId (guards against bad target assignment)
-	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[BurstCompile]
-	public partial struct TargetInvalidationSystem : ISystem
-	{
-		public void OnCreate(ref SystemState state)
-		{
-			state.RequireForUpdate<Targetable>();
-		}
+//namespace CrossFire.Combat
+//{
+//	/// <summary>
+//	/// Adds NeedsTargetTag when the current Target is invalid:
+//	/// - Target is Entity.Null
+//	/// - Target entity no longer exists
+//	/// - (Optional) Target has DeadTag
+//	/// - (Optional) Target is same TeamId (guards against bad target assignment)
+//	/// </summary>
+//	[UpdateInGroup(typeof(SimulationSystemGroup))]
+//	[BurstCompile]
+//	public partial struct TargetInvalidationSystem : ISystem
+//	{
+//		public void OnCreate(ref SystemState state)
+//		{
+//			state.RequireForUpdate<TargetableTag>();
+//		}
 
-		[BurstCompile]
-		public void OnUpdate(ref SystemState state)
-		{
-			var em = state.EntityManager;
+//		[BurstCompile]
+//		public void OnUpdate(ref SystemState state)
+//		{
+//			var em = state.EntityManager;
 
-			var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+//			var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
 
-			foreach ((RefRW<Targetable> target, Entity e) in
-					 SystemAPI.Query<RefRW<Targetable>>()
-							  .WithEntityAccess())
-			{
-				var t = target.ValueRO.Value;
+//			foreach ((RefRW<TargetableTag> target, Entity e) in
+//					 SystemAPI.Query<RefRW<TargetableTag>>()
+//							  .WithEntityAccess())
+//			{
+//				var t = target.ValueRO.Value;
 
-				bool invalid = false;
+//				bool invalid = false;
 
-				if (t == Entity.Null || !em.Exists(t))
-				{
-					invalid = true;
-				}
-				else
-				{
-					// Optional: if you have a DeadTag (or Disabled), invalidate.
-					//if (em.HasComponent<DeadTag>(t))
-					//	invalid = true;
+//				if (t == Entity.Null || !em.Exists(t))
+//				{
+//					invalid = true;
+//				}
+//				else
+//				{
+//					// Optional: if you have a DeadTag (or Disabled), invalidate.
+//					//if (em.HasComponent<DeadTag>(t))
+//					//	invalid = true;
 
-					// Optional: same-team guard (only if both have TeamId)
-					if (!invalid &&
-						em.HasComponent<TeamId>(e) &&
-						em.HasComponent<TeamId>(t) &&
-						em.GetComponentData<TeamId>(e).Value == em.GetComponentData<TeamId>(t).Value)
-					{
-						invalid = true;
-					}
-				}
+//					// Optional: same-team guard (only if both have TeamId)
+//					if (!invalid &&
+//						em.HasComponent<TeamId>(e) &&
+//						em.HasComponent<TeamId>(t) &&
+//						em.GetComponentData<TeamId>(e).Value == em.GetComponentData<TeamId>(t).Value)
+//					{
+//						invalid = true;
+//					}
+//				}
 
-				if (!invalid)
-					continue;
+//				if (!invalid)
+//					continue;
 
-				// Clear target for explicit state
-				target.ValueRW.Value = Entity.Null;
+//				// Clear target for explicit state
+//				target.ValueRW.Value = Entity.Null;
 
-				// Mark for acquisition (avoid duplicate add)
-				if (!em.HasComponent<NeedsTargetTag>(e))
-				{
-					ecb.AddComponent<NeedsTargetTag>(e);
-				}
-			}
+//				// Mark for acquisition (avoid duplicate add)
+//				if (!em.HasComponent<NeedsTargetTag>(e))
+//				{
+//					ecb.AddComponent<NeedsTargetTag>(e);
+//				}
+//			}
 
-			ecb.Playback(em);
-			ecb.Dispose();
-		}
-	}
+//			ecb.Playback(em);
+//			ecb.Dispose();
+//		}
+//	}
 
-}
+//}

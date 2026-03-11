@@ -6,17 +6,34 @@ namespace CrossFire.Core
 {
 	public static class CoreHelpers
 	{
-		public static float4 GetTeamColor(EntityManager entityManager, byte teamId)
+		//Burst safe
+		public static float4 GetTeamColor(DynamicBuffer<TeamColor> buffer, byte teamId)
 		{
-			using var query = entityManager.CreateEntityQuery(typeof(TeamColor));
-
-			if (query.IsEmpty)
+			if (teamId >= buffer.Length)
 			{
-				return new float4(255, 255, 255, 255);
+				return new float4(1f, 1f, 1f, 1f);
 			}
 
-			var entity = query.GetSingletonEntity();
-			var buffer = entityManager.GetBuffer<TeamColor>(entity);
+			return buffer[teamId].Value;
+		}
+
+		//Non Burst version
+		public static float4 GetTeamColor(EntityManager entityManager, byte teamId)
+		{
+			using EntityQuery query = entityManager.CreateEntityQuery(ComponentType.ReadOnly<TeamColor>());
+
+			if (query.IsEmptyIgnoreFilter)
+			{
+				return new float4(1f, 1f, 1f, 1f);
+			}
+
+			Entity entity = query.GetSingletonEntity();
+			DynamicBuffer<TeamColor> buffer = entityManager.GetBuffer<TeamColor>(entity);
+
+			if (teamId >= buffer.Length)
+			{
+				return new float4(1f, 1f, 1f, 1f);
+			}
 
 			return buffer[teamId].Value;
 		}

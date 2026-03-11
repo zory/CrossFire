@@ -1,10 +1,9 @@
+using CrossFire.Combat;
+using CrossFire.Core;
+using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
-using UnityEngine;
-using CrossFire.Physics;
-using CrossFire.Core;
 
 namespace CrossFire.Player
 {
@@ -13,75 +12,68 @@ namespace CrossFire.Player
 	[BurstCompile]
 	public partial struct AIIntentSystem : ISystem
 	{
-		// Tuneables (could be components/singleton later)
 		private const float FireRange = 10f;
-		private const float FireConeCos = 0.98f; // ~11.5 degrees
+		private const float FireConeCos = 0.98f;
 
 		public void OnCreate(ref SystemState state)
 		{
-			state.RequireForUpdate<Targetable>();
+			state.RequireForUpdate<CurrentTarget>();
 		}
 
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			var em = state.EntityManager;
+			EntityManager entityManager = state.EntityManager;
 
-			foreach (var (pose, target, intent) in
-					 SystemAPI.Query<RefRO<WorldPose>, RefRO<Targetable>, RefRW<ControlIntent>>()
-							  .WithNone<ControlledTag>())
+			foreach ((RefRO<WorldPose> selfPose, RefRO<CurrentTarget> currentTarget, RefRW<ControlIntent> controlIntent) in
+					 SystemAPI.Query<RefRO<WorldPose>, RefRO<CurrentTarget>, RefRW<ControlIntent>>()
+						.WithNone<ControlledTag>())
 			{
-				Entity t = target.ValueRO.Value;
+				Entity targetEntity = currentTarget.ValueRO.Value;
 
-				// Default: no intent if no target
-				if (t == Entity.Null || !em.Exists(t) || !em.HasComponent<WorldPose>(t))
+				if (targetEntity == Entity.Null || !entityManager.Exists(targetEntity) || !entityManager.HasComponent<WorldPose>(targetEntity))
 				{
-					intent.ValueRW.Turn = 0f;
-					intent.ValueRW.Thrust = 0f;
-					intent.ValueRW.Fire = 0;
+					controlIntent.ValueRW.Turn = 0f;
+					controlIntent.ValueRW.Thrust = 0f;
+					controlIntent.ValueRW.Fire = 0;
 					continue;
 				}
 
-				Pose2D self = pose.ValueRO.Value;
-				Pose2D tp = em.GetComponentData<WorldPose>(t).Value;
+				Pose2D self = selfPose.ValueRO.Value;
+				Pose2D targetPose = entityManager.GetComponentData<WorldPose>(targetEntity).Value;
 
-				float2 toT = tp.Position - self.Position;
-				float distSq = math.lengthsq(toT);
+				float2 toTarget = targetPose.Position - self.Position;
+				float distanceSq = math.lengthsq(toTarget);
 
-				// Desired heading angle
-				float desired = math.atan2(toT.y, toT.x);
-				// Your forward vector uses theta -> (-sin, cos), which corresponds to "angle from +Y".
-				// To keep consistent with your model:
-				// forward = (-sin(theta), cos(theta))  ==> theta=0 points +Y.
-				// So desired theta should be angle-from-+Y: atan2(-x, y)
-				float desiredTheta = math.atan2(-toT.x, toT.y);
+				float desiredTheta = math.atan2(-toTarget.x, toTarget.y);
+				float deltaTheta = NormalizeAngle(desiredTheta - self.ThetaRad);
 
-				float delta = NormalizeAngle(desiredTheta - self.ThetaRad);
-
-				// Turn sign towards target
-				float turn = math.clamp(delta * 2.0f, -1f, 1f); // gain=2 for snappier steering
+				float turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
 				float thrust = 1f;
 
-				// Fire gating: within range and within cone
 				float2 forward = new float2(-math.sin(self.ThetaRad), math.cos(self.ThetaRad));
-				float2 dir = math.normalizesafe(toT);
-				float facing = math.dot(forward, dir);
-				byte fire = (byte)((distSq <= FireRange * FireRange && facing >= FireConeCos) ? 1 : 0);
+				float2 directionToTarget = math.normalizesafe(toTarget);
+				float facingDot = math.dot(forward, directionToTarget);
 
-				intent.ValueRW.Turn = turn;
-				intent.ValueRW.Thrust = thrust;
-				intent.ValueRW.Fire = fire;
+				byte fire = (byte)((distanceSq <= FireRange * FireRange && facingDot >= FireConeCos) ? 1 : 0);
+
+				controlIntent.ValueRW.Turn = turn;
+				controlIntent.ValueRW.Thrust = thrust;
+				controlIntent.ValueRW.Fire = fire;
 			}
 		}
 
 		[BurstCompile]
-		private static float NormalizeAngle(float a)
+		private static float NormalizeAngle(float angle)
 		{
-			// map to [-pi, pi]
-			a = math.fmod(a + math.PI, 2f * math.PI);
-			if (a < 0f) a += 2f * math.PI;
-			return a - math.PI;
+			angle = math.fmod(angle + math.PI, 2f * math.PI);
+
+			if (angle < 0f)
+			{
+				angle += 2f * math.PI;
+			}
+
+			return angle - math.PI;
 		}
 	}
-
 }
