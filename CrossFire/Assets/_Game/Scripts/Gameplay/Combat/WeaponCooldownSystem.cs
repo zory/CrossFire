@@ -2,7 +2,7 @@ using Unity.Burst;
 using Unity.Entities;
 using UnityEngine;
 
-namespace CrossFire.Bullets
+namespace CrossFire.Combat
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[BurstCompile]

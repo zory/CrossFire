@@ -1,4 +1,5 @@
 using CrossFire;
+using CrossFire.Core;
 using NUnit.Framework;
 using Unity.Entities;
 using Unity.Mathematics;

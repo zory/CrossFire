@@ -5,8 +5,10 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using CrossFire.Physics;
+using CrossFire.Core;
+using CrossFire.Player;
 
-namespace CrossFire.Bullets
+namespace CrossFire.Combat
 {
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[UpdateAfter(typeof(WeaponCooldownSystem))]
@@ -31,7 +33,7 @@ namespace CrossFire.Bullets
 			var ecb = new EntityCommandBuffer(Allocator.Temp);
 
 			foreach (var (poseRO, intentRO, weaponRO, cdRW, entity) in
-					 SystemAPI.Query<RefRO<WorldPose>, RefRO<ShipIntent>, RefRO<WeaponConfig>, RefRW<WeaponCooldown>>()
+					 SystemAPI.Query<RefRO<WorldPose>, RefRO<ControlIntent>, RefRO<WeaponConfig>, RefRW<WeaponCooldown>>()
 							  .WithEntityAccess())
 			{
 				if (intentRO.ValueRO.Fire == 0)
@@ -55,9 +57,8 @@ namespace CrossFire.Bullets
 				var b = ecb.Instantiate(bulletPrefab);
 
 				// Bullet identity
-				ecb.AddComponent(b, new BulletTag());
-				ecb.AddComponent(b, new BulletOwner { Value = entity });
-				ecb.AddComponent(b, new TeamId() { Value = em.GetComponentData<TeamId>(entity).Value });
+				ecb.SetComponent(b, new Owner { Value = entity });
+				ecb.SetComponent(b, new TeamId() { Value = em.GetComponentData<TeamId>(entity).Value });
 
 				float4 color;
 				if (em.GetComponentData<TeamId>(entity).Value == 0)

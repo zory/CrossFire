@@ -6,6 +6,7 @@ using Unity.Rendering;
 using Unity.Transforms;
 using CrossFire.Physics;
 using static PlasticPipe.PlasticProtocol.Messages.NegotiationCommand;
+using CrossFire.Core;
 
 namespace CrossFire.Ships
 {
@@ -102,7 +103,7 @@ namespace CrossFire.Ships
 				SetId(entityManager, shipEntity, command.Id);
 				SetTeam(entityManager, shipEntity, command.Team);
 				SetNativeColor(entityManager, shipEntity, command.ColorRGBA);
-				SetColor(entityManager, shipEntity, command.ColorRGBA);
+				CoreHelpers.SetColor(entityManager, shipEntity, command.ColorRGBA);
 				SetPose(entityManager, shipEntity, command.Pose);
 			}
 
@@ -136,11 +137,6 @@ namespace CrossFire.Ships
 		public static void SetNativeColor(EntityManager entityManager, Entity entity, float4 color)
 		{
 			entityManager.SetComponentData(entity, new NativeColor { Value = color });
-		}
-
-		public static void SetColor(EntityManager entityManager, Entity entity, float4 color)
-		{
-			entityManager.SetComponentData(entity, new URPMaterialPropertyBaseColor { Value = color });
 		}
 
 		private static void SetPose(EntityManager entityManager, Entity entity, Pose2D pose)

@@ -7,9 +7,13 @@
         "Unity.Mathematics",
         "Unity.Collections",
         "Unity.Entities",
-        "CrossFire",
         "Unity.Transforms",
-        "Unity.Entities.Graphics"
+        "Unity.Entities.Graphics",
+        "CrossFire.Physics",
+        "CrossFire.Core",
+        "CrossFire.Player",
+        "CrossFire.Ships",
+        "CrossFire.Combat"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

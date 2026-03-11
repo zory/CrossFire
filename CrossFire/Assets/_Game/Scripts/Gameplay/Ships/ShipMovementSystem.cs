@@ -5,6 +5,7 @@ using Unity.Transforms;
 using UnityEngine;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using CrossFire.Physics;
+using CrossFire.Player;
 
 namespace CrossFire.Ships
 {
@@ -28,10 +29,10 @@ namespace CrossFire.Ships
 						 RefRO<WorldPose>,
 						 RefRW<Velocity>,
 						 RefRW<AngularVelocity>,
-						 RefRO<ShipIntent>,
+						 RefRO<ControlIntent>,
 						 RefRO<TurnSpeed>,
 						 RefRO<ThrustAcceleration>,
-						 RefRO<BrakeAcceleleration>>())
+						 RefRO<BrakeAcceleration>>())
 			{
 				var pose = poseRO.ValueRO.Value;
 				float2 v = velRW.ValueRO.Value;
