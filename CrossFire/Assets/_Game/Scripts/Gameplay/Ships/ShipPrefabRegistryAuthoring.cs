@@ -10,7 +10,7 @@ namespace CrossFire.Ships
 		public Entity Prefab;
 	}
 
-	public class ShipPrefabReferenceAuthoring : MonoBehaviour
+	public class ShipPrefabRegistryAuthoring : MonoBehaviour
 	{
 		[Serializable]
 		public struct Entry
@@ -21,9 +21,9 @@ namespace CrossFire.Ships
 
 		public Entry[] Entries;
 
-		public class ShipPrefabReferenceBaker : Baker<ShipPrefabReferenceAuthoring>
+		public class ShipPrefabRegistryBaker : Baker<ShipPrefabRegistryAuthoring>
 		{
-			public override void Bake(ShipPrefabReferenceAuthoring authoring)
+			public override void Bake(ShipPrefabRegistryAuthoring authoring)
 			{
 				Entity registryEntity = GetEntity(TransformUsageFlags.None);
 

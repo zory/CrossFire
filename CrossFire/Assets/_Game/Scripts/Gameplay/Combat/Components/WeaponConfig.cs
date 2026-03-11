@@ -4,6 +4,7 @@ namespace CrossFire.Combat
 {
 	public struct WeaponConfig : IComponentData
 	{
+		public BulletType BulletType;
 		public float FireInterval;     // seconds between shots
 		public float BulletSpeed;
 		public float BulletLifetime;

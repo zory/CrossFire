@@ -1,12 +1,13 @@
+using CrossFire.Core;
+using CrossFire.Physics;
+using CrossFire.Player;
 using CrossFire.Ships;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
-using CrossFire.Physics;
-using CrossFire.Core;
-using CrossFire.Player;
+using static PlasticPipe.PlasticProtocol.Messages.NegotiationCommand;
 
 namespace CrossFire.Combat
 {
@@ -17,18 +18,12 @@ namespace CrossFire.Combat
 	{
 		public void OnCreate(ref SystemState state)
 		{
-			state.RequireForUpdate<BulletPrefabReference>();
 		}
 
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
 			var em = state.EntityManager;
-			var bulletPrefab = SystemAPI.GetSingleton<BulletPrefabReference>().Prefab;
-
-			// Check what components bullet prefab already has to choose Add vs Set.
-			bool prefabHasVelocity = em.HasComponent<Velocity>(bulletPrefab);
-			bool prefabHasLifetime = em.HasComponent<Lifetime>(bulletPrefab);
 
 			var ecb = new EntityCommandBuffer(Allocator.Temp);
 
@@ -54,7 +49,17 @@ namespace CrossFire.Combat
 
 				float2 bulletVel = forward * weaponRO.ValueRO.BulletSpeed;
 
-				var b = ecb.Instantiate(bulletPrefab);
+				Entity prefabEntity = GetPrefabForType(ref state, weaponRO.ValueRO.BulletType);
+				if (prefabEntity == Entity.Null)
+				{
+					// unknown type: skip
+					continue;
+				}
+				// Check what components bullet prefab already has to choose Add vs Set.
+				bool prefabHasVelocity = em.HasComponent<Velocity>(prefabEntity);
+				bool prefabHasLifetime = em.HasComponent<Lifetime>(prefabEntity);
+
+				var b = ecb.Instantiate(prefabEntity);
 
 				// Bullet identity
 				ecb.SetComponent(b, new Owner { Value = entity });
@@ -95,6 +100,20 @@ namespace CrossFire.Combat
 
 			ecb.Playback(em);
 			ecb.Dispose();
+		}
+
+		private Entity GetPrefabForType(ref SystemState state, BulletType bulletType)
+		{
+			DynamicBuffer<BulletPrefabEntry> entries = SystemAPI.GetSingletonBuffer<BulletPrefabEntry>(true);
+
+			for (int index = 0; index < entries.Length; index++)
+			{
+				BulletPrefabEntry entry = entries[index];
+				if (entry.Type == bulletType)
+					return entry.Prefab;
+			}
+
+			return Entity.Null;
 		}
 	}
 }
