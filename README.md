@@ -45,18 +45,13 @@ CellSize
 ## ColliderAuthoring
 
 ```
-ColliderType
-    Circle
-    ConcaveTriangles
+ColliderType - (Circle, ConcaveTriangles)
 
-OutlineVertices
-    Only used for ConcaveTriangles
+OutlineVertices - Only used for ConcaveTriangles
 
-ColliderBoundRadius
-    Circle around collider used for broadphase
+ColliderBoundRadius - Circle around collider used for broadphase
 
-ColliderCircleRadius
-    Only used for Circle collider
+ColliderCircleRadius - Only used for Circle collider
 ```
 
 ---
@@ -66,8 +61,7 @@ ColliderCircleRadius
 ## InitializationSystemGroup
 
 ```
-CollisionEventBufferBootstrapSystem
-    Creates collision event buffer
+CollisionEventBufferBootstrapSystem - Creates collision event buffer
 ```
 
 ---
@@ -75,31 +69,21 @@ CollisionEventBufferBootstrapSystem
 ## SimulationSystemGroup
 
 ```
-SnapshotSystem
-    Save previous frame pose
+SnapshotSystem - Save previous frame pose
 
-LinearDampingSystem
-    Apply drag
+LinearDampingSystem - Apply drag
 
-AngularIntegrationSystem
-    Rotate entities
+AngularIntegrationSystem - Rotate entities
 
-PositionIntegrationSystem
-    Move entities
+PositionIntegrationSystem - Move entities
 
-MaxVelocityClampSystem
-    Clamp velocity
+MaxVelocityClampSystem - Clamp velocity
 
-CollisionDetectionSystem
-    Broadphase grid
-    Narrowphase triangle tests
-    Generate collision events
+CollisionDetectionSystem - Broadphase grid, Narrowphase triangle tests, Generate collision events
 
-PostPhysicsSystem
-    Sync physics pose → LocalTransform
+PostPhysicsSystem - Sync physics pose to LocalTransform
 
-CollisionEventCleanupSystem
-    Clear collision events
+CollisionEventCleanupSystem - Clear collision events
 ```
 
 ---
