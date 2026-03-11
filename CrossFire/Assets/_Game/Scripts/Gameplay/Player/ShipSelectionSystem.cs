@@ -1,4 +1,5 @@
 using CrossFire.Core;
+using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -108,12 +109,12 @@ namespace CrossFire.Player
 			float pickRadiusSq = pickRadius * pickRadius;
 			float bestDistanceSq = pickRadiusSq;
 
-			foreach ((RefRO<LocalTransform> localTransform, Entity entity) in
-				SystemAPI.Query<RefRO<LocalTransform>>()
+			foreach ((RefRO<WorldPose> worldPose, Entity entity) in
+				SystemAPI.Query<RefRO<WorldPose>>()
 					.WithAll<SelectableTag>()
 					.WithEntityAccess())
 			{
-				float2 shipPosition = new float2(localTransform.ValueRO.Position.x, localTransform.ValueRO.Position.y);
+				float2 shipPosition = worldPose.ValueRO.Value.Position;
 				float2 delta = shipPosition - worldPosition;
 				float distanceSq = math.dot(delta, delta);
 

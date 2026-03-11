@@ -1,4 +1,5 @@
 using CrossFire.Core;
+using CrossFire.Physics;
 using CrossFire.Player;
 using Unity.Burst;
 using Unity.Collections;
@@ -38,7 +39,7 @@ namespace CrossFire.Combat
 			{
 				All = new[]
 				{
-					ComponentType.ReadOnly<LocalTransform>(),
+					ComponentType.ReadOnly<WorldPose>(),
 					ComponentType.ReadOnly<TeamId>(),
 					ComponentType.ReadOnly<SelectableTag>(),
 				},
@@ -60,18 +61,17 @@ namespace CrossFire.Combat
 			// Snapshot candidates into arrays once per update.
 			// (Brute force but avoids nested entity queries.)
 			using var candidates = _candidatesQuery.ToEntityArray(Allocator.Temp);
-			using var candXforms = _candidatesQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
+			using var candXforms = _candidatesQuery.ToComponentDataArray<WorldPose>(Allocator.Temp);
 			using var candTeams = _candidatesQuery.ToComponentDataArray<TeamId>(Allocator.Temp);
 
 			var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-			foreach ((RefRO<LocalTransform> selfXform, RefRO<TeamId> selfTeam, RefRW<Targetable> target, Entity self) in
-					 SystemAPI.Query<RefRO<LocalTransform>, RefRO<TeamId>, RefRW<Targetable>>()
+			foreach ((RefRO<WorldPose> selfXform, RefRO<TeamId> selfTeam, RefRW<Targetable> target, Entity self) in
+					 SystemAPI.Query<RefRO<WorldPose>, RefRO<TeamId>, RefRW<Targetable>>()
 							  .WithAll<NeedsTargetTag>()
 							  .WithEntityAccess())
 			{
-				float3 selfPos3 = selfXform.ValueRO.Position;
-				float2 selfPos = new float2(selfPos3.x, selfPos3.y);
+				float2 selfPos = selfXform.ValueRO.Value.Position;
 
 				byte team = selfTeam.ValueRO.Value;
 
@@ -88,8 +88,7 @@ namespace CrossFire.Combat
 					if (candTeams[i].Value == team)
 						continue;
 
-					float3 p3 = candXforms[i].Position;
-					float2 p = new float2(p3.x, p3.y);
+					float2 p = candXforms[i].Value.Position;
 
 					float2 d = p - selfPos;
 					float dsq = math.dot(d, d);
