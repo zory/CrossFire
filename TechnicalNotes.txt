@@ -11,9 +11,10 @@ Core (see: Physics)
 Player (see: Physics, Core)
 Ships (see: Physics, Core, Player)
 Combat (see: Physics, Core, Player, Ships)
+
 ---
+Combat asmdef:
 Components:
-Combat:
 BulletDamage
 BulletTag
 Health
@@ -22,26 +23,45 @@ NeedsTargetTag
 WeaponConfig
 WeaponCooldown
 
-Core:
+Core asmdef:
+Components:
 HealthNativeColor
 Owner
 StableId
 Targetable
 TeamId
 
-Player:
+Player asmdef:
+Components:
 ControlIntent
 ControlledTag
 SelectableTag
 
-Ships:
+Ships asmdef:
+Components:
 BrakeAcceleration
 ShipIntent
 ShipTag
 ThrustAcceleration
 TurnSpeed
----
-PhysicsScripts:
+
+Physics asmdefs:
+Components:
+AngularVelocity
+Collider2D
+CollisionEvent
+CollisionEventBufferTag
+CollisionGridSettings
+CollisionLayer
+CollisionMask
+ConcaveTrianglesRef
+LinearDamping
+MaxVelocity
+PrevWorldPose
+Velocity
+WorldPose
+
+Authoring:
 BasicBodyAuthoring
 ColliderAuthoring
 CollisionGridSettingsAuthoring
@@ -49,13 +69,16 @@ DynamicBodyAuthoring
 LinearDampingAuthoring
 MaxVelocityAuthoring
 CollisionDebugSettings
+
+Helpers and Misc:
 CollisionDebugSystem
 ColliderAuthoringDrawGizmo
 ColliderAuthoringEditor
 CollisionDebugMenu
-PhysicsComponents
 PhysicsHelpers
 PhysicsStructs
+
+Systems:
 AngularIntegrationSystem
 CollisionDetectionSystem
 CollisionEventBufferBootstrapSystem
@@ -65,3 +88,4 @@ MaxVelocityClampSystem
 PositionIntegrationSystem
 PostPhysicsSystem
 SnapshotSystem
+---
