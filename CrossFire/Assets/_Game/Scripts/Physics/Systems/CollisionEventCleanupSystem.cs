@@ -7,9 +7,10 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// prevent events from persisting next frame
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(PostPhysicsSystem))]
-	[UpdateBefore(typeof(TransformSystemGroup))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(PostPhysicsSystem))]
+	//[UpdateBefore(typeof(TransformSystemGroup))]
+	[DisableAutoCreation]
 	public partial struct CollisionEventCleanupSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)

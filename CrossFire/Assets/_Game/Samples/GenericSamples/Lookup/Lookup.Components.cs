@@ -25,7 +25,8 @@ namespace CrossFire.Lookup
 		public float2 WorldPos;
 	}
 
-	[UpdateInGroup(typeof(InitializationSystemGroup))]
+	[DisableAutoCreation]
+	//[UpdateInGroup(typeof(InitializationSystemGroup))]
 	public partial struct LookupBootstrapSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)
@@ -51,7 +52,8 @@ namespace CrossFire.Lookup
 		public void OnUpdate(ref SystemState state) { }
 	}
 
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[DisableAutoCreation]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
 	public partial struct LookupSnapshotSystem : ISystem
 	{
 		private EntityQuery _shipsQuery;

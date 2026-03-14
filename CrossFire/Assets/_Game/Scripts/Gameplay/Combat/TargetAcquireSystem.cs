@@ -14,9 +14,10 @@ namespace CrossFire.Combat
 	/// - ThreatRetarget: highest threat score
 	/// - Manual: ignored here
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(ManualTargetApplySystem))]
-	[UpdateAfter(typeof(TargetRetargetTimerSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(ManualTargetApplySystem))]
+	//[UpdateAfter(typeof(TargetRetargetTimerSystem))]
+	[DisableAutoCreation]
 	//[BurstCompile]
 	public partial struct TargetAcquireSystem : ISystem
 	{

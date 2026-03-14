@@ -14,8 +14,9 @@ namespace CrossFire.Combat
 	/// <summary>
 	/// Fires bullets when ControlIntent.Fire is present nad cooldown allows it
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(WeaponCooldownSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(WeaponCooldownSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct WeaponFireSystem : ISystem
 	{

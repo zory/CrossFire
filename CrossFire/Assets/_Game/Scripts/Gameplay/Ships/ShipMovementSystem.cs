@@ -9,10 +9,11 @@ using CrossFire.Player;
 
 namespace CrossFire.Ships
 {
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(AIIntentSystem))]
-	[UpdateBefore(typeof(PositionIntegrationSystem))]
-	[UpdateBefore(typeof(PostPhysicsSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(AIIntentSystem))]
+	//[UpdateBefore(typeof(PositionIntegrationSystem))]
+	//[UpdateBefore(typeof(PostPhysicsSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct ShipMovementSystem : ISystem
 	{

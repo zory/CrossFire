@@ -5,9 +5,10 @@ using Unity.Entities;
 
 namespace CrossFire.Combat
 {
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(WeaponFireSystem))]
-	[UpdateBefore(typeof(PositionIntegrationSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(WeaponFireSystem))]
+	//[UpdateBefore(typeof(PositionIntegrationSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct BulletUpdateSystem : ISystem
 	{

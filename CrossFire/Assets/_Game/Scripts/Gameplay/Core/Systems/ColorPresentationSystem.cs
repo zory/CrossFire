@@ -6,7 +6,8 @@ using Unity.Mathematics;
 namespace CrossFire.Presentation
 {
 	[BurstCompile]
-	[UpdateInGroup(typeof(PresentationSystemGroup))]
+	//[UpdateInGroup(typeof(PresentationSystemGroup))]
+	[DisableAutoCreation]
 	public partial struct ColorPresentationSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)

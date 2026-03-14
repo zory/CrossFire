@@ -5,8 +5,9 @@ using Unity.Entities;
 
 namespace CrossFire.Combat
 {
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(BulletDestroyOnCollisionSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(BulletDestroyOnCollisionSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct DeathSystem : ISystem
 	{

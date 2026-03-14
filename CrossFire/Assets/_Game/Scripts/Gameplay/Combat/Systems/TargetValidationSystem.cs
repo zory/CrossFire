@@ -11,7 +11,8 @@ namespace CrossFire.Combat
 	/// - clears CurrentTarget
 	/// - requests reacquire for non-manual ships
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct TargetValidationSystem : ISystem
 	{

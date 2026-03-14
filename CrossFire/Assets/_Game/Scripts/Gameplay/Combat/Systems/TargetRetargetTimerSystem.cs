@@ -10,8 +10,9 @@ namespace CrossFire.Combat
 	/// For ThreatRetarget ships:
 	/// every RetargetInterval seconds add NeedsTargetTag.
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(TargetValidationSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(TargetValidationSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct TargetRetargetTimerSystem : ISystem
 	{

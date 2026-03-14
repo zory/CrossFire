@@ -5,8 +5,9 @@ using Unity.Entities;
 
 namespace CrossFire.Combat
 {
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(TargetValidationSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(TargetValidationSystem))]
+	[DisableAutoCreation]
 	public partial struct ManualTargetApplySystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)

@@ -7,9 +7,10 @@ using Unity.Entities;
 namespace CrossFire.Combat
 {
 	[BurstCompile]
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(BulletDamageOnCollisionSystem))]
-	[UpdateBefore(typeof(CollisionEventCleanupSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(BulletDamageOnCollisionSystem))]
+	//[UpdateBefore(typeof(CollisionEventCleanupSystem))]
+	[DisableAutoCreation]
 	public partial struct BulletDestroyOnCollisionSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)

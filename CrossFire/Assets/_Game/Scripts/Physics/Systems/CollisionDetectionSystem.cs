@@ -8,8 +8,9 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// broadphase grid, narrowphase triangle tests, generate collision events
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(MaxVelocityClampSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(MaxVelocityClampSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct CollisionDetectionSystem : ISystem
 	{

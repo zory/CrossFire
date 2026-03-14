@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace CrossFire.Physics
 {
-	[UpdateInGroup(typeof(PresentationSystemGroup))]
+	[DisableAutoCreation]
+	//[UpdateInGroup(typeof(PresentationSystemGroup))]
 	public partial struct CollisionDebugSystem : ISystem
 	{
 		private const float WorldGridHalfExtent = 100f;

@@ -39,6 +39,7 @@ namespace CrossFire.Player
 		public void OnUpdate(ref SystemState state) { }
 	}
 
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct ShipSelectionSystem : ISystem
 	{

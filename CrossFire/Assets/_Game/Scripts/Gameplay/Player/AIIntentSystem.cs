@@ -7,8 +7,9 @@ using Unity.Mathematics;
 
 namespace CrossFire.Player
 {
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(PlayerIntentSystem))]
+	[DisableAutoCreation]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(PlayerIntentSystem))]
 	[BurstCompile]
 	public partial struct AIIntentSystem : ISystem
 	{

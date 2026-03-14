@@ -7,7 +7,8 @@ namespace CrossFire.Physics
 	/// Initializes collision event buffer entity
 	/// </summary>
 	[BurstCompile]
-	[UpdateInGroup(typeof(InitializationSystemGroup))]
+	//[UpdateInGroup(typeof(InitializationSystemGroup))]
+	[DisableAutoCreation]
 	public partial struct CollisionEventBufferBootstrapSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)

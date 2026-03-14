@@ -41,9 +41,9 @@ namespace CrossFire.Player
 		public void OnUpdate(ref SystemState state) { }
 	}
 
-
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(SnapshotSystem))]
+	[DisableAutoCreation]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(SnapshotSystem))]
 	[BurstCompile]
 	public partial struct PlayerIntentSystem : ISystem
 	{

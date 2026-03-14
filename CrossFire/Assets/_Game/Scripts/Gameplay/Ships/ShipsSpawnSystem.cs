@@ -47,6 +47,7 @@ namespace CrossFire.Ships
 		}
 	}
 
+	[DisableAutoCreation]
 	public partial struct ShipsSpawnCommandBufferSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)
@@ -59,8 +60,9 @@ namespace CrossFire.Ships
 		public void OnUpdate(ref SystemState state) { }
 	}
 
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateBefore(typeof(SnapshotSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateBefore(typeof(SnapshotSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct ShipsSpawnSystem : ISystem
 	{

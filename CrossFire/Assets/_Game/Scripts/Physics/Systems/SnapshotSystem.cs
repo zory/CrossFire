@@ -6,7 +6,8 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// Store previous frame state for interpolation / rollback / debug.
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
+	[DisableAutoCreation]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[BurstCompile]
 	public partial struct SnapshotSystem : ISystem
 	{
