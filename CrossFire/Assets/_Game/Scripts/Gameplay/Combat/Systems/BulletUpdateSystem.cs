@@ -1,16 +1,14 @@
-using CrossFire.Core;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
 namespace CrossFire.Combat
 {
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(BulletDestroyOnCollisionSystem))]
 	[DisableAutoCreation]
 	[BurstCompile]
-	public partial struct DeathSystem : ISystem
+	public partial struct BulletUpdateSystem : ISystem
 	{
+		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
 		}
@@ -18,12 +16,18 @@ namespace CrossFire.Combat
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
+			float deltaTime = SystemAPI.Time.DeltaTime;
 			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-			foreach (var (healthRO, entity) in SystemAPI.Query<RefRO<Health>>().WithEntityAccess())
+			foreach (var (lifeRW, entity) in
+					 SystemAPI.Query<RefRW<Lifetime>>().
+						WithAll<BulletTag>().
+						WithEntityAccess())
 			{
-				int health = healthRO.ValueRO.Value;
-				if (health <= 0f)
+				float timeLeft = lifeRW.ValueRO.TimeLeft - deltaTime;
+				lifeRW.ValueRW.TimeLeft = timeLeft;
+
+				if (timeLeft <= 0f)
 				{
 					entityCommandBuffer.DestroyEntity(entity);
 				}

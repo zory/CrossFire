@@ -5,7 +5,7 @@ using CrossFire.Physics;
 using CrossFire.Player;
 using CrossFire.Presentation;
 using CrossFire.Ships;
-//using CrossFire.Targeting;
+using CrossFire.Targeting;
 using Unity.Entities;
 
 namespace CrossFire.App

@@ -1,21 +1,16 @@
 using CrossFire.Core;
 using CrossFire.Physics;
 using CrossFire.Player;
-using CrossFire.Presentation;
-using System.Numerics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Rendering;
 
 namespace CrossFire.Combat
 {
 	/// <summary>
 	/// Fires bullets when ControlIntent.Fire is present nad cooldown allows it
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(WeaponCooldownSystem))]
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct WeaponFireSystem : ISystem
@@ -30,7 +25,9 @@ namespace CrossFire.Combat
 			EntityManager entityManager = state.EntityManager;
 			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-			foreach (var (worldPoseRO, controlIntentRO, weaponConfigRO, weaponCooldownRW, entity) in SystemAPI.Query<RefRO<WorldPose>, RefRO<ControlIntent>, RefRO<WeaponConfig>, RefRW<WeaponCooldown>>().WithEntityAccess())
+			foreach (var (worldPoseRO, controlIntentRO, weaponConfigRO, weaponCooldownRW, entity) in 
+					SystemAPI.Query<RefRO<WorldPose>, RefRO<ControlIntent>, RefRO<WeaponConfig>, RefRW<WeaponCooldown>>().
+						WithEntityAccess())
 			{
 				//No fire intent - skip
 				if (controlIntentRO.ValueRO.Fire == 0)
@@ -43,7 +40,7 @@ namespace CrossFire.Combat
 				{
 					continue;
 				}
-				
+
 				// Reset cooldown
 				weaponCooldownRW.ValueRW.TimeLeft = weaponConfigRO.ValueRO.FireInterval;
 
@@ -68,12 +65,20 @@ namespace CrossFire.Combat
 					Entity teamColorEntity = SystemAPI.GetSingletonEntity<TeamColor>();
 					DynamicBuffer<TeamColor> teamColors = SystemAPI.GetBuffer<TeamColor>(teamColorEntity);
 					float4 color = CoreHelpers.GetTeamColor(teamColors, teamId);
-					entityCommandBuffer.AddComponent<NeedsColorRefresh>(bullet,
-						new NeedsColorRefresh()
+					if (entityManager.HasComponent<NeedsColorRefresh>(prefabEntity))
+					{
+						entityCommandBuffer.SetComponent(bullet, new NeedsColorRefresh
 						{
-							Value = color,
-						}
-					);
+							Value = color
+						});
+					}
+					else
+					{
+						entityCommandBuffer.AddComponent(bullet, new NeedsColorRefresh
+						{
+							Value = color
+						});
+					}
 				}
 
 				//set world pose

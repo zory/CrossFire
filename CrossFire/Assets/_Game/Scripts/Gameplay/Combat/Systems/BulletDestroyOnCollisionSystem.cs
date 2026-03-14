@@ -7,9 +7,6 @@ using Unity.Entities;
 namespace CrossFire.Combat
 {
 	[BurstCompile]
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(BulletDamageOnCollisionSystem))]
-	//[UpdateBefore(typeof(CollisionEventCleanupSystem))]
 	[DisableAutoCreation]
 	public partial struct BulletDestroyOnCollisionSystem : ISystem
 	{
@@ -21,25 +18,14 @@ namespace CrossFire.Combat
 		public void OnUpdate(ref SystemState state)
 		{
 			EntityManager entityManager = state.EntityManager;
+			Entity collisionEventBufferEntity = SystemAPI.GetSingletonEntity<CollisionEventBufferTag>();
+			DynamicBuffer<CollisionEvent> collisionEventBuffer = entityManager.GetBuffer<CollisionEvent>(collisionEventBufferEntity);
+			NativeArray<CollisionEvent> collisionEventsCopy = collisionEventBuffer.ToNativeArray(Allocator.Temp);
+			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-			Entity collisionEventBufferEntity =
-				SystemAPI.GetSingletonEntity<CrossFire.Physics.CollisionEventBufferTag>();
-
-			DynamicBuffer<CrossFire.Physics.CollisionEvent> collisionEventBuffer =
-				entityManager.GetBuffer<CrossFire.Physics.CollisionEvent>(collisionEventBufferEntity);
-
-			NativeArray<CrossFire.Physics.CollisionEvent> collisionEventsCopy =
-				collisionEventBuffer.ToNativeArray(Allocator.Temp);
-
-			EntityCommandBuffer entityCommandBuffer =
-				new EntityCommandBuffer(Allocator.Temp);
-
-			for (int collisionEventIndex = 0;
-				 collisionEventIndex < collisionEventsCopy.Length;
-				 collisionEventIndex++)
+			for (int collisionEventIndex = 0; collisionEventIndex < collisionEventsCopy.Length; collisionEventIndex++)
 			{
-				CrossFire.Physics.CollisionEvent collisionEvent =
-					collisionEventsCopy[collisionEventIndex];
+				CollisionEvent collisionEvent = collisionEventsCopy[collisionEventIndex];
 
 				DestroyBulletIfNeeded(
 					entityManager,

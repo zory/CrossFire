@@ -1,16 +1,9 @@
-using CrossFire.Ships;
 using System;
 using Unity.Entities;
 using UnityEngine;
 
 namespace CrossFire.Combat
 {
-	public struct BulletPrefabEntry : IBufferElementData
-	{
-		public BulletType Type;
-		public Entity Prefab;
-	}
-
 	public class BulletPrefabRegistryAuthoring : MonoBehaviour
 	{
 		[Serializable]
@@ -26,12 +19,22 @@ namespace CrossFire.Combat
 		{
 			public override void Bake(BulletPrefabRegistryAuthoring authoring)
 			{
-				Entity registryEntity = GetEntity(TransformUsageFlags.None);
+				Entity entity = GetEntity(TransformUsageFlags.None);
+				DynamicBuffer<BulletPrefabEntry> buffer = AddBuffer<BulletPrefabEntry>(entity);
 
-				DynamicBuffer<BulletPrefabEntry> buffer = AddBuffer<BulletPrefabEntry>(registryEntity);
+				if (authoring.Entries == null)
+				{
+					return;
+				}
+
 				for (int index = 0; index < authoring.Entries.Length; index++)
 				{
 					Entry entry = authoring.Entries[index];
+					if (entry.Prefab == null)
+					{
+						continue;
+					}
+
 					Entity prefabEntity = GetEntity(entry.Prefab, TransformUsageFlags.Dynamic);
 
 					buffer.Add(new BulletPrefabEntry

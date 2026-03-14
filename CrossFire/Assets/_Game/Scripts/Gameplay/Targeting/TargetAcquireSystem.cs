@@ -1,12 +1,10 @@
 using CrossFire.Core;
 using CrossFire.Physics;
-using CrossFire.Player;
-using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Combat
+namespace CrossFire.Targeting
 {
 	/// <summary>
 	/// Processes entities with NeedsTargetTag.
@@ -14,9 +12,6 @@ namespace CrossFire.Combat
 	/// - ThreatRetarget: highest threat score
 	/// - Manual: ignored here
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(ManualTargetApplySystem))]
-	//[UpdateAfter(typeof(TargetRetargetTimerSystem))]
 	[DisableAutoCreation]
 	//[BurstCompile]
 	public partial struct TargetAcquireSystem : ISystem
@@ -76,7 +71,7 @@ namespace CrossFire.Combat
 				}
 				else if (targetingProfile.ValueRO.Mode == TargetingMode.ThreatRetarget)
 				{
-					bestTarget = FindHighestThreatEnemy(
+					bestTarget = FindThreatTarget(
 						entityManager,
 						selfEntity,
 						selfTeam.ValueRO.Value,
@@ -136,7 +131,7 @@ namespace CrossFire.Combat
 		}
 
 		//[BurstCompile]
-		private static Entity FindHighestThreatEnemy(
+		private static Entity FindThreatTarget(
 			EntityManager entityManager,
 			Entity selfEntity,
 			byte selfTeamId,
@@ -157,8 +152,10 @@ namespace CrossFire.Combat
 					continue;
 				}
 
-				float2 candidatePosition = candidatePoses[index].Value.Position;
-				float score = CalculateThreatScore(entityManager, candidateEntity, selfPosition, candidatePosition);
+				float2 delta = candidatePoses[index].Value.Position - selfPosition;
+				float distanceSq = math.dot(delta, delta);
+
+				float score = 1f / (distanceSq + 1f);
 
 				if (score > bestScore)
 				{
@@ -199,35 +196,6 @@ namespace CrossFire.Combat
 			}
 
 			return true;
-		}
-
-		[BurstCompile]
-		private static float CalculateThreatScore(
-			EntityManager entityManager,
-			Entity candidateEntity,
-			float2 selfPosition,
-			float2 candidatePosition)
-		{
-			float2 delta = candidatePosition - selfPosition;
-			float distanceSq = math.dot(delta, delta);
-
-			// Distance contribution.
-			// Closer targets are more threatening.
-			float score = 1f / (distanceSq + 1f);
-
-			// Weapon bonus.
-			if (entityManager.HasComponent<WeaponConfig>(candidateEntity))
-			{
-				score += 2f;
-			}
-
-			// Player-controlled bonus.
-			if (entityManager.HasComponent<ControlledTag>(candidateEntity))
-			{
-				score += 4f;
-			}
-
-			return score;
 		}
 	}
 }

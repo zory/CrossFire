@@ -1,4 +1,3 @@
-using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Entities;
 
@@ -7,8 +6,6 @@ namespace CrossFire.Combat
 	/// <summary>
 	/// Reduces cooldowns for weapons
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(SnapshotSystem))]
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct WeaponCooldownSystem : ISystem

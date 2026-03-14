@@ -1,7 +1,6 @@
 using CrossFire.Core;
 using CrossFire.Physics;
 using Unity.Entities;
-using Unity.Rendering;
 using UnityEngine;
 
 namespace CrossFire.Combat

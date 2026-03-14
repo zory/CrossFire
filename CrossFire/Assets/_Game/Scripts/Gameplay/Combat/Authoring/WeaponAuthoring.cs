@@ -1,14 +1,7 @@
-using CrossFire.Combat;
-using CrossFire.Core;
-using CrossFire.Physics;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Rendering;
-using Unity.Transforms;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
-namespace CrossFire.Ships
+namespace CrossFire.Combat
 {
 	public class WeaponAuthoring : MonoBehaviour
 	{
@@ -24,7 +17,15 @@ namespace CrossFire.Ships
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
 
-				AddComponent<WeaponConfig>(prefabEntity, new WeaponConfig() { BulletType = authoring.BulletType, BulletLifetime = authoring.BulletLifetime, BulletSpeed = authoring.BulletSpeed, FireInterval = authoring.FireInterval, MuzzleOffset = authoring.MuzzleOffset });
+				AddComponent(prefabEntity, new WeaponConfig
+				{
+					BulletType = authoring.BulletType,
+					BulletLifetime = authoring.BulletLifetime,
+					BulletSpeed = authoring.BulletSpeed,
+					FireInterval = authoring.FireInterval,
+					MuzzleOffset = authoring.MuzzleOffset
+				}); 
+				
 				AddComponent<WeaponCooldown>(prefabEntity);
 			}
 		}

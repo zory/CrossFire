@@ -6,10 +6,6 @@ using Unity.Entities;
 namespace CrossFire.Combat
 {
 	[BurstCompile]
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(BulletUpdateSystem))]
-	//[UpdateAfter(typeof(CollisionDetectionSystem))]
-	//[UpdateBefore(typeof(CollisionEventCleanupSystem))]
 	[DisableAutoCreation]
 	public partial struct BulletDamageOnCollisionSystem : ISystem
 	{
@@ -21,19 +17,12 @@ namespace CrossFire.Combat
 		public void OnUpdate(ref SystemState state)
 		{
 			EntityManager entityManager = state.EntityManager;
+			Entity collisionEventBufferEntity = SystemAPI.GetSingletonEntity<CollisionEventBufferTag>();
+			DynamicBuffer<CollisionEvent> collisionEvents = entityManager.GetBuffer<CollisionEvent>(collisionEventBufferEntity);
 
-			Entity collisionEventBufferEntity =
-				SystemAPI.GetSingletonEntity<CrossFire.Physics.CollisionEventBufferTag>();
-
-			DynamicBuffer<CrossFire.Physics.CollisionEvent> collisionEvents =
-				entityManager.GetBuffer<CrossFire.Physics.CollisionEvent>(collisionEventBufferEntity);
-
-			for (int collisionEventIndex = 0;
-				 collisionEventIndex < collisionEvents.Length;
-				 collisionEventIndex++)
+			for (int collisionEventIndex = 0; collisionEventIndex < collisionEvents.Length; collisionEventIndex++)
 			{
-				CrossFire.Physics.CollisionEvent collisionEvent =
-					collisionEvents[collisionEventIndex];
+				CollisionEvent collisionEvent = collisionEvents[collisionEventIndex];
 
 				ApplyBulletDamageIfPossible(
 					entityManager,
@@ -54,45 +43,33 @@ namespace CrossFire.Combat
 		{
 			if (entityManager.HasComponent<Owner>(possibleBulletEntity))
 			{
-				Owner bulletOwner =
-					entityManager.GetComponentData<Owner>(possibleBulletEntity);
-
+				Owner bulletOwner = entityManager.GetComponentData<Owner>(possibleBulletEntity);
 				if (bulletOwner.Value == possibleTargetEntity)
 				{
 					return;
 				}
 			}
 
-			bool entityIsBullet =
-				entityManager.HasComponent<BulletTag>(possibleBulletEntity);
-
+			bool entityIsBullet = entityManager.HasComponent<BulletTag>(possibleBulletEntity);
 			if (!entityIsBullet)
 			{
 				return;
 			}
 
-			bool bulletHasDamage =
-				entityManager.HasComponent<BulletDamage>(possibleBulletEntity);
-
+			bool bulletHasDamage = entityManager.HasComponent<BulletDamage>(possibleBulletEntity);
 			if (!bulletHasDamage)
 			{
 				return;
 			}
 
-			bool targetHasHealth =
-				entityManager.HasComponent<Health>(possibleTargetEntity);
-
+			bool targetHasHealth = entityManager.HasComponent<Health>(possibleTargetEntity);
 			if (!targetHasHealth)
 			{
 				return;
 			}
 
-			BulletDamage bulletDamage =
-				entityManager.GetComponentData<BulletDamage>(possibleBulletEntity);
-
-			Health targetHealth =
-				entityManager.GetComponentData<Health>(possibleTargetEntity);
-
+			BulletDamage bulletDamage = entityManager.GetComponentData<BulletDamage>(possibleBulletEntity);
+			Health targetHealth = entityManager.GetComponentData<Health>(possibleTargetEntity);
 			targetHealth.Value -= bulletDamage.Value;
 
 			entityManager.SetComponentData(

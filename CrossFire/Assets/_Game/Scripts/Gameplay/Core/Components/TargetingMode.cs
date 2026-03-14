@@ -1,4 +1,4 @@
-namespace CrossFire.Combat
+namespace CrossFire.Core
 {
 	public enum TargetingMode : byte
 	{
