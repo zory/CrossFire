@@ -1,11 +1,9 @@
-using CrossFire;
+using CrossFire.Core;
+using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
-using CrossFire.Physics;
-using CrossFire.Player;
 
 [BurstCompile]
 public partial struct CameraFollowSystem : ISystem

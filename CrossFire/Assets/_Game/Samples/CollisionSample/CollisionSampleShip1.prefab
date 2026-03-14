@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 823646163044960884}
   - component: {fileID: 4975612840279143151}
   - component: {fileID: 4695651000987778160}
+  - component: {fileID: 7491918043705471401}
   m_Layer: 0
   m_Name: CollisionSampleShip1
   m_TagString: Untagged
@@ -111,10 +112,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a0e4a2dc4156d44afcc966313a6a53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BulletType: 0
   BulletLifetime: 5
   BulletSpeed: 5
   FireInterval: 0.5
   MuzzleOffset: 0.75
+--- !u!114 &7491918043705471401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcccab9e3e3b4ee489544553680f6718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsTargetable: 1
+  TargetingMode: 0
+  RetargetInterval: 2
 --- !u!1 &2732256275161708102
 GameObject:
   m_ObjectHideFlags: 0

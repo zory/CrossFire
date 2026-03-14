@@ -7,8 +7,9 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// apply drag
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(SnapshotSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(SnapshotSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct LinearDampingSystem : ISystem
 	{

@@ -8,9 +8,10 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// sync physics pose
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(CollisionDetectionSystem))]
-	[UpdateBefore(typeof(TransformSystemGroup))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(CollisionDetectionSystem))]
+	//[UpdateBefore(typeof(TransformSystemGroup))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct PostPhysicsSystem : ISystem
 	{

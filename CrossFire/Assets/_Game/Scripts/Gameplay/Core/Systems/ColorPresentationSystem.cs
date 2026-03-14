@@ -1,12 +1,11 @@
-using CrossFire.Core;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Presentation
+namespace CrossFire.Core
 {
+	[DisableAutoCreation]
 	[BurstCompile]
-	[UpdateInGroup(typeof(PresentationSystemGroup))]
 	public partial struct ColorPresentationSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)

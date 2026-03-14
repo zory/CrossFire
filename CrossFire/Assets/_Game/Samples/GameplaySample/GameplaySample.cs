@@ -1,6 +1,6 @@
 using CrossFire.Physics;
-using CrossFire.Player;
 using CrossFire.Ships;
+using CrossFire.Targeting;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;

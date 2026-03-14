@@ -4,8 +4,9 @@ using Unity.Mathematics;
 
 namespace CrossFire.Physics
 {
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(PositionIntegrationSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(PositionIntegrationSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct MaxVelocityClampSystem : ISystem
 	{

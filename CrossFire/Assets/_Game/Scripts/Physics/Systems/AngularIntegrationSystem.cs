@@ -6,8 +6,9 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// rotates stuff
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(LinearDampingSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(LinearDampingSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct AngularIntegrationSystem : ISystem
 	{

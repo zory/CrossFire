@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CrossFire.Combat
+namespace CrossFire.Core
 {
 	public struct TargetRetargetTimer : IComponentData
 	{

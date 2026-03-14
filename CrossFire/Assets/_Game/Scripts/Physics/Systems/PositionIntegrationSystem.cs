@@ -6,8 +6,9 @@ namespace CrossFire.Physics
 	/// <summary>
 	/// Moves stuff
 	/// </summary>
-	[UpdateInGroup(typeof(SimulationSystemGroup))]
-	[UpdateAfter(typeof(AngularIntegrationSystem))]
+	//[UpdateInGroup(typeof(SimulationSystemGroup))]
+	//[UpdateAfter(typeof(AngularIntegrationSystem))]
+	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct PositionIntegrationSystem : ISystem
 	{
