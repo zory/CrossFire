@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CrossFire.Player
+namespace CrossFire.Targeting
 {
 	public struct ControlledTag : IComponentData { }
 }

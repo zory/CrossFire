@@ -3,7 +3,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace CrossFire.Combat
+namespace CrossFire.Targeting
 {
 	/// <summary>
 	/// Validates CurrentTarget.
@@ -11,7 +11,6 @@ namespace CrossFire.Combat
 	/// - clears CurrentTarget
 	/// - requests reacquire for non-manual ships
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct TargetValidationSystem : ISystem

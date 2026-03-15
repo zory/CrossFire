@@ -2,7 +2,6 @@ using CrossFire.Combat;
 using CrossFire.Core;
 using CrossFire.Lookup;
 using CrossFire.Physics;
-using CrossFire.Player;
 using CrossFire.Presentation;
 using CrossFire.Ships;
 using CrossFire.Targeting;
@@ -68,7 +67,7 @@ namespace CrossFire.App
 			AddUnmanaged<CollisionEventCleanupSystem>(world);
 
 			AddUnmanaged<ColorPresentationSystem>(world); //PresentationSystemGroup
-			AddUnmanaged < CollisionDebugSystem>(world);    //PresentationSystemGroup
+			AddUnmanaged<CollisionDebugSystem>(world);    //PresentationSystemGroup
 															
 			//SortSystems();
 		}

@@ -1,11 +1,9 @@
-using CrossFire;
+using CrossFire.Physics;
+using CrossFire.Targeting;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
-using CrossFire.Physics;
-using CrossFire.Player;
 
 [BurstCompile]
 public partial struct CameraFollowSystem : ISystem
@@ -17,24 +15,33 @@ public partial struct CameraFollowSystem : ISystem
 
 	public void OnUpdate(ref SystemState state)
 	{
-		if (CameraReference.Instance == null) return;
+		if (CameraReference.Instance == null)
+		{
+			return;
+		}
 
 		var camera = CameraReference.Instance.Camera;
-		if (camera == null) return;
+		if (camera == null)
+		{
+			return;
+		}
 
 		float2 targetPosition = float2.zero;
 		bool found = false;
 
 		foreach (var transform in
 				 SystemAPI.Query<RefRO<WorldPose>>()
-				 .WithAll<ControlledTag>())
+					.WithAll<ControlledTag>())
 		{
 			targetPosition = transform.ValueRO.Value.Position;
 			found = true;
 			break; // assume single controlled entity
 		}
 
-		if (!found) return;
+		if (!found)
+		{
+			return;
+		}
 
 		Vector3 current = camera.transform.position;
 		Vector3 target = new Vector3(targetPosition.x, targetPosition.y, current.z);

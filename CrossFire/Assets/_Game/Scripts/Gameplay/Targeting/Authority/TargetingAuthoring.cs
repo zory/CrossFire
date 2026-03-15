@@ -1,4 +1,3 @@
-using CrossFire.Combat;
 using CrossFire.Core;
 using Unity.Entities;
 using UnityEngine;

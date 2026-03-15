@@ -1,15 +1,12 @@
-using CrossFire.Combat;
 using CrossFire.Core;
 using CrossFire.Physics;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Player
+namespace CrossFire.Targeting
 {
 	[DisableAutoCreation]
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(PlayerIntentSystem))]
 	[BurstCompile]
 	public partial struct AIIntentSystem : ISystem
 	{
@@ -27,8 +24,8 @@ namespace CrossFire.Player
 			EntityManager entityManager = state.EntityManager;
 
 			foreach ((RefRO<WorldPose> selfPose, RefRO<CurrentTarget> currentTarget, RefRW<ControlIntent> controlIntent) in
-					 SystemAPI.Query<RefRO<WorldPose>, RefRO<CurrentTarget>, RefRW<ControlIntent>>()
-						.WithNone<ControlledTag>())
+					 SystemAPI.Query<RefRO<WorldPose>, RefRO<CurrentTarget>, RefRW<ControlIntent>>().
+						WithNone<ControlledTag>())
 			{
 				Entity targetEntity = currentTarget.ValueRO.Value;
 
@@ -40,19 +37,19 @@ namespace CrossFire.Player
 					continue;
 				}
 
-				Pose2D self = selfPose.ValueRO.Value;
-				Pose2D targetPose = entityManager.GetComponentData<WorldPose>(targetEntity).Value;
+				Pose2D selfPoseValue = selfPose.ValueRO.Value;
+				Pose2D targetPoseValue = entityManager.GetComponentData<WorldPose>(targetEntity).Value;
 
-				float2 toTarget = targetPose.Position - self.Position;
+				float2 toTarget = targetPoseValue.Position - selfPoseValue.Position;
 				float distanceSq = math.lengthsq(toTarget);
 
 				float desiredTheta = math.atan2(-toTarget.x, toTarget.y);
-				float deltaTheta = NormalizeAngle(desiredTheta - self.ThetaRad);
+				float deltaTheta = NormalizeAngle(desiredTheta - selfPoseValue.ThetaRad);
 
 				float turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
 				float thrust = 1f;
 
-				float2 forward = new float2(-math.sin(self.ThetaRad), math.cos(self.ThetaRad));
+				float2 forward = new float2(-math.sin(selfPoseValue.ThetaRad), math.cos(selfPoseValue.ThetaRad));
 				float2 directionToTarget = math.normalizesafe(toTarget);
 				float facingDot = math.dot(forward, directionToTarget);
 

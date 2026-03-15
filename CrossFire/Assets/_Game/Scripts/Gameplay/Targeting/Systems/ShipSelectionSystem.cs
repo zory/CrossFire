@@ -4,41 +4,9 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 
-namespace CrossFire.Player
+namespace CrossFire.Targeting
 {
-	public struct SelectionRequestBufferTag : IComponentData { }
-
-	public struct SelectionRequestCommand : IBufferElementData
-	{
-		public float2 WorldPosition;
-		public float PickRadius;
-
-		public override string ToString()
-		{
-			return
-				string.Format(
-					"SelectionRequestCommand. " +
-					"WorldPosition:{0} " +
-					"PickRadius:{1}",
-					WorldPosition, PickRadius
-				);
-		}
-	}
-
-	public partial struct ClickPickRequestBufferSystem : ISystem
-	{
-		public void OnCreate(ref SystemState state)
-		{
-			Entity entity = state.EntityManager.CreateEntity();
-			state.EntityManager.AddComponent<SelectionRequestBufferTag>(entity);
-			state.EntityManager.AddBuffer<SelectionRequestCommand>(entity);
-		}
-
-		public void OnUpdate(ref SystemState state) { }
-	}
-
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct ShipSelectionSystem : ISystem
@@ -77,7 +45,7 @@ namespace CrossFire.Player
 				//This is debug colouring for selected units
 				float4 nativeColor = entityManager.GetComponentData<NativeColor>(currentlyControlled[i]).Value;
 				CoreHelpers.SetColor(entityManager, currentlyControlled[i], nativeColor);
-				
+
 				ecb.RemoveComponent<ControlledTag>(currentlyControlled[i]);
 			}
 			currentlyControlled.Dispose();

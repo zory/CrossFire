@@ -4,14 +4,12 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Combat
+namespace CrossFire.Targeting
 {
 	/// <summary>
 	/// For ThreatRetarget ships:
 	/// every RetargetInterval seconds add NeedsTargetTag.
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(TargetValidationSystem))]
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct TargetRetargetTimerSystem : ISystem

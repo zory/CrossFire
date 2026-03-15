@@ -3,10 +3,8 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace CrossFire.Combat
+namespace CrossFire.Targeting
 {
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(TargetValidationSystem))]
 	[DisableAutoCreation]
 	public partial struct ManualTargetApplySystem : ISystem
 	{
@@ -22,8 +20,8 @@ namespace CrossFire.Combat
 			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
 			foreach ((RefRO<ManualTarget> manualTarget, RefRW<CurrentTarget> currentTarget, RefRO<TargetingProfile> targetingProfile, RefRO<TeamId> selfTeam, Entity selfEntity) in
-					 SystemAPI.Query<RefRO<ManualTarget>, RefRW<CurrentTarget>, RefRO<TargetingProfile>, RefRO<TeamId>>()
-						.WithEntityAccess())
+					 SystemAPI.Query<RefRO<ManualTarget>, RefRW<CurrentTarget>, RefRO<TargetingProfile>, RefRO<TeamId>>().
+						WithEntityAccess())
 			{
 				if (targetingProfile.ValueRO.Mode != TargetingMode.Manual)
 				{

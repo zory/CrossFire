@@ -1,7 +1,7 @@
 using CrossFire.Core;
 using Unity.Entities;
 
-namespace CrossFire.Combat
+namespace CrossFire.Targeting
 {
 	public static class TargetingHelpers
 	{
