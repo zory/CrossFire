@@ -471,7 +471,17 @@ MonoBehaviour:
   ListenForSelectableWithMouse: 1
   PickRadius: 0.5
   ShipControl: 1
-  CreateBattleGround: 1
+  CreateBattleGround: 0
+  Targeting: 0
+  Targeting_ShipId: 1
+  Targeting_Mode: 1
+  Targeting_WorldPosition:
+    x: 0
+    y: 0
+  Targeting_TargetShipId: 0
+  Targeting_PreferredDistance: 8
+  Targeting_DistanceTolerance: 2
+  Targeting_ArrivalDistance: 0.5
 --- !u!4 &2010885622
 Transform:
   m_ObjectHideFlags: 0

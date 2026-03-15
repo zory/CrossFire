@@ -1,6 +1,7 @@
+using CrossFire.Core;
 using CrossFire.Physics;
-using CrossFire.Targeting;
 using CrossFire.Ships;
+using CrossFire.Targeting;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -25,6 +26,16 @@ namespace CrossFire.Samples
 
 		[Header("Ship controll")]
 		public bool CreateBattleGround;
+
+		[Header("Targeting")]
+		public bool Targeting;
+		public int Targeting_ShipId = 1;
+		public MovementTargetMode Targeting_Mode = MovementTargetMode.FlyToPoint;
+		public float2 Targeting_WorldPosition;
+		public int Targeting_TargetShipId;
+		public float Targeting_PreferredDistance = 8f;
+		public float Targeting_DistanceTolerance = 2f;
+		public float Targeting_ArrivalDistance = 0.5f;
 
 		private void Start()
 		{
@@ -155,6 +166,63 @@ namespace CrossFire.Samples
 				DynamicBuffer<ShipControlIntentCommand> commandBuffer = entityManager.GetBuffer<ShipControlIntentCommand>(entity);
 				commandBuffer.Add(command);
 			}
+
+			if (Targeting)
+			{
+				Targeting = false;
+
+				Entity ship = FindShip(entityManager, Targeting_ShipId);
+				if (ship == Entity.Null)
+				{
+					Debug.Log("Ship not found");
+					return;
+				}
+
+				TargetReference targetRef = TargetReference.None();
+
+				if (Targeting_Mode == MovementTargetMode.FlyToPoint)
+				{
+					targetRef = TargetReference.FromWorldPosition(Targeting_WorldPosition);
+				}
+				else
+				{
+					Entity targetShip = FindShip(entityManager, Targeting_TargetShipId);
+					if (targetShip == Entity.Null)
+					{
+						Debug.Log("Target ship not found");
+						return;
+					}
+
+					targetRef = TargetReference.FromEntity(targetShip);
+				}
+
+				entityManager.SetComponentData(ship, new MovementTarget
+				{
+					Reference = targetRef,
+					Mode = Targeting_Mode,
+					PreferredDistance = Targeting_PreferredDistance,
+					DistanceTolerance = Targeting_DistanceTolerance,
+					ArrivalDistance = Targeting_ArrivalDistance
+				});
+
+				Debug.Log("Movement command issued");
+			}
+		}
+
+		private Entity FindShip(EntityManager em, int id)
+		{
+			var query = em.CreateEntityQuery(typeof(StableId));
+
+			using var entities = query.ToEntityArray(Unity.Collections.Allocator.Temp);
+			using var ids = query.ToComponentDataArray<StableId>(Unity.Collections.Allocator.Temp);
+
+			for (int i = 0; i < entities.Length; i++)
+			{
+				if (ids[i].Value == id)
+					return entities[i];
+			}
+
+			return Entity.Null;
 		}
 	}
 }
