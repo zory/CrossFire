@@ -6,40 +6,25 @@ namespace CrossFire.Targeting
 {
 	public class TargetingAuthoring : MonoBehaviour
 	{
-		public TargetingMode TargetingMode = TargetingMode.StickyNearest;
-		public float RetargetInterval = 2f;
-
 		class Baker : Baker<TargetingAuthoring>
 		{
 			public override void Bake(TargetingAuthoring authoring)
 			{
-				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
+				Entity entity = GetEntity(TransformUsageFlags.Dynamic);
 
-				AddComponent(prefabEntity, new CurrentTarget
+				AddComponent(entity, new NavigationTarget
 				{
-					Value = Entity.Null
+					Value = TargetReference.None()
 				});
 
-				AddComponent(prefabEntity, new ManualTarget
+				AddComponent(entity, new NavigationSolution
 				{
-					Value = Entity.Null
+					Destination = default,
+					HasSolution = 0
 				});
 
-				AddComponent(prefabEntity, new TargetingProfile
-				{
-					Mode = authoring.TargetingMode,
-					RetargetInterval = authoring.RetargetInterval
-				});
-
-				AddComponent(prefabEntity, new TargetRetargetTimer
-				{
-					TimeLeft = authoring.RetargetInterval
-				});
-
-				if (authoring.TargetingMode != TargetingMode.Manual)
-				{
-					AddComponent<NeedsTargetTag>(prefabEntity);
-				}
+				AddBuffer<WeaponTarget>(entity);
+				AddBuffer<WeaponAimSolution>(entity);
 			}
 		}
 	}

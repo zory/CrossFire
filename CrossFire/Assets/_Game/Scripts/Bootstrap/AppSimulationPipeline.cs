@@ -38,10 +38,13 @@ namespace CrossFire.App
 			AddUnmanaged<ShipSelectionSystem>(world);
 			AddUnmanaged<PlayerIntentSystem>(world);
 
-			AddUnmanaged<TargetValidationSystem>(world);
-			AddUnmanaged<ManualTargetApplySystem>(world);
-			AddUnmanaged<TargetAcquireSystem>(world);
-			AddUnmanaged<TargetRetargetTimerSystem>(world);
+			//AddUnmanaged<TargetValidationSystem>(world);
+			//AddUnmanaged<ManualTargetApplySystem>(world);
+			//AddUnmanaged<TargetAcquireSystem>(world);
+			//AddUnmanaged<TargetRetargetTimerSystem>(world);
+			AddUnmanaged<SimpleAutoTargetSystem>(world);
+			AddUnmanaged<NavigationTargetResolveSystem>(world);
+			AddUnmanaged<WeaponTargetResolveSystem>(world);
 			AddUnmanaged<AIIntentSystem>(world);
 
 			// Movement

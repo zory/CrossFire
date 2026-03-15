@@ -10,26 +10,60 @@ namespace CrossFire.Targeting
 	[BurstCompile]
 	public partial struct AIIntentSystem : ISystem
 	{
+		private const float NavigationArrivalDistance = 0.5f;
 		private const float FireRange = 10f;
 		private const float FireConeCos = 0.98f;
 
 		public void OnCreate(ref SystemState state)
 		{
-			state.RequireForUpdate<CurrentTarget>();
+			state.RequireForUpdate<NavigationSolution>();
 		}
 
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			EntityManager entityManager = state.EntityManager;
-
-			foreach ((RefRO<WorldPose> selfPose, RefRO<CurrentTarget> currentTarget, RefRW<ControlIntent> controlIntent) in
-					 SystemAPI.Query<RefRO<WorldPose>, RefRO<CurrentTarget>, RefRW<ControlIntent>>().
-						WithNone<ControlledTag>())
+			foreach ((RefRO<WorldPose> selfPose,
+					  RefRW<ControlIntent> controlIntent,
+					  RefRO<NavigationSolution> navigationSolution,
+					  DynamicBuffer<WeaponAimSolution> weaponAimSolutions) in
+					 SystemAPI.Query<RefRO<WorldPose>, RefRW<ControlIntent>, RefRO<NavigationSolution>, DynamicBuffer<WeaponAimSolution>>()
+						.WithNone<ControlledTag>())
 			{
-				Entity targetEntity = currentTarget.ValueRO.Value;
+				Pose2D self = selfPose.ValueRO.Value;
+				float2 selfPosition = self.Position;
+				float2 selfForward = new float2(-math.sin(self.ThetaRad), math.cos(self.ThetaRad));
 
-				if (targetEntity == Entity.Null || !entityManager.Exists(targetEntity) || !entityManager.HasComponent<WorldPose>(targetEntity))
+				bool hasNav = navigationSolution.ValueRO.HasSolution != 0;
+				bool hasWeaponAim = false;
+				float2 preferredAimPoint = selfPosition;
+
+				for (int index = 0; index < weaponAimSolutions.Length; index++)
+				{
+					if (weaponAimSolutions[index].HasSolution == 0)
+					{
+						continue;
+					}
+
+					hasWeaponAim = true;
+					preferredAimPoint = weaponAimSolutions[index].AimPoint;
+					break;
+				}
+
+				float2 steeringTarget = selfPosition;
+				bool hasSteeringTarget = false;
+
+				if (hasNav)
+				{
+					steeringTarget = navigationSolution.ValueRO.Destination;
+					hasSteeringTarget = true;
+				}
+				else if (hasWeaponAim)
+				{
+					steeringTarget = preferredAimPoint;
+					hasSteeringTarget = true;
+				}
+
+				if (!hasSteeringTarget)
 				{
 					controlIntent.ValueRW.Turn = 0f;
 					controlIntent.ValueRW.Thrust = 0f;
@@ -37,26 +71,67 @@ namespace CrossFire.Targeting
 					continue;
 				}
 
-				Pose2D selfPoseValue = selfPose.ValueRO.Value;
-				Pose2D targetPoseValue = entityManager.GetComponentData<WorldPose>(targetEntity).Value;
+				float2 toSteeringTarget = steeringTarget - selfPosition;
+				float distanceSq = math.lengthsq(toSteeringTarget);
 
-				float2 toTarget = targetPoseValue.Position - selfPoseValue.Position;
-				float distanceSq = math.lengthsq(toTarget);
+				if (distanceSq < 0.0001f)
+				{
+					controlIntent.ValueRW.Turn = 0f;
+					controlIntent.ValueRW.Thrust = 0f;
+				}
+				else
+				{
+					float desiredTheta = math.atan2(-toSteeringTarget.x, toSteeringTarget.y);
+					float deltaTheta = NormalizeAngle(desiredTheta - self.ThetaRad);
 
-				float desiredTheta = math.atan2(-toTarget.x, toTarget.y);
-				float deltaTheta = NormalizeAngle(desiredTheta - selfPoseValue.ThetaRad);
+					float turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
+					float thrust = 0f;
 
-				float turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
-				float thrust = 1f;
+					if (hasNav)
+					{
+						if (distanceSq > NavigationArrivalDistance * NavigationArrivalDistance)
+						{
+							thrust = 1f;
+						}
+					}
+					else
+					{
+						thrust = 1f;
+					}
 
-				float2 forward = new float2(-math.sin(selfPoseValue.ThetaRad), math.cos(selfPoseValue.ThetaRad));
-				float2 directionToTarget = math.normalizesafe(toTarget);
-				float facingDot = math.dot(forward, directionToTarget);
+					controlIntent.ValueRW.Turn = turn;
+					controlIntent.ValueRW.Thrust = thrust;
+				}
 
-				byte fire = (byte)((distanceSq <= FireRange * FireRange && facingDot >= FireConeCos) ? 1 : 0);
+				byte fire = 0;
 
-				controlIntent.ValueRW.Turn = turn;
-				controlIntent.ValueRW.Thrust = thrust;
+				for (int index = 0; index < weaponAimSolutions.Length; index++)
+				{
+					WeaponAimSolution weaponSolution = weaponAimSolutions[index];
+
+					if (weaponSolution.HasSolution == 0)
+					{
+						continue;
+					}
+
+					float2 toAimPoint = weaponSolution.AimPoint - selfPosition;
+					float weaponDistanceSq = math.lengthsq(toAimPoint);
+
+					if (weaponDistanceSq < 0.0001f)
+					{
+						continue;
+					}
+
+					float2 aimDirection = math.normalizesafe(toAimPoint);
+					float facingDot = math.dot(selfForward, aimDirection);
+
+					if (weaponDistanceSq <= FireRange * FireRange && facingDot >= FireConeCos)
+					{
+						fire = 1;
+						break;
+					}
+				}
+
 				controlIntent.ValueRW.Fire = fire;
 			}
 		}

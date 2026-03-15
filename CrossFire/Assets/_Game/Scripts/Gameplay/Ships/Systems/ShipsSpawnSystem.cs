@@ -64,12 +64,7 @@ namespace CrossFire.Ships
 					}
 				);
 
-				SetPose(entityManager, shipEntity, command.Pose);
-
-				if (!entityManager.HasComponent<NeedsTargetTag>(shipEntity))
-				{
-					entityManager.AddComponent<NeedsTargetTag>(shipEntity);
-				}
+				SetPose(entityManager, shipEntity, command.Pose); 
 			}
 
 			commands.Dispose();
