@@ -1,6 +1,5 @@
 using CrossFire.Core;
 using CrossFire.Physics;
-using CrossFire.Player;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -25,7 +24,7 @@ namespace CrossFire.Combat
 			EntityManager entityManager = state.EntityManager;
 			EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-			foreach (var (worldPoseRO, controlIntentRO, weaponConfigRO, weaponCooldownRW, entity) in 
+			foreach (var (worldPoseRO, controlIntentRO, weaponConfigRO, weaponCooldownRW, entity) in
 					SystemAPI.Query<RefRO<WorldPose>, RefRO<ControlIntent>, RefRO<WeaponConfig>, RefRW<WeaponCooldown>>().
 						WithEntityAccess())
 			{

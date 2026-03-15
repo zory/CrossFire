@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 823646163044960884}
   - component: {fileID: 6226822588448323137}
   - component: {fileID: 6556653331230967050}
+  - component: {fileID: 7699180444536806306}
   m_Layer: 0
   m_Name: TargetingSampleShip2
   m_TagString: Untagged
@@ -105,8 +106,6 @@ MonoBehaviour:
   ThrustAcceleration: 30
   BrakeAcceleration: 10
   Health: 3
-  TargetingMode: 1
-  RetargetInterval: 2
 --- !u!114 &6226822588448323137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +145,21 @@ MonoBehaviour:
   BulletSpeed: 20
   FireInterval: 0.3
   MuzzleOffset: 0.75
+--- !u!114 &7699180444536806306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d1f4a7ed397b464480b07670e68d2af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsTargetable: 1
+  TargetingMode: 1
+  RetargetInterval: 2
 --- !u!1 &1666994534230002593
 GameObject:
   m_ObjectHideFlags: 0

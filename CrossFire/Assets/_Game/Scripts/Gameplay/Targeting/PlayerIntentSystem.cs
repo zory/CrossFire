@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using CrossFire.Physics;
+using CrossFire.Core;
 
 namespace CrossFire.Player
 {
