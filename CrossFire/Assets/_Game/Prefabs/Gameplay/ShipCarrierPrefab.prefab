@@ -116,6 +116,7 @@ GameObject:
   - component: {fileID: 823646163044960884}
   - component: {fileID: 1759414717694453540}
   - component: {fileID: 377214584359128890}
+  - component: {fileID: 9214982783270063985}
   m_Layer: 0
   m_Name: ShipCarrierPrefab
   m_TagString: Untagged
@@ -245,6 +246,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d1f4a7ed397b464480b07670e68d2af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsTargetable: 1
   TargetingMode: 0
   RetargetInterval: 2
+--- !u!114 &9214982783270063985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7210359bb84865646ae66b19705b1b00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

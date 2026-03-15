@@ -6,7 +6,6 @@ namespace CrossFire.Targeting
 {
 	public class TargetingAuthoring : MonoBehaviour
 	{
-		public bool IsTargetable = true;
 		public TargetingMode TargetingMode = TargetingMode.StickyNearest;
 		public float RetargetInterval = 2f;
 
@@ -15,11 +14,6 @@ namespace CrossFire.Targeting
 			public override void Bake(TargetingAuthoring authoring)
 			{
 				Entity prefabEntity = GetEntity(TransformUsageFlags.Dynamic);
-
-				if (authoring.IsTargetable)
-				{
-					AddComponent<TargetableTag>(prefabEntity);
-				}
 
 				AddComponent(prefabEntity, new CurrentTarget
 				{

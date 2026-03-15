@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3316845033982528947}
   - component: {fileID: -6406603622405969409}
   - component: {fileID: 2763666389047991544}
+  - component: {fileID: -4198668126086783761}
   m_Layer: 0
   m_Name: ShipBomberPrefab
   m_TagString: Untagged
@@ -157,9 +158,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d1f4a7ed397b464480b07670e68d2af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsTargetable: 1
   TargetingMode: 0
   RetargetInterval: 2
+--- !u!114 &-4198668126086783761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710218108567178225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7210359bb84865646ae66b19705b1b00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9070606738214520555
 GameObject:
   m_ObjectHideFlags: 0
