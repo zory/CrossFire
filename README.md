@@ -1,5 +1,5 @@
 # CrossFire
-Just random small project to see AI capabilities
+Just random small project to see Unity ECS capabilities and how AI ccan help in development. Two things I always wanted to incorporate.
 
 # CrossFire Physics (DOTS / ECS)
 
