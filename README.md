@@ -5,6 +5,9 @@ Just random small project to see Unity ECS capabilities and how AI ccan help in 
 
 Custom 2D physics pipeline for a space shooter.
 
+# Packages
+I have several packages which I use and develop for UI, for basic math, etc. For now it is private as there are some code which might be "borrowed". Idea is to make it public once I will clean it up from all those files or assets.
+
 ---
 
 # Authoring Components
