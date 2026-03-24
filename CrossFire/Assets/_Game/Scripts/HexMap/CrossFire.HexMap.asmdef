@@ -1,0 +1,16 @@
+{
+    "name": "CrossFire.HexMap",
+    "rootNamespace": "CrossFire.HexMap",
+    "references": [
+        "GUID:9f22e5378eab74b4aa112e2a7d4d356b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
