@@ -39,6 +39,7 @@ namespace CrossFire.HexMap
 		public GameObject TilePrefab;
 		public string FileName = "SavedMap";
 		public bool SaveNow;
+		public bool LoadNow;
 
 		private Wunderwunsch.HexMapLibrary.HexMap _hexMap;
 		private HexMouse _hexMouse;
@@ -91,6 +92,11 @@ namespace CrossFire.HexMap
 				SaveNow = false;
 				Save();
 			}
+			if (LoadNow)
+			{
+				LoadNow = false;
+				Load();
+			}
 		}
 
 		private void DestroyMap()
@@ -104,6 +110,7 @@ namespace CrossFire.HexMap
 			var positionCollection = _tileIndexByPosition.Keys.ToList();
 			positionCollection.Sort(new Vector3IntComparer());
 			_tileIndexByPosition.Clear();
+			_index = 0;
 			foreach (var position in positionCollection)
 			{
 				_tileIndexByPosition.Add(position, _index);
@@ -141,6 +148,31 @@ namespace CrossFire.HexMap
 			SaveToFile(json);
 		}
 
+		private void Load()
+		{
+			string json = LoadFromFile();
+			if (json == null)
+			{
+				return;
+			}
+
+			MapDataWrapper wrapper = JsonUtility.FromJson<MapDataWrapper>(json);
+
+			DestroyMap();
+			_tileIndexByPosition.Clear();
+			foreach (var offsetPos in wrapper.TilePositions)
+			{
+				Vector3Int tilePos = HexConverter.OffsetTileCoordToTileCoord(offsetPos);
+				if (!_tileIndexByPosition.ContainsKey(tilePos))
+				{
+					_tileIndexByPosition.Add(tilePos, _index);
+					_index++;
+				}
+			}
+
+			CreateMap();
+		}
+
 		private void SaveToFile(string content)
 		{
 			// Ensure folder exists
@@ -155,6 +187,16 @@ namespace CrossFire.HexMap
 			path = Path.Combine(path, FileName + ".wm");
 
 			File.WriteAllText(path, content);
+		}
+
+		private string LoadFromFile()
+		{
+			string path = Path.Combine(Application.streamingAssetsPath, "Data", "WorldMaps", FileName + ".wm");
+			if (File.Exists(path))
+			{
+				return File.ReadAllText(path);
+			}
+			return null;
 		}
 	}
 }
