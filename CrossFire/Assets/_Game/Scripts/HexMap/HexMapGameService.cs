@@ -22,7 +22,8 @@ namespace CrossFire.HexMap
 		{
 			hexMap = new HexMap<int, bool>(HexMapBuilder.CreateRectangularShapedMap(mapSize), null);
 			hexMouse = new HexMouse();
-			hexMouse.Init(hexMap, useMonoBehaviourHelper: true);
+			hexMouse.Init(useMonoBehaviourHelper: true);
+			hexMouse.UpdateHexMap(hexMap);
 			tileObjects = new GameObject[hexMap.TilesByPosition.Count];
 			var parentGO = new GameObject("HexGrid");
 			foreach (var tile in hexMap.Tiles) //loops through all the tiles, assigns them a random value and instantiates and positions a gameObject for each of them.
@@ -42,13 +43,20 @@ namespace CrossFire.HexMap
 			Camera.main.orthographicSize = hexMap.MapSizeData.extents.z * 2 * 0.8f; // sets orthographic size of the camera.]																		//this does not account for aspect ratio but for our purposes it works good enough.
 		}
 
+		public bool cursorOnMap;
+		public Vector2Int offsetCoord;
+		public Vector3 cartesianCoord;
 		void Update()
 		{
+			cursorOnMap = hexMouse.CursorIsOnMap;
+			offsetCoord = hexMouse.OffsetCoordInfiniteGrid;
+			cartesianCoord = hexMouse.CartesianCoordInfiniteGrid;
 			if (!hexMouse.CursorIsOnMap)
 			{
 				return; // if we are not on the map we won't do anything so we can return
 			}
 			Vector3Int mouseTilePosition = hexMouse.TileCoord;
+			
 			//update the marker positions
 			if (Input.GetMouseButtonDown(0)) // change a tile when clicked on it
 			{
