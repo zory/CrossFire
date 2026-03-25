@@ -1,10 +1,7 @@
 {
-    "name": "CrossFire.HexMap",
-    "rootNamespace": "CrossFire.HexMap",
-    "references": [
-        "GUID:9f22e5378eab74b4aa112e2a7d4d356b",
-        "GUID:d5c888ccecaba5e4e9422bff33c097e3"
-    ],
+    "name": "CrossFire.Utilities",
+    "rootNamespace": "CrossFire.Utilities",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

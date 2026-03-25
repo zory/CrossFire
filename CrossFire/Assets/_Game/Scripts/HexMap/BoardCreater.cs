@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Wunderwunsch.HexMapLibrary;
 
 namespace CrossFire.HexMap
@@ -29,10 +26,7 @@ namespace CrossFire.HexMap
 		}
 	}
 
-	public class MapDataWrapper
-	{
-		public List<Vector2Int> TilePositions;
-	}
+
 
 	public class BoardCreater : MonoBehaviour
 	{
@@ -90,12 +84,17 @@ namespace CrossFire.HexMap
 			if (SaveNow)
 			{
 				SaveNow = false;
-				Save();
+				WorldMapSaveData.SaveWorldMap(FileName, _tileIndexByPosition);
 			}
 			if (LoadNow)
 			{
 				LoadNow = false;
-				Load();
+
+				DestroyMap();
+				_tileIndexByPosition.Clear();
+				_tileIndexByPosition = WorldMapSaveData.LoadWorldMap(FileName);
+
+				CreateMap();
 			}
 		}
 
@@ -131,72 +130,29 @@ namespace CrossFire.HexMap
 			}
 		}
 
-		private void Save()
+		private void SaveWorldMap()
 		{
-			List<Vector2Int> positions = new List<Vector2Int>();
-			foreach (var tilePos in _tileIndexByPosition)
-			{
-				positions.Add(HexConverter.TileCoordToOffsetTileCoord(tilePos.Key));
-			}
-			MapDataWrapper wrapper = new MapDataWrapper
-			{
-				TilePositions = positions,
-			};
 
-			string json = JsonUtility.ToJson(wrapper, true);
-			UnityEngine.Debug.Log("SaveData: " + json);
-			SaveToFile(json);
 		}
 
-		private void Load()
+		private void UnloadWorldMap()
 		{
-			string json = LoadFromFile();
-			if (json == null)
-			{
-				return;
-			}
 
-			MapDataWrapper wrapper = JsonUtility.FromJson<MapDataWrapper>(json);
-
-			DestroyMap();
-			_tileIndexByPosition.Clear();
-			foreach (var offsetPos in wrapper.TilePositions)
-			{
-				Vector3Int tilePos = HexConverter.OffsetTileCoordToTileCoord(offsetPos);
-				if (!_tileIndexByPosition.ContainsKey(tilePos))
-				{
-					_tileIndexByPosition.Add(tilePos, _index);
-					_index++;
-				}
-			}
-
-			CreateMap();
 		}
 
-		private void SaveToFile(string content)
+		private void LoadWorldMap()
 		{
-			// Ensure folder exists
-			Directory.CreateDirectory(Application.streamingAssetsPath);
 
-			string path = Path.Combine(Application.streamingAssetsPath, "Data");
-			Directory.CreateDirectory(path);
-
-			path = Path.Combine(path, "WorldMaps");
-			Directory.CreateDirectory(path);
-
-			path = Path.Combine(path, FileName + ".wm");
-
-			File.WriteAllText(path, content);
 		}
 
-		private string LoadFromFile()
+		private void AddTileToWorldMap()
 		{
-			string path = Path.Combine(Application.streamingAssetsPath, "Data", "WorldMaps", FileName + ".wm");
-			if (File.Exists(path))
-			{
-				return File.ReadAllText(path);
-			}
-			return null;
+
+		}
+
+		private void RemoveTileFromWorldMap()
+		{
+
 		}
 	}
 }
