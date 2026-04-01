@@ -9,10 +9,10 @@ namespace CrossFire.HexMap
 		[SerializeField]
 		private GameObject tilePrefab;
 
-		private readonly Dictionary<Vector3Int, HexCell> _cellsByPosition = new Dictionary<Vector3Int, HexCell>();
+		private readonly Dictionary<Vector3Int, HexTile> _cellsByPosition = new Dictionary<Vector3Int, HexTile>();
 		private GameObject _holder;
 
-		public IReadOnlyDictionary<Vector3Int, HexCell> CellsByPosition => _cellsByPosition;
+		public IReadOnlyDictionary<Vector3Int, HexTile> CellsByPosition => _cellsByPosition;
 
 		public void Render(HexMapContext context)
 		{
@@ -30,14 +30,14 @@ namespace CrossFire.HexMap
 				instance.name = "MapTile_" + tilePosition;
 				instance.transform.position = HexConverter.TileCoordToCartesianCoord(tilePosition, 0);
 
-				HexCell hexCell = instance.GetComponent<HexCell>();
-				_cellsByPosition.Add(tilePosition, hexCell);
+				HexTile hexTile = instance.GetComponent<HexTile>();
+				_cellsByPosition.Add(tilePosition, hexTile);
 			}
 		}
 
 		public void Clear()
 		{
-			foreach (HexCell cell in _cellsByPosition.Values)
+			foreach (HexTile cell in _cellsByPosition.Values)
 			{
 				if (cell != null)
 				{

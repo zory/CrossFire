@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace CrossFire.HexMap
 {
-    public class HexCell : MonoBehaviour
+    public class HexTile : MonoBehaviour
     {
         public SpriteRenderer SpriteRenderer;
-	}
+    }
 }

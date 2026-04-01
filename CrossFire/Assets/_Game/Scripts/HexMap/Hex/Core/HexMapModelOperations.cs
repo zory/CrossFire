@@ -29,9 +29,8 @@ namespace CrossFire.HexMap
 				return false;
 			}
 
-			bool removedBaseTile = model.Tiles.Remove(tilePosition);
-			model.Tiles.Remove(tilePosition);
-			return removedBaseTile;
+			model.TilesToTeamIds.Remove(tilePosition);
+			return model.Tiles.Remove(tilePosition);
 		}
 
 		public static void ReindexTiles(HexMapModel model)

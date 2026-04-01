@@ -7,21 +7,13 @@ namespace CrossFire.HexMap
 	{
 		public void Save(string fileName, HexMapModel model)
 		{
-			Dictionary<Vector3Int, int> filtered = new Dictionary<Vector3Int, int>();
-			foreach (KeyValuePair<Vector3Int, int> pair in model.Tiles)
-			{
-				if (model.Tiles.ContainsKey(pair.Key))
-				{
-					filtered[pair.Key] = pair.Value;
-				}
-			}
-
-			WorldMapOwnersSaveData.SaveWorldMapOwners(fileName, filtered);
+			Dictionary<Vector3Int, int> copy = new Dictionary<Vector3Int, int>(model.TilesToTeamIds);
+			WorldMapOwnersSaveData.SaveWorldMapOwners(fileName, copy);
 		}
 
 		public void LoadInto(string fileName, HexMapModel model)
 		{
-			model.Tiles.Clear();
+			model.TilesToTeamIds.Clear();
 			Dictionary<Vector3Int, int> loaded = WorldMapOwnersSaveData.LoadWorldMapOwners(fileName);
 			foreach (KeyValuePair<Vector3Int, int> pair in loaded)
 			{

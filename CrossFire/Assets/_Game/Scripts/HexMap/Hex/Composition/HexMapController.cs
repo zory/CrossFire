@@ -7,28 +7,26 @@ namespace CrossFire.HexMap
 {
 	public class HexMapController : MonoBehaviour
 	{
-		public event Action OnStructureRebuilt;
-		public event Action OnVisualsRefreshed;
-
 		[SerializeField]
 		private HexMapRenderer mapRenderer;
 		[SerializeField]
 		private HexMouseAdapter mouseAdapter;
+		public HexMouseAdapter MouseAdapter => mouseAdapter;
+		
 		[SerializeField]
 		private MonoBehaviour[] visualLayerBehaviours;
-
-		private readonly HexMapContext _context = new HexMapContext();
 		private IHexMapVisualLayer[] _visualLayers;
-
+		
+		private readonly HexMapContext _context = new HexMapContext();
 		public HexMapContext Context => _context;
-		public IReadOnlyDictionary<Vector3Int, HexCell> CellsByPosition => mapRenderer.CellsByPosition;
-		public HexMouseAdapter MouseAdapter => mouseAdapter;
-
+		
+		public IReadOnlyDictionary<Vector3Int, HexTile> CellsByPosition => mapRenderer.CellsByPosition;
+		
 		private void Awake()
 		{
 			_visualLayers = visualLayerBehaviours
 				.Where(behaviour => behaviour is IHexMapVisualLayer)
-				.Cast<IHexMapVisualLayer>()
+				.OfType<IHexMapVisualLayer>()
 				.ToArray();
 		}
 
@@ -61,8 +59,7 @@ namespace CrossFire.HexMap
 			{
 				mapRenderer.Render(_context);
 			}
-
-			OnStructureRebuilt?.Invoke();
+			
 			RefreshVisuals();
 		}
 
@@ -72,8 +69,6 @@ namespace CrossFire.HexMap
 			{
 				_visualLayers[i].Apply(_context, mapRenderer.CellsByPosition);
 			}
-
-			OnVisualsRefreshed?.Invoke();
 		}
 	}
 }

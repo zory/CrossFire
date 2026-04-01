@@ -8,12 +8,12 @@ namespace CrossFire.HexMap
 		[SerializeField]
 		private Color[] teamColors;
 
-		public void Apply(HexMapContext context, IReadOnlyDictionary<Vector3Int, HexCell> cellsByPosition)
+		public void Apply(HexMapContext context, IReadOnlyDictionary<Vector3Int, HexTile> cellsByPosition)
 		{
-			foreach (KeyValuePair<Vector3Int, HexCell> pair in cellsByPosition)
+			foreach (KeyValuePair<Vector3Int, HexTile> pair in cellsByPosition)
 			{
 				Vector3Int tilePosition = pair.Key;
-				HexCell hexCell = pair.Value;
+				HexTile hexTile = pair.Value;
 
 				Color color = Color.white;
 				if (context.Model.TilesToTeamIds.TryGetValue(tilePosition, out int teamId))
@@ -24,7 +24,7 @@ namespace CrossFire.HexMap
 					}
 				}
 
-				hexCell.SpriteRenderer.color = color;
+				hexTile.SpriteRenderer.color = color;
 			}
 		}
 	}

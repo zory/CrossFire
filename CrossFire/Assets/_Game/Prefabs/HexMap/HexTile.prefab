@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 6103530866314384990}
   - component: {fileID: 262261181365954671}
   m_Layer: 0
-  m_Name: HexCell
+  m_Name: HexTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
