@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find CrossFire/Assets/_Game/Scripts:*)",
+      "Bash(find CrossFire/Assets/_Game/Samples:*)",
+      "Bash(find CrossFire/Assets/_Game/Shaders:*)",
+      "Bash(find CrossFire/Assets/_Game/Tests:*)",
+      "Bash(find CrossFire/Assets/_Game/VisualEffects:*)",
+      "Bash(find CrossFire/Assets/StreamingAssets/Data:*)",
+      "Bash(git:*)"
+    ],
+    "deny": [
+      "Read(CrossFire/ProjectSettings/**)",
+      "Read(CrossFire/Assets/TextMesh Pro/**)",
+      "Read(**/ProjectSettings/**)",
+      "Read(**/*.meta)",
+      "Read(**/*.unity)",
+      "Read(**/*.asset)",
+      "Read(**/*.prefab)",
+      "Read(**/*.anim)",
+      "Read(**/*.controller)",
+      "Read(**/*.png)",
+      "Read(**/*.jpg)",
+      "Read(**/*.jpeg)",
+      "Read(**/*.tga)",
+      "Read(**/*.psd)",
+      "Read(**/*.fbx)",
+      "Read(**/*.obj)",
+      "Read(**/*.blend)",
+      "Read(**/*.wav)",
+      "Read(**/*.mp3)",
+      "Read(**/*.ogg)"
+    ]
+  }
+}
