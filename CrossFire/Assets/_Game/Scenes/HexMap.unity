@@ -1333,6 +1333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1698428863}
   - component: {fileID: 1698428862}
+  - component: {fileID: 1698428864}
   m_Layer: 0
   m_Name: HexMapCreator
   m_TagString: Untagged
@@ -1352,6 +1353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3a396f61b45d054ca20a1f626d2cbb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnableBoardCreator: 1
   TilePrefab: {fileID: 6159577467980483941, guid: 73e0d518db46ea945b41642b92a2178b, type: 3}
   FileName: SavedMap
   SaveNow: 0
@@ -1371,6 +1373,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1698428864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698428861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 839bdf5c5a0a853428fec27f095676e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HexMapCreatorBase: {fileID: 1698428862}
+  TeamColors:
+  - {r: 0.13266884, g: 0.49056602, b: 0, a: 1}
+  - {r: 0.24056602, g: 0.24056602, b: 1, a: 1}
+  - {r: 1, g: 0.3160377, b: 0.3994069, a: 1}
+  TeamId: 0
+  EnableTeamCreator: 0
+  SaveNow: 0
+  LoadNow: 0
 --- !u!1 &1781406748
 GameObject:
   m_ObjectHideFlags: 0
@@ -1664,7 +1687,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 246171815835723643, guid: 3075f88321b766f458758dec43adb40b, type: 3}
+  m_Sprite: {fileID: -6654157709213206266, guid: 363a8ca7f2c08b847b5fae44a14b7c84, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1691,7 +1714,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8327525259123626683
 Transform:
   m_ObjectHideFlags: 0

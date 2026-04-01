@@ -1,8 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CrossFire.HexMap
 {
-    public static class HexHelpers
+	public class Vector3IntComparer : IComparer<Vector3Int>
+	{
+		public int Compare(Vector3Int a, Vector3Int b)
+		{
+			// First: sort by z (row-like)
+			if (a.z != b.z)
+			{
+				return a.z.CompareTo(b.z);
+			}
+
+			// Then: sort by x (column-like)
+			if (a.x != b.x)
+			{
+				return a.x.CompareTo(b.x);
+			}
+
+			// Optional: y fallback (should be redundant if cube coords are valid)
+			return a.y.CompareTo(b.y);
+		}
+	}
+
+	public static class HexHelpers
     {
 		private const float Sqrt3 = 1.7320508075688772f;
 		private const float HalfSqrt3 = 0.8660254037844386f; // sqrt(3) / 2

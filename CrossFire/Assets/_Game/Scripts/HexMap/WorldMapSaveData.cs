@@ -1,15 +1,17 @@
 using CrossFire.Utilities;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Wunderwunsch.HexMapLibrary;
 
 namespace CrossFire.HexMap
 {
-    public static class WorldMapSaveData
-    {
-		public class WorlMapSaveDataWrapper
+	public static class WorldMapSaveData
+	{
+		[System.Serializable]
+		public class WorldMapSaveDataWrapper
 		{
-			public List<Vector2Int> TilePositions;
+			public List<Vector2Int> TilePositions = new List<Vector2Int>();
 		}
 
 		public const string RELATIVE_WORLD_MAPS_PATH = "Data/WorldMaps/";
@@ -17,53 +19,141 @@ namespace CrossFire.HexMap
 
 		public static void SaveWorldMap(string fileName, Dictionary<Vector3Int, int> tileIndexByPosition)
 		{
-			List<Vector2Int> positions = new List<Vector2Int>();
-			foreach (var tileIndexAndPosition in tileIndexByPosition)
+			WorldMapSaveDataWrapper wrapper = new WorldMapSaveDataWrapper();
+
+			foreach (KeyValuePair<Vector3Int, int> tileIndexAndPosition in tileIndexByPosition)
 			{
-				positions.Add(HexConverter.TileCoordToOffsetTileCoord(tileIndexAndPosition.Key));
+				Vector2Int offsetTilePosition = HexConverter.TileCoordToOffsetTileCoord(tileIndexAndPosition.Key);
+				wrapper.TilePositions.Add(offsetTilePosition);
 			}
-			WorlMapSaveDataWrapper wrapper = new WorlMapSaveDataWrapper
-			{
-				TilePositions = positions,
-			};
-			SaveWorldMapWrapper(fileName, wrapper);
+
+			SaveDataFileHelper.SaveWrapper(
+				RELATIVE_WORLD_MAPS_PATH,
+				WORLD_MAPS_EXTENSION,
+				fileName,
+				wrapper
+			);
 		}
 
 		public static Dictionary<Vector3Int, int> LoadWorldMap(string fileName)
 		{
+			WorldMapSaveDataWrapper wrapper = SaveDataFileHelper.LoadWrapper(
+				RELATIVE_WORLD_MAPS_PATH,
+				WORLD_MAPS_EXTENSION,
+				fileName,
+				() => new WorldMapSaveDataWrapper()
+			);
+
 			Dictionary<Vector3Int, int> result = new Dictionary<Vector3Int, int>();
-			WorlMapSaveDataWrapper wrapper = LoadWorldMapWrapper(fileName);
 			int index = 0;
-			foreach (var offsetPos in wrapper.TilePositions)
+
+			foreach (Vector2Int offsetTilePosition in wrapper.TilePositions)
 			{
-				Vector3Int tilePos = HexConverter.OffsetTileCoordToTileCoord(offsetPos);
-				if (!result.ContainsKey(tilePos))
+				Vector3Int tilePosition = HexConverter.OffsetTileCoordToTileCoord(offsetTilePosition);
+
+				if (!result.ContainsKey(tilePosition))
 				{
-					result.Add(tilePos, index);
+					result.Add(tilePosition, index);
 					index++;
 				}
 			}
+
 			return result;
 		}
+	}
 
-		public static void SaveWorldMapWrapper(string fileName, WorlMapSaveDataWrapper worldMapWrapper)
+	public static class WorldMapOwnersSaveData
+	{
+		[System.Serializable]
+		public struct TileOwnerEntry
 		{
-			string json = JsonUtility.ToJson(worldMapWrapper, true);
-			string relativePath = RELATIVE_WORLD_MAPS_PATH + fileName + WORLD_MAPS_EXTENSION;
+			public Vector2Int TilePosition;
+			public int TeamId;
+		}
+
+		[System.Serializable]
+		public class WorldMapOwnersSaveDataWrapper
+		{
+			public List<TileOwnerEntry> Entries = new List<TileOwnerEntry>();
+		}
+
+		public const string RELATIVE_WORLD_CELL_OWNERS_PATH = "Data/WorldMapCellOwners/";
+		public const string WORLD_CELL_OWNERS_EXTENSION = ".wmo";
+
+		public static void SaveWorldMapOwners(string fileName, Dictionary<Vector3Int, int> tilePositionsToTeamId)
+		{
+			WorldMapOwnersSaveDataWrapper wrapper = new WorldMapOwnersSaveDataWrapper();
+
+			foreach (KeyValuePair<Vector3Int, int> tileIndexAndPosition in tilePositionsToTeamId)
+			{
+				TileOwnerEntry entry = new TileOwnerEntry
+				{
+					TilePosition = HexConverter.TileCoordToOffsetTileCoord(tileIndexAndPosition.Key),
+					TeamId = tileIndexAndPosition.Value
+				};
+
+				wrapper.Entries.Add(entry);
+			}
+
+			SaveDataFileHelper.SaveWrapper(
+				RELATIVE_WORLD_CELL_OWNERS_PATH,
+				WORLD_CELL_OWNERS_EXTENSION,
+				fileName,
+				wrapper
+			);
+		}
+
+		public static Dictionary<Vector3Int, int> LoadWorldMapOwners(string fileName)
+		{
+			WorldMapOwnersSaveDataWrapper wrapper = SaveDataFileHelper.LoadWrapper(
+				RELATIVE_WORLD_CELL_OWNERS_PATH,
+				WORLD_CELL_OWNERS_EXTENSION,
+				fileName,
+				() => new WorldMapOwnersSaveDataWrapper()
+			);
+
+			Dictionary<Vector3Int, int> result = new Dictionary<Vector3Int, int>();
+
+			foreach (TileOwnerEntry entry in wrapper.Entries)
+			{
+				Vector3Int tilePosition = HexConverter.OffsetTileCoordToTileCoord(entry.TilePosition);
+
+				if (!result.ContainsKey(tilePosition))
+				{
+					result.Add(tilePosition, entry.TeamId);
+				}
+			}
+
+			return result;
+		}
+	}
+
+	public static class SaveDataFileHelper
+	{
+		public static void SaveWrapper<TWrapper>(string relativeFolderPath, string fileExtension, string fileName, TWrapper wrapper)
+		{
+			string json = JsonUtility.ToJson(wrapper, true);
+			string relativePath = relativeFolderPath + fileName + fileExtension;
 			PersistentDataHelper.SaveToFile(relativePath, json);
 		}
 
-		public static WorlMapSaveDataWrapper LoadWorldMapWrapper(string fileName)
+		public static TWrapper LoadWrapper<TWrapper>(string relativeFolderPath, string fileExtension, string fileName, Func<TWrapper> createDefaultWrapper)
 		{
-			string relativePath = RELATIVE_WORLD_MAPS_PATH + fileName + WORLD_MAPS_EXTENSION;
+			string relativePath = relativeFolderPath + fileName + fileExtension;
 			string json = PersistentDataHelper.LoadFromFile(relativePath);
+
 			if (string.IsNullOrEmpty(json))
 			{
-				return new WorlMapSaveDataWrapper() { TilePositions = new List<Vector2Int>() };
+				return createDefaultWrapper();
 			}
 
-			WorlMapSaveDataWrapper worldMapWrapper = JsonUtility.FromJson<WorlMapSaveDataWrapper>(json);
-			return worldMapWrapper;
+			TWrapper wrapper = JsonUtility.FromJson<TWrapper>(json);
+			if (wrapper == null)
+			{
+				return createDefaultWrapper();
+			}
+
+			return wrapper;
 		}
 	}
 }
