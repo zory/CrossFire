@@ -1,91 +1,13 @@
 Code Requirements:
-Explicit types everywhere;
+
+Explicit types everywhere unles very long and complex;
 Explicit understandable variable names;
+
 Dont remove comments;
 Add comments where needed;
+
 Always brackets even with one liners;
----
-5 asmdefs:
-Physics (see: nothing)
-Core (see: Physics)
-Player (see: Physics, Core)
-Ships (see: Physics, Core, Player)
-Combat (see: Physics, Core, Player, Ships)
 
----
-Combat asmdef:
-Components:
-BulletDamage
-BulletTag
-Health
-Lifetime
-NeedsTargetTag
-WeaponConfig
-WeaponCooldown
-
-Core asmdef:
-Components:
-HealthNativeColor
-Owner
-StableId
-Targetable
-TeamId
-
-Player asmdef:
-Components:
-ControlIntent
-ControlledTag
-SelectableTag
-
-Ships asmdef:
-Components:
-BrakeAcceleration
-ShipIntent
-ShipTag
-ThrustAcceleration
-TurnSpeed
-
-Physics asmdefs:
-Components:
-AngularVelocity
-Collider2D
-CollisionEvent
-CollisionEventBufferTag
-CollisionGridSettings
-CollisionLayer
-CollisionMask
-ConcaveTrianglesRef
-LinearDamping
-MaxVelocity
-PrevWorldPose
-Velocity
-WorldPose
-
-Authoring:
-BasicBodyAuthoring
-ColliderAuthoring
-CollisionGridSettingsAuthoring
-DynamicBodyAuthoring
-LinearDampingAuthoring
-MaxVelocityAuthoring
-CollisionDebugSettings
-
-Helpers and Misc:
-CollisionDebugSystem
-ColliderAuthoringDrawGizmo
-ColliderAuthoringEditor
-CollisionDebugMenu
-PhysicsHelpers
-PhysicsStructs
-
-Systems:
-AngularIntegrationSystem
-CollisionDetectionSystem
-CollisionEventBufferBootstrapSystem
-CollisionEventCleanupSystem
-LinearDampingSystem
-MaxVelocityClampSystem
-PositionIntegrationSystem
-PostPhysicsSystem
-SnapshotSystem
----
+Public variables in PascalCase;
+Private variables in _lowerCamelCaseWithLeadingUnderscore;
+Consts in SCREAMING_SNAKE_CASE;
