@@ -1,5 +1,6 @@
 # CrossFire
 Just random small project to see Unity ECS capabilities and how AI ccan help in development. Two things I always wanted to incorporate.
+Decided to write a some development updates on some decisions as well just to keep myself motivated. Not worth creating any blog or anything just for that so instead will use my totally empty discord server: https://discord.gg/_REMOVEME_CQZFh7v6XS_REMOVEME_
 
 # CrossFire Physics (DOTS / ECS)
 
