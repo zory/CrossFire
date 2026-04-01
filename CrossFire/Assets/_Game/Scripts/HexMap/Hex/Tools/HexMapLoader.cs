@@ -1,11 +1,10 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CrossFire.HexMap
 {
     public class HexMapLoader : MonoBehaviour
     {
-        [FormerlySerializedAs("mapGameBootstrap")] [SerializeField]
+        [SerializeField]
         private HexMapBootstrap mapBootstrap;
 
         [SerializeField]
@@ -30,7 +29,7 @@ namespace CrossFire.HexMap
             }
         }
         
-        public void Save()
+        private void Save()
         {
             if (mapBootstrap == null)
             {
@@ -40,7 +39,7 @@ namespace CrossFire.HexMap
             mapBootstrap.Save(fileName);
         }
 
-        public void Load()
+        private void Load()
         {
             if (mapBootstrap == null)
             {

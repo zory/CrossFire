@@ -7,9 +7,9 @@ namespace CrossFire.HexMap
 		[SerializeField]
 		private HexMapController mapController;
 		[SerializeField]
-		private int teamId;
-		[SerializeField]
 		private bool enableEditing = true;
+		[SerializeField]
+		private int teamId;
 		[SerializeField]
 		private bool rightClickClearsTeam = true;
 

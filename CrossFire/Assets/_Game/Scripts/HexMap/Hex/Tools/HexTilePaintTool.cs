@@ -15,12 +15,7 @@ namespace CrossFire.HexMap
 			{
 				return;
 			}
-
-			if (!mapController.MouseAdapter.CursorOnMap)
-			{
-				return;
-			}
-
+			
 			Vector3Int tilePosition = mapController.MouseAdapter.TileCoords;
 			HexMapModel model = mapController.Context.Model;
 

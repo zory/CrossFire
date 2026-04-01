@@ -1,0 +1,60 @@
+{
+    "Entries": [
+        {
+            "TilePosition": {
+                "x": 30,
+                "y": 3
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 7
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 7
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 6
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 8,
+                "y": 6
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 8,
+                "y": 5
+            },
+            "TeamId": 1
+        }
+    ]
+}
