@@ -198,8 +198,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapController: {fileID: 835303106}
-  teamId: 0
   enableEditing: 0
+  teamId: 0
   rightClickClearsTeam: 1
 --- !u!1 &203844586
 GameObject:
@@ -876,11 +876,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1365793427}
   - {fileID: 835303107}
   - {fileID: 577164503}
   - {fileID: 1180697715}
   - {fileID: 312826133}
-  - {fileID: 1365793427}
   - {fileID: 145065063}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

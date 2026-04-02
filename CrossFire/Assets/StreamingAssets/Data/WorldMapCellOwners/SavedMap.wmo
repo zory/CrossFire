@@ -2,8 +2,8 @@
     "Entries": [
         {
             "TilePosition": {
-                "x": 30,
-                "y": 3
+                "x": 12,
+                "y": 7
             },
             "TeamId": 0
         },
@@ -55,6 +55,587 @@
                 "y": 5
             },
             "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 9
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 9
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 9
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 17,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 16,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 16,
+                "y": 7
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 15,
+                "y": 7
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 16,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 15,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 14,
+                "y": 5
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 15,
+                "y": 4
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 15,
+                "y": 5
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 16,
+                "y": 5
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 5
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 5
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 4
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 14,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 14,
+                "y": 7
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 15,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 14,
+                "y": 8
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 7
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 6
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 9
+            },
+            "TeamId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 9,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 9,
+                "y": 6
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 9,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 9,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 8,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 9
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 9
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 9
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 10
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 11
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 9
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 2
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 3
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 4
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 4
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 3
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 8,
+                "y": 2
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 3
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 2
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 2
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 8,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 7,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 6,
+                "y": 6
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 6
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 3,
+                "y": 8
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 3,
+                "y": 7
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 6
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 4
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 3,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 3,
+                "y": 4
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 2,
+                "y": 3
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 3,
+                "y": 3
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 3
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 4,
+                "y": 5
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 5,
+                "y": 4
+            },
+            "TeamId": 1
+        },
+        {
+            "TilePosition": {
+                "x": 15,
+                "y": 2
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 14,
+                "y": 1
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 10
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 9,
+                "y": 10
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 4
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 4
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 5
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 3
+            },
+            "TeamId": 2
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 2
+            },
+            "TeamId": 2
         }
     ]
 }
