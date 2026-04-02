@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamColors:
-  - {r: 0.95129585, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0.43586493, b: 1, a: 1}
   - {r: 0.123036705, g: 0.4433962, b: 0, a: 1}
   - {r: 0.68235296, g: 0, b: 0, a: 1}
 --- !u!4 &312826133
@@ -600,6 +600,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 57.29, y: -19.3, z: 0}
+--- !u!1 &1004495804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1004495805}
+  - component: {fileID: 1004495807}
+  - component: {fileID: 1004495806}
+  m_Layer: 0
+  m_Name: HexTileSelector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1004495805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004495804}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1638967891}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1004495806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004495804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b7ffe9a02f9b384793c696b2ec3ca69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapController: {fileID: 835303106}
+  tileSelector: {fileID: 1004495807}
+--- !u!114 &1004495807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004495804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e356aeb115251fc4688a2436b1e06e05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapController: {fileID: 835303106}
+  selectorPrefab: {fileID: 1577977634501228360, guid: b8a1a73cb2557654dad6ed72978952b3, type: 3}
 --- !u!1 &1180697713
 GameObject:
   m_ObjectHideFlags: 0
@@ -878,9 +939,10 @@ Transform:
   m_Children:
   - {fileID: 1365793427}
   - {fileID: 835303107}
-  - {fileID: 577164503}
   - {fileID: 1180697715}
+  - {fileID: 577164503}
   - {fileID: 312826133}
+  - {fileID: 1004495805}
   - {fileID: 145065063}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
