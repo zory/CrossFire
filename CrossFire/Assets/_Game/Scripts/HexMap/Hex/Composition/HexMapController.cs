@@ -21,6 +21,9 @@ namespace CrossFire.HexMap
 		public HexMapContext Context => _context;
 		
 		public IReadOnlyDictionary<Vector3Int, HexTile> CellsByPosition => mapRenderer.CellsByPosition;
+
+		// Fired after every full visual refresh — both on initial load and on any subsequent rebuild.
+		public event Action OnMapUpdated;
 		
 		private void Awake()
 		{
@@ -59,8 +62,9 @@ namespace CrossFire.HexMap
 			{
 				mapRenderer.Render(_context);
 			}
-			
+
 			RefreshVisuals();
+			OnMapUpdated?.Invoke();
 		}
 
 		public void RefreshVisuals()

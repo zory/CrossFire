@@ -44,24 +44,11 @@ namespace CrossFire.HexMap
 			}
 		}
 
-		private void FitOrthographicCamera()
-		{
-			if (Camera.main == null || mapController.Context.HexMap == null)
-			{
-				return;
-			}
-
-			Camera.main.orthographic = true;
-			Camera.main.orthographicSize = mapController.Context.HexMap.MapSizeData.extents.z * 2f * 0.8f;
-		}
-
 		public void Load(string fileNameToLoad)
 		{
 			HexMapModel loadedModel = _loadPipeline.Load(fileNameToLoad);
 			mapController.SetModel(loadedModel);
-			
 			mapController.RebuildStructure();
-			FitOrthographicCamera();
 		}
 
 		public void Save(string fileNameToSave)
