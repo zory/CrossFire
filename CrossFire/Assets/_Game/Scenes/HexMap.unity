@@ -831,8 +831,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapController: {fileID: 835303106}
   targetCamera: {fileID: 961739752}
-  positionOffset: {x: -8.2, y: 5.26, z: 1.29}
+  positionOffset: {x: 0, y: 0, z: 0}
   sizeOffset: 3.5
+  nearClipPadding: 1
 --- !u!1 &1335481060
 GameObject:
   m_ObjectHideFlags: 0
@@ -878,7 +879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapController: {fileID: 835303106}
-  enableEditing: 0
+  enableEditing: 1
 --- !u!1 &1364568405
 GameObject:
   m_ObjectHideFlags: 0
