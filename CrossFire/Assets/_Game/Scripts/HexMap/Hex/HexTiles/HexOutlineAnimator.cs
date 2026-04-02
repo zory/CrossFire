@@ -43,7 +43,7 @@ namespace CrossFire.HexMap
 
         private SpriteRenderer[] _allRenderers;
         private Transform[]      _wallTransforms;
-        private float[]          _wallBaseScaleX;
+        private float[]          _wallBaseScaleY;
 
         private void Awake()
         {
@@ -53,7 +53,7 @@ namespace CrossFire.HexMap
             {
                 int wallCount = hexOutline.EdgesGameObjects.Length;
                 _wallTransforms = new Transform[wallCount];
-                _wallBaseScaleX = new float[wallCount];
+                _wallBaseScaleY = new float[wallCount];
 
                 for (int i = 0; i < wallCount; i++)
                 {
@@ -63,7 +63,7 @@ namespace CrossFire.HexMap
                     }
 
                     _wallTransforms[i] = hexOutline.EdgesGameObjects[i].transform;
-                    _wallBaseScaleX[i] = _wallTransforms[i].localScale.x;
+                    _wallBaseScaleY[i] = _wallTransforms[i].localScale.y;
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace CrossFire.HexMap
                     }
 
                     Vector3 scale = _wallTransforms[i].localScale;
-                    scale.x = _wallBaseScaleX[i] * Mathf.Lerp(1f - scaleAmplitude, 1f + scaleAmplitude, scaleT);
+                    scale.y = _wallBaseScaleY[i] * Mathf.Lerp(1f - scaleAmplitude, 1f + scaleAmplitude, scaleT);
                     _wallTransforms[i].localScale = scale;
                 }
             }
