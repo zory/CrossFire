@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1440746385500339046}
   - component: {fileID: 7115051571571546141}
+  - component: {fileID: -5357983907521807981}
   m_Layer: 0
   m_Name: HexCellGlowingOutline
   m_TagString: Untagged
@@ -60,6 +61,27 @@ MonoBehaviour:
   - {fileID: 8198163125198459994}
   Radius: 0.9
   Percentage: 0.88
+--- !u!114 &-5357983907521807981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577977634501228360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 003726b3b2984c442b7dfd7be47bfb5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hexOutline: {fileID: 7115051571571546141}
+  pulseDuration: 1.5
+  alphaMin: 0.25
+  alphaMax: 1
+  colorA: {r: 1, g: 1, b: 1, a: 1}
+  colorB: {r: 0.55, g: 0.85, b: 1, a: 1}
+  colorDuration: 3.2
+  scaleDuration: 2.3
+  scaleAmplitude: 0.12
 --- !u!1 &1626952928046133571
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,95 +7,67 @@ namespace CrossFire.HexMap
 	{
 		public int Compare(Vector3Int a, Vector3Int b)
 		{
-			// First: sort by z (row-like)
 			if (a.z != b.z)
 			{
 				return a.z.CompareTo(b.z);
 			}
 
-			// Then: sort by x (column-like)
 			if (a.x != b.x)
 			{
 				return a.x.CompareTo(b.x);
 			}
 
-			// Optional: y fallback (should be redundant if cube coords are valid)
 			return a.y.CompareTo(b.y);
 		}
 	}
 
 	public static class HexHelpers
     {
-		private const float Sqrt3 = 1.7320508075688772f;
-		private const float HalfSqrt3 = 0.8660254037844386f; // sqrt(3) / 2
+		private const float HALF_SQRT3 = 0.8660254037844386f; // sqrt(3) / 2
 
+		// Distance from center to the middle of an edge (inradius).
 		public static float GetPointyHexApothem(float radius)
 		{
-			return HalfSqrt3 * radius;
+			return HALF_SQRT3 * radius;
 		}
 
-		/// <summary>
-		/// Vertex on XZ plane. Index 0 = top, then clockwise.
-		/// </summary>
-		public static Vector3 GetPointyHexVertexXZ(int index, float radius)
-		{
-			index = Mod(index, 6);
-
-			float angleDeg = 90f - index * 60f;
-			float angleRad = angleDeg * Mathf.Deg2Rad;
-
-			float x = radius * Mathf.Cos(angleRad);
-			float z = radius * Mathf.Sin(angleRad);
-
-			return new Vector3(x, 0f, z);
-		}
-
-		/// <summary>
-		/// Edge midpoint on XZ plane.
-		/// Edge i is between vertex i and vertex i+1.
-		/// </summary>
+		// World-space midpoint of edge i on the XZ plane. Edge i connects vertex i and vertex i+1.
 		public static Vector3 GetPointyHexEdgeMidpointXZ(int edgeIndex, float radius)
 		{
 			edgeIndex = Mod(edgeIndex, 6);
 
-			Vector3 v0 = GetPointyHexVertexXZ(edgeIndex, radius);
-			Vector3 v1 = GetPointyHexVertexXZ(edgeIndex + 1, radius);
+			Vector3 v0 = GetVertexXZ(edgeIndex,     radius);
+			Vector3 v1 = GetVertexXZ(edgeIndex + 1, radius);
 
-			Vector3 mid = (v0 + v1) * 0.5f;
-			return mid;
+			return (v0 + v1) * 0.5f;
 		}
 
-		/// <summary>
-		/// Z rotation in degrees so an object lies along the edge.
-		/// Assumes the object's local +X axis points along its length.
-		/// </summary>
+		// Y rotation in degrees so an object lies flat along edge i (local +X along the edge).
 		public static float GetPointyHexEdgeRotationDeg(int index)
 		{
 			index = Mod(index, 6);
 
 			return index switch
 			{
-				0 => 30,
-				1 => 90,
-				2 => 150,
-				3 => 210,
-				4 => 270,
-				5 => 330,
+				0 => 30f,
+				1 => 90f,
+				2 => 150f,
+				3 => 210f,
+				4 => 270f,
+				5 => 330f,
 				_ => 0f
 			};
 		}
 
-		/// <summary>
-		/// Direction along the edge on XZ plane.
-		/// </summary>
-		public static Vector3 GetPointyHexEdgeDirectionXZ(int edgeIndex, float radius)
+		// Vertex position on the XZ plane. Index 0 = top, then clockwise.
+		private static Vector3 GetVertexXZ(int index, float radius)
 		{
-			edgeIndex = Mod(edgeIndex, 6);
+			index = Mod(index, 6);
 
-			Vector3 v0 = GetPointyHexVertexXZ(edgeIndex, radius);
-			Vector3 v1 = GetPointyHexVertexXZ(edgeIndex + 1, radius);
+			float angleDeg = 90f - index * 60f;
+			float angleRad = angleDeg * Mathf.Deg2Rad;
 
-			return (v1 - v0).normalized;
+			return new Vector3(radius * Mathf.Cos(angleRad), 0f, radius * Mathf.Sin(angleRad));
 		}
 
 		private static int Mod(int value, int modulo)
