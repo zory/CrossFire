@@ -128,6 +128,72 @@ namespace CrossFire.HexMap
 		}
 	}
 
+	public static class WorldMapMissionsSaveData
+	{
+		[System.Serializable]
+		public struct TileMissionEntry
+		{
+			public Vector2Int TilePosition;
+			public int MissionId;
+		}
+
+		[System.Serializable]
+		public class WorldMapMissionsSaveDataWrapper
+		{
+			public List<TileMissionEntry> Entries = new List<TileMissionEntry>();
+		}
+
+		public const string RELATIVE_WORLD_MISSIONS_PATH = "Data/WorldMapMissions/";
+		public const string WORLD_MISSIONS_EXTENSION = ".wmm";
+
+		public static void SaveWorldMapMissions(string fileName, Dictionary<Vector3Int, int> tilePositionsToMissionId)
+		{
+			WorldMapMissionsSaveDataWrapper wrapper = new WorldMapMissionsSaveDataWrapper();
+
+			foreach (KeyValuePair<Vector3Int, int> pair in tilePositionsToMissionId)
+			{
+				TileMissionEntry entry = new TileMissionEntry
+				{
+					TilePosition = HexConverter.TileCoordToOffsetTileCoord(pair.Key),
+					MissionId = pair.Value
+				};
+
+				wrapper.Entries.Add(entry);
+			}
+
+			SaveDataFileHelper.SaveWrapper(
+				RELATIVE_WORLD_MISSIONS_PATH,
+				WORLD_MISSIONS_EXTENSION,
+				fileName,
+				wrapper
+			);
+		}
+
+		public static Dictionary<Vector3Int, int> LoadWorldMapMissions(string fileName)
+		{
+			WorldMapMissionsSaveDataWrapper wrapper = SaveDataFileHelper.LoadWrapper(
+				RELATIVE_WORLD_MISSIONS_PATH,
+				WORLD_MISSIONS_EXTENSION,
+				fileName,
+				() => new WorldMapMissionsSaveDataWrapper()
+			);
+
+			Dictionary<Vector3Int, int> result = new Dictionary<Vector3Int, int>();
+
+			foreach (TileMissionEntry entry in wrapper.Entries)
+			{
+				Vector3Int tilePosition = HexConverter.OffsetTileCoordToTileCoord(entry.TilePosition);
+
+				if (!result.ContainsKey(tilePosition))
+				{
+					result.Add(tilePosition, entry.MissionId);
+				}
+			}
+
+			return result;
+		}
+	}
+
 	public static class SaveDataFileHelper
 	{
 		public static void SaveWrapper<TWrapper>(string relativeFolderPath, string fileExtension, string fileName, TWrapper wrapper)

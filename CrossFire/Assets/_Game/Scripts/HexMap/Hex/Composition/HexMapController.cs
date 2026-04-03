@@ -46,6 +46,11 @@ namespace CrossFire.HexMap
 			{
 				_context.Model.TilesToTeamIds[pair.Key] = pair.Value;
 			}
+
+			foreach (KeyValuePair<Vector3Int, int> pair in model.TilesToMissionIds)
+			{
+				_context.Model.TilesToMissionIds[pair.Key] = pair.Value;
+			}
 		}
 
 		public void RebuildStructure()

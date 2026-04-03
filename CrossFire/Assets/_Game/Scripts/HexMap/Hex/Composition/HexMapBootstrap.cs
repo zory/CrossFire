@@ -17,7 +17,8 @@ namespace CrossFire.HexMap
 		{
 			_loadPipeline = new HexMapLoadPipeline(
 				new BaseTilesLayerSerializer(),
-				new TeamsLayerSerializer());
+				new TeamsLayerSerializer(),
+				new MissionsLayerSerializer());
 		}
 
 		private void Start()

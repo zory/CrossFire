@@ -10,5 +10,8 @@ namespace CrossFire.HexMap
 
 		// Maps tile position (cube coords) to a team ID — used by game logic and visual layers.
 		public Dictionary<Vector3Int, int> TilesToTeamIds { get; } = new Dictionary<Vector3Int, int>();
+
+		// Maps tile position (cube coords) to a mission ID — used by game logic and visual layers.
+		public Dictionary<Vector3Int, int> TilesToMissionIds { get; } = new Dictionary<Vector3Int, int>();
 	}
 }

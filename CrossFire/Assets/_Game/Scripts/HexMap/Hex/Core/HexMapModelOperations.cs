@@ -30,6 +30,7 @@ namespace CrossFire.HexMap
 			}
 
 			model.TilesToTeamIds.Remove(tilePosition);
+			model.TilesToMissionIds.Remove(tilePosition);
 			return model.Tiles.Remove(tilePosition);
 		}
 
@@ -76,6 +77,32 @@ namespace CrossFire.HexMap
 			return model.TilesToTeamIds.Remove(tilePosition);
 		}
 
+		public static bool SetMission(HexMapModel model, Vector3Int tilePosition, int missionId)
+		{
+			if (model == null)
+			{
+				return false;
+			}
+
+			if (!model.Tiles.ContainsKey(tilePosition))
+			{
+				return false;
+			}
+
+			model.TilesToMissionIds[tilePosition] = missionId;
+			return true;
+		}
+
+		public static bool ClearMission(HexMapModel model, Vector3Int tilePosition)
+		{
+			if (model == null)
+			{
+				return false;
+			}
+
+			return model.TilesToMissionIds.Remove(tilePosition);
+		}
+
 		public static void Clear(HexMapModel model)
 		{
 			if (model == null)
@@ -85,6 +112,7 @@ namespace CrossFire.HexMap
 
 			model.Tiles.Clear();
 			model.TilesToTeamIds.Clear();
+			model.TilesToMissionIds.Clear();
 		}
 	}
 }
