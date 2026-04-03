@@ -450,6 +450,7 @@ MonoBehaviour:
   mouseAdapter: {fileID: 1180697714}
   visualLayerBehaviours:
   - {fileID: 312826132}
+  - {fileID: 1248929270}
 --- !u!4 &835303107
 Transform:
   m_ObjectHideFlags: 0
