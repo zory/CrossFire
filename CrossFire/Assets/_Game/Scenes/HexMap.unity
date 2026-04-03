@@ -367,6 +367,7 @@ Transform:
   m_Children:
   - {fileID: 577164503}
   - {fileID: 312826133}
+  - {fileID: 1248929269}
   - {fileID: 1307550022}
   - {fileID: 1004495805}
   m_Father: {fileID: 0}
@@ -706,6 +707,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1638967891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1248929268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1248929269}
+  - component: {fileID: 1248929270}
+  m_Layer: 0
+  m_Name: MissionOutlineVisualLayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1248929269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1248929268}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 324588587}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1248929270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1248929268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd8f0824aaea1245bcaea2245efe9fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlinePrefab: {fileID: 1577977634501228360, guid: 064b86c1850bc414f82b25054aacccf9, type: 3}
+  teamColors:
+  - {r: 0, g: 0.43586493, b: 1, a: 1}
+  - {r: 0.123036705, g: 0.4433962, b: 0, a: 1}
+  - {r: 0.68235296, g: 0, b: 0, a: 1}
+  darkenAmount: 0.35
+  lightenAmount: 0.35
 --- !u!1 &1263073034
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,7 +931,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapController: {fileID: 835303106}
-  enableEditing: 1
+  enableEditing: 0
 --- !u!1 &1364568405
 GameObject:
   m_ObjectHideFlags: 0
@@ -912,6 +964,7 @@ Transform:
   - {fileID: 1989246919}
   - {fileID: 1335481061}
   - {fileID: 161221675}
+  - {fileID: 1388494459}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1365793426
@@ -961,6 +1014,54 @@ MonoBehaviour:
   mapController: {fileID: 835303106}
   fileName: SavedMap
   loadOnStart: 1
+--- !u!1 &1388494458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1388494459}
+  - component: {fileID: 1388494460}
+  m_Layer: 0
+  m_Name: HexMissionPaintTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1388494459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388494458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1364568406}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1388494460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388494458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e456e4015c12b3a4daa0d102d9fdaa31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapController: {fileID: 835303106}
+  enableEditing: 0
+  missionId: 0
+  rightClickClearsMission: 1
 --- !u!1 &1511493848
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,6 +45,14 @@ namespace CrossFire.HexMap
         private Transform[]      _wallTransforms;
         private float[]          _wallBaseScaleY;
 
+        // Overrides the inspector color values at runtime. Call before or after Awake —
+        // the Update loop reads the fields each frame so changes take effect immediately.
+        public void SetColors(Color newColorA, Color newColorB)
+        {
+            colorA = newColorA;
+            colorB = newColorB;
+        }
+
         private void Awake()
         {
             _allRenderers = GetComponentsInChildren<SpriteRenderer>(includeInactive: true);

@@ -1,0 +1,60 @@
+{
+    "Entries": [
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 6
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 6
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 5
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 4
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 12,
+                "y": 4
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 13,
+                "y": 5
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 11,
+                "y": 4
+            },
+            "MissionId": 0
+        },
+        {
+            "TilePosition": {
+                "x": 10,
+                "y": 5
+            },
+            "MissionId": 0
+        }
+    ]
+}

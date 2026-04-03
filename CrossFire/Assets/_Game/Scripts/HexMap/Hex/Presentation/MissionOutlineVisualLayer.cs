@@ -4,12 +4,24 @@ using UnityEngine;
 namespace CrossFire.HexMap
 {
 	// Visual layer that renders a glowing outline on every hex cell that has a mission assigned.
-	// Instantiates one outline prefab per mission tile, parented to the tile's transform so the
-	// outline automatically follows it in world space.
+	// The outline pulses between a darkened and a lightened variant of that tile's team color.
+	// If the tile has no team, the outline uses the default colors baked into the prefab.
 	public class MissionOutlineVisualLayer : MonoBehaviour, IHexMapVisualLayer
 	{
 		[SerializeField]
 		private GameObject outlinePrefab;
+
+		// Must match the array in TeamColorVisualLayer — index 0 = team 0, etc.
+		[SerializeField]
+		private Color[] teamColors;
+
+		[SerializeField]
+		[Range(0f, 1f)]
+		private float darkenAmount = 0.35f;
+
+		[SerializeField]
+		[Range(0f, 1f)]
+		private float lightenAmount = 0.35f;
 
 		private readonly Dictionary<Vector3Int, GameObject> _outlineInstances = new Dictionary<Vector3Int, GameObject>();
 
@@ -30,6 +42,19 @@ namespace CrossFire.HexMap
 				GameObject outlineInstance = Instantiate(outlinePrefab, hexTile.transform);
 				outlineInstance.transform.localPosition = Vector3.zero;
 				outlineInstance.transform.localRotation = Quaternion.identity;
+
+				// Tint the animator toward the owning team's color if one is assigned.
+				HexOutlineAnimator animator = outlineInstance.GetComponent<HexOutlineAnimator>();
+				if (animator != null && context.Model.TilesToTeamIds.TryGetValue(tilePosition, out int teamId))
+				{
+					if (teamId >= 0 && teamId < teamColors.Length)
+					{
+						Color teamColor = teamColors[teamId];
+						Color darker  = Color.Lerp(teamColor, Color.black, darkenAmount);
+						Color lighter = Color.Lerp(teamColor, Color.white, lightenAmount);
+						animator.SetColors(darker, lighter);
+					}
+				}
 
 				_outlineInstances[tilePosition] = outlineInstance;
 			}
