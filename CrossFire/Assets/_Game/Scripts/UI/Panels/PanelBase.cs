@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Base class for all UI panels. Handles show/hide via GameObject activation
     // and exposes OnShow/OnHide hooks for subclass logic.

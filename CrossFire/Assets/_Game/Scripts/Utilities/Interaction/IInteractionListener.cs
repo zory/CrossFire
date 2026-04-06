@@ -1,4 +1,4 @@
-namespace CrossFire.Utilities
+namespace Core.Utilities
 {
     public interface IInteractionListener
     {

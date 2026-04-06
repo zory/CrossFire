@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Base class for all spawnable UI elements (tooltips, dialogs, notifications).
     // Popups differ from panels: they can have multiple simultaneous instances and

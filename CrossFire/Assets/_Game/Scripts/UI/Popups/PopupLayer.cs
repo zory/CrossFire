@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Manages transient popups — spawned on demand, multiple instances allowed.
     // Owned by UIRoot; do not instantiate directly.

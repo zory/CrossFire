@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Attach to the persistent EventSystem inside the UI prefab.
     // On each scene load it destroys any scene-local EventSystems so there is always

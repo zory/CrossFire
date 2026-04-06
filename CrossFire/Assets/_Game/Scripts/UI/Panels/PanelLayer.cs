@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Manages singleton panels — one registered instance per type, shown and hidden in place.
     // Owned by UIRoot; do not instantiate directly.

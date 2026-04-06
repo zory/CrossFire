@@ -1,7 +1,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace CrossFire.Utilities
+namespace Core.Utilities
 {
     public static class PersistentDataHelper
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CrossFire.Utilities
+namespace Core.Utilities
 {
     public struct InteractionEvent
     {

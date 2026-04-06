@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Singleton UI entry point. Persists across scenes.
     // Owns PanelLayer and PopupLayer — both operate under the same ContentRoot

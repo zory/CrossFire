@@ -1,4 +1,4 @@
-using CrossFire.Utilities;
+using Core.Utilities;
 using UnityEngine;
 
 namespace CrossFire.HexMap

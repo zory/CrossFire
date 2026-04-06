@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
-namespace CrossFire.UI
+namespace Core.UI
 {
     // Attach to the UI overlay camera. On each scene load this script finds Camera.main
     // and adds itself to its URP camera stack, so the main camera never needs to know

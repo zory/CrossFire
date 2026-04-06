@@ -1,4 +1,4 @@
-using CrossFire.UI;
+using Core.UI;
 using UnityEngine;
 
 namespace CrossFire.App.UI

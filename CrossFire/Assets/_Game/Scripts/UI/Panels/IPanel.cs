@@ -1,4 +1,4 @@
-namespace CrossFire.UI
+namespace Core.UI
 {
     public interface IPanel
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CrossFire.Utilities
+namespace Core.Utilities
 {
     // Static event bus for interaction events (hover, click) across all game systems.
     // Any MonoBehaviour or system can register as a listener to receive all interaction events

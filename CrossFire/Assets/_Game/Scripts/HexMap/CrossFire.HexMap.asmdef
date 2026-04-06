@@ -3,7 +3,7 @@
     "rootNamespace": "CrossFire.HexMap",
     "references": [
         "GUID:9f22e5378eab74b4aa112e2a7d4d356b",
-        "GUID:d5c888ccecaba5e4e9422bff33c097e3"
+        "GUID:6486a06f6b0f45541897f1558e2f8a0a"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

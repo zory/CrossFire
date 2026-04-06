@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(sed -i 's/using CrossFire\\\\.Utilities;/using Core.Utilities;/g' D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/HexMap/Hex/Interaction/HexTileInteractionContext.cs D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/HexMap/Hex/Interaction/HexTileInteractionDetector.cs D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/HexMap/Hex/Serialization/WorldMapSaveData.cs D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/HexMap/Mission/MissionDataSaveData.cs)",
+      "Bash(sed -i 's/\"name\": \"CrossFire\\\\.Utilities\"/\"name\": \"Core.Utilities\"/g; s/\"rootNamespace\": \"CrossFire\\\\.Utilities\"/\"rootNamespace\": \"Core.Utilities\"/g' D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/Utilities/CrossFire.Utilities.asmdef)",
+      "Bash(find D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/UI -name '*.cs' -exec sed -i 's/namespace CrossFire\\\\.UI/namespace Core.UI/g' '{}' +)",
+      "Bash(sed -i 's/using CrossFire\\\\.UI;/using Core.UI;/g' D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/UI.CrossFire/AppUIController.cs)",
+      "Bash(sed -i 's/\"name\": \"CrossFire\\\\.UI\"/\"name\": \"Core.UI\"/g; s/\"rootNamespace\": \"CrossFire\\\\.UI\"/\"rootNamespace\": \"Core.UI\"/g' D:/Projects/Personal/CrossFire/CrossFire/Assets/_Game/Scripts/UI/CrossFire.UI.asmdef)"
     ]
   }
 }
