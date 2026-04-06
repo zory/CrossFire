@@ -60,3 +60,31 @@ jobs:
         with:
           name: Test Results
           path: artifacts/
+
+      - name: Notify Discord
+        if: always()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            COLOR=3066993
+            STATUS="✅ Tests Passed"
+          else
+            COLOR=15158332
+            STATUS="❌ Tests Failed"
+          fi
+
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"$STATUS\",
+              \"color\": $COLOR,
+              \"fields\": [
+                {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
+                {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
+                {\"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": false},
+                {\"name\": \"Run\", \"value\": \"[View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": false}
+              ]
+            }]
+          }" \
+          $DISCORD_WEBHOOK
