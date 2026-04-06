@@ -13,6 +13,12 @@ namespace CrossFire.UI
         private void Awake()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        // Start runs after all Awakes complete, so all scene EventSystems are
+        // initialized and visible to FindObjectsByType before we destroy duplicates.
+        private void Start()
+        {
             DestroyDuplicates();
         }
 
