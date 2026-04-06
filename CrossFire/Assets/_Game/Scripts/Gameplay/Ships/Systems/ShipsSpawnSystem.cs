@@ -22,6 +22,7 @@ namespace CrossFire.Ships
 			);
 
 			state.RequireForUpdate(_requestQuery);
+			state.RequireForUpdate<ShipPrefabEntry>();
 		}
 
 		public void OnUpdate(ref SystemState state)
