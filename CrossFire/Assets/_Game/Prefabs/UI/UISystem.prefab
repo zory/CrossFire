@@ -386,7 +386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1bf2f342ace78546b9fffdd0e215856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _panelRoot: {fileID: 2981160236469124062}
+  _contentRoot: {fileID: 2981160236469124062}
+  _uiCamera: {fileID: 2617441581268937856}
 --- !u!114 &4148679045898495683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,4 +400,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec329be25e0d8a5449e8353030dc4678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _blackEdgesPanelPrefab: {fileID: 6551477097877064435, guid: 847e817af853e8148b70cbcf130f38d9, type: 3}
+  _blackEdgesPanelPrefab: {fileID: 8443796395279526204, guid: 847e817af853e8148b70cbcf130f38d9, type: 3}
