@@ -10,8 +10,8 @@ on:
 
 jobs:
   test:
-    name: Run Edit and Play Mode Tests
-    runs-on: ubuntu-latest
+    name: Run Edit and Play Mode Tests (Windows)
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -20,14 +20,19 @@ jobs:
           lfs: true
           submodules: recursive
 
+      # Cache the Unity Library to speed up subsequent runs.
+      # Note: action/cache v4 is current + recommended.
       - name: Cache Unity Library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: CrossFire/Library
-          key: Library-${{ hashFiles('CrossFire/Assets/**', 'CrossFire/Packages/**', 'CrossFire/ProjectSettings/**') }}
+          key: Library-${{ runner.os }}-${{ hashFiles('CrossFire/Assets/**', 'CrossFire/Packages/**', 'CrossFire/ProjectSettings/**') }}
           restore-keys: |
+            Library-${{ runner.os }}-
             Library-
 
+      # Unity version: keep what your project currently uses.
+      # If you want to change Unity versions, do it intentionally and test locally first.
       - name: Run EditMode tests
         uses: game-ci/unity-test-runner@v4
         env:
@@ -67,6 +72,7 @@ jobs:
         if: always()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        shell: bash
         run: |
           if [ "${{ job.status }}" = "success" ]; then
             COLOR=3066993
