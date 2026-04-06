@@ -22,32 +22,36 @@ jobs:
       - name: Cache Unity Library
         uses: actions/cache@v3
         with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: CrossFire/Library
+          key: Library-${{ hashFiles('CrossFire/Assets/**', 'CrossFire/Packages/**', 'CrossFire/ProjectSettings/**') }}
           restore-keys: |
             Library-
 
       - name: Run EditMode tests
         uses: game-ci/unity-test-runner@v4
         env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE_TYPE: Personal
         with:
           unityVersion: 6000.0.28f1
           testMode: editmode
           artifactsPath: artifacts/editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          projectPath: CrossFire
 
       - name: Run PlayMode tests
         uses: game-ci/unity-test-runner@v4
         env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE_TYPE: Personal
         with:
           unityVersion: 6000.0.28f1
           testMode: playmode
           artifactsPath: artifacts/playmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          projectPath: CrossFire
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
