@@ -371,7 +371,7 @@
       "url": "https://packages.unity.com"
     },
     "com.wunderwunsch.hexmaplibrary": {
-      "version": "file:D:/Projects/Personal/CrossFire/Submodules/HexMapLibrary/Packages/HexMapLibrary",
+      "version": "file:../../Submodules/HexMapLibrary/Packages/HexMapLibrary",
       "depth": 0,
       "source": "local",
       "dependencies": {}
