@@ -27,7 +27,7 @@ namespace Core.UI
         public PopupLayer Popups { get; private set; }
 
         public RectTransform ContentRoot => _contentRoot;
-        internal Camera UICamera => _uiCamera;
+        public Camera UICamera => _uiCamera;
 
         private readonly Dictionary<GameObject, int> _priorities = new Dictionary<GameObject, int>();
 

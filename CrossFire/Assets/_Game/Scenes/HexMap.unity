@@ -207,6 +207,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3751780165045306986, guid: e3b6acbf412a42f4da6f60683b98dce2, type: 3}
+      propertyPath: _mapController
+      value: 
+      objectReference: {fileID: 835303106}
     - target: {fileID: 6144824243591593033, guid: e3b6acbf412a42f4da6f60683b98dce2, type: 3}
       propertyPath: m_Name
       value: UISystem
@@ -1244,6 +1248,38 @@ MonoBehaviour:
   enableEditing: 0
   missionId: 0
   rightClickClearsMission: 1
+--- !u!1 &1431305234
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1431305235}
+  m_Layer: 0
+  m_Name: HexMapUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1431305235
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431305234}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2146253102}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1511493848
 GameObject:
   m_ObjectHideFlags: 0
@@ -1402,6 +1438,54 @@ MonoBehaviour:
   fileName: SavedMap
   saveNow: 0
   loadNow: 0
+--- !u!1 &2146253101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2146253102}
+  - component: {fileID: 2146253103}
+  m_Layer: 0
+  m_Name: HoverProgressBar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2146253102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146253101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1431305235}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2146253103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146253101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0410accf0b559534da7410ace7558fac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mapController: {fileID: 835303106}
+  _progressPrefab: {fileID: 3358605980222880958, guid: ba84f5bd463fc8d4fbf54f637d92859c, type: 3}
+  _tooltipPrefab: {fileID: 442959699639645086, guid: a8bce2dd115ccbb41be9406f2c770699, type: 3}
+  _hoverDuration: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1413,5 +1497,6 @@ SceneRoots:
   - {fileID: 56373048}
   - {fileID: 1638967891}
   - {fileID: 324588587}
+  - {fileID: 1431305235}
   - {fileID: 1364568406}
   - {fileID: 1096022756}

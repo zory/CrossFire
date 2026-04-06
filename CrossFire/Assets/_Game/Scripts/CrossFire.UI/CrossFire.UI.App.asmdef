@@ -2,7 +2,10 @@
     "name": "CrossFire.UI.App",
     "rootNamespace": "CrossFire.App.UI",
     "references": [
-        "GUID:7fe5a5f8e9b7331438d6a497ac0de1da"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:6486a06f6b0f45541897f1558e2f8a0a",
+        "GUID:7fe5a5f8e9b7331438d6a497ac0de1da",
+        "GUID:a4136f71c449fca488381b92b5fb25c0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
