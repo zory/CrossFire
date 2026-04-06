@@ -1,0 +1,16 @@
+{
+    "name": "CrossFire.UI.App",
+    "rootNamespace": "CrossFire.App.UI",
+    "references": [
+        "GUID:ea60bc2764dcf8f4b86fe1ff3bf0cf90"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
