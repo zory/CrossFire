@@ -1,0 +1,7 @@
+{
+    "Mission": {
+        "Id": 0,
+        "Name": "Default Mission",
+        "Description": "This is empty mission just as fallback"
+    }
+}
