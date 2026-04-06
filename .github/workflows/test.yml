@@ -32,7 +32,7 @@ jobs:
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE_TYPE: ${{ secrets.UNITY_LICENSE_TYPE }}
+          UNITY_LICENSE_TYPE: Personal
         with:
           unityVersion: 6000.0.28f1
           testMode: editmode
@@ -43,7 +43,7 @@ jobs:
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE_TYPE: ${{ secrets.UNITY_LICENSE_TYPE }}
+          UNITY_LICENSE_TYPE: Personal
         with:
           unityVersion: 6000.0.28f1
           testMode: playmode
