@@ -75,5 +75,23 @@ namespace Core.UI
 
             panel.Hide();
         }
+
+        // Removes the panel from the registry, untracks its priority, and destroys its GameObject.
+        // Use this from scene-specific UI controllers in OnDestroy to clean up scene-owned panels.
+        public void Unregister<T>() where T : IPanel
+        {
+            if (!_panels.TryGetValue(typeof(T), out IPanel panel))
+            {
+                return;
+            }
+
+            _panels.Remove(typeof(T));
+
+            if (panel is Component component)
+            {
+                _root.UntrackPriority(component.gameObject);
+                UnityEngine.Object.Destroy(component.gameObject);
+            }
+        }
     }
 }
