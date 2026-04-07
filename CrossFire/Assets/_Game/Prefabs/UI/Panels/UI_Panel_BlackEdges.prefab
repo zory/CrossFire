@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 574805120268493341}
   - component: {fileID: 8443796395279526204}
   m_Layer: 5
-  m_Name: UI_BlackEdges
+  m_Name: UI_Panel_BlackEdges
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
