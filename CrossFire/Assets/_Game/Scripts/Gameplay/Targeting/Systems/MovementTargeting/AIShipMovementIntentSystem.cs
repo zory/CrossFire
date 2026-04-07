@@ -7,8 +7,10 @@ using Unity.Mathematics;
 
 namespace CrossFire.Ships
 {
+	// Writes Turn and Thrust into ControlIntent based on MovementTarget.
+	// Does NOT touch ControlIntent.Fire — that is owned by AIFireSystem.
 	[DisableAutoCreation]
-	//[BurstCompile]
+	[BurstCompile]
 	public partial struct AIShipMovementIntentSystem : ISystem
 	{
 		public void OnCreate(ref SystemState state)
@@ -18,7 +20,7 @@ namespace CrossFire.Ships
 			state.RequireForUpdate<WorldPose>();
 		}
 
-		//[BurstCompile]
+		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
 			foreach ((RefRO<WorldPose> selfPose,
@@ -37,12 +39,10 @@ namespace CrossFire.Ships
 				{
 					controlIntent.ValueRW.Turn = 0f;
 					controlIntent.ValueRW.Thrust = 0f;
-					controlIntent.ValueRW.Fire = 0;
 					continue;
 				}
 
 				Pose2D selfPoseValue = selfPose.ValueRO.Value;
-				float2 selfPosition = selfPoseValue.Position;
 				float2 targetPosition = movementTargetResolved.ValueRO.WorldPosition;
 
 				switch (movementTarget.ValueRO.Mode)
@@ -58,16 +58,6 @@ namespace CrossFire.Ships
 						}
 
 					case MovementTargetMode.ChaseAtRange:
-						{
-							WriteRangeIntent(
-								selfPoseValue,
-								targetPosition,
-								movementTarget.ValueRO.PreferredDistance,
-								movementTarget.ValueRO.DistanceTolerance,
-								ref controlIntent.ValueRW);
-							break;
-						}
-
 					case MovementTargetMode.DefendClose:
 						{
 							WriteRangeIntent(
@@ -83,7 +73,6 @@ namespace CrossFire.Ships
 						{
 							controlIntent.ValueRW.Turn = 0f;
 							controlIntent.ValueRW.Thrust = 0f;
-							controlIntent.ValueRW.Fire = 0;
 							break;
 						}
 				}
@@ -105,7 +94,6 @@ namespace CrossFire.Ships
 			{
 				controlIntent.Turn = 0f;
 				controlIntent.Thrust = 0f;
-				controlIntent.Fire = 0;
 				return;
 			}
 
@@ -114,7 +102,6 @@ namespace CrossFire.Ships
 
 			controlIntent.Turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
 			controlIntent.Thrust = 1f;
-			controlIntent.Fire = 0;
 		}
 
 		[BurstCompile]
@@ -135,7 +122,6 @@ namespace CrossFire.Ships
 			{
 				controlIntent.Turn = 0f;
 				controlIntent.Thrust = 0f;
-				controlIntent.Fire = 0;
 				return;
 			}
 
@@ -146,7 +132,6 @@ namespace CrossFire.Ships
 
 				controlIntent.Turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
 				controlIntent.Thrust = 1f;
-				controlIntent.Fire = 0;
 				return;
 			}
 
@@ -158,19 +143,16 @@ namespace CrossFire.Ships
 
 				controlIntent.Turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
 				controlIntent.Thrust = 1f;
-				controlIntent.Fire = 0;
 				return;
 			}
 
-			// Inside the preferred band:
-			// face the target, but do not advance.
+			// Inside the preferred band: face the target, hold position.
 			{
 				float desiredTheta = math.atan2(-toTarget.x, toTarget.y);
 				float deltaTheta = NormalizeAngle(desiredTheta - selfPose.ThetaRad);
 
 				controlIntent.Turn = math.clamp(deltaTheta * 2.0f, -1f, 1f);
 				controlIntent.Thrust = 0f;
-				controlIntent.Fire = 0;
 			}
 		}
 
