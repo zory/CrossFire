@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/_Game/Scenes/MainMenu.unity
     guid: 55137f9b2c6300143affca6bd70da91f
   - enabled: 1
+    path: Assets/_Game/Scenes/HexMap.unity
+    guid: cc31d192850014447ad16378317e8fd3
+  - enabled: 1
     path: Assets/_Game/Scenes/Gameplay.unity
     guid: 60374e5526544464883a257448840a4f
   m_configObjects:
