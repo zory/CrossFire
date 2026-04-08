@@ -84,3 +84,6 @@ crashlytics-build.properties
 
 # Blender autosaves
 *.blend?
+
+# Claude Code local settings
+settings.local.json
