@@ -1,6 +1,6 @@
 {
-    "name": "Tests.PlayMode",
-    "rootNamespace": "",
+    "name": "CrossFire.Tests.PlayMode",
+    "rootNamespace": "CrossFire.Tests.PlayMode",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
@@ -9,9 +9,9 @@
         "Unity.Entities",
         "Unity.Transforms",
         "Unity.Entities.Graphics",
-        "CrossFire.Physics",
+        "Core.Physics",
         "CrossFire.Core",
-        "CrossFire.Player",
+        "CrossFire.Targeting",
         "CrossFire.Ships",
         "CrossFire.Combat"
     ],
