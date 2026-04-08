@@ -1,7 +1,7 @@
 using Unity.Entities;
 using UnityEngine;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public class MaxVelocityAuthoring : MonoBehaviour
 	{

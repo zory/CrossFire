@@ -1,3 +1,4 @@
+using Core.Physics;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -163,13 +164,13 @@ namespace CrossFire.Core
 					return false;
 				}
 
-				if (!entityManager.HasComponent<CrossFire.Physics.WorldPose>(targetReference.Entity))
+				if (!entityManager.HasComponent<WorldPose>(targetReference.Entity))
 				{
 					return false;
 				}
 
-				CrossFire.Physics.WorldPose worldPose =
-					entityManager.GetComponentData<CrossFire.Physics.WorldPose>(targetReference.Entity);
+				WorldPose worldPose =
+					entityManager.GetComponentData<WorldPose>(targetReference.Entity);
 
 				worldPosition = worldPose.Value.Position;
 				return true;

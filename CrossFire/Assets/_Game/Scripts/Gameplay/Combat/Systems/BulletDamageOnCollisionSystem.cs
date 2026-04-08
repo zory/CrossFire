@@ -1,5 +1,5 @@
 using CrossFire.Core;
-using CrossFire.Physics;
+using Core.Physics;
 using Unity.Burst;
 using Unity.Entities;
 
@@ -11,7 +11,7 @@ namespace CrossFire.Combat
 	{
 		public void OnCreate(ref SystemState state)
 		{
-			state.RequireForUpdate<CrossFire.Physics.CollisionEventBufferTag>();
+			state.RequireForUpdate<CollisionEventBufferTag>();
 		}
 
 		public void OnUpdate(ref SystemState state)

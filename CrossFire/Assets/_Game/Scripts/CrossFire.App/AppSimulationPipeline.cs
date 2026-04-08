@@ -1,7 +1,7 @@
 using CrossFire.Combat;
 using CrossFire.Core;
 using CrossFire.Lookup;
-using CrossFire.Physics;
+using Core.Physics;
 using CrossFire.Presentation;
 using CrossFire.Ships;
 using CrossFire.Targeting;

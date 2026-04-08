@@ -1,5 +1,5 @@
 using CrossFire.Core;
-using CrossFire.Physics;
+using Core.Physics;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;

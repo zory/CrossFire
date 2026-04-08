@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public static class CollisionDebugMenu
 	{
@@ -9,9 +9,9 @@ namespace CrossFire.Physics
 		private const string DrawBroadphasePath = Root + "Draw Broadphase";
 		private const string DrawHitTrianglesPath = Root + "Draw Hit Triangles";
 
-		private const string EnabledKey = "CrossFire.Physics.CollisionDebug.Enabled";
-		private const string DrawBroadphaseKey = "CrossFire.Physics.CollisionDebug.DrawBroadphase";
-		private const string DrawHitTrianglesKey = "CrossFire.Physics.CollisionDebug.DrawHitTriangles";
+		private const string EnabledKey = "Core.Physics.CollisionDebug.Enabled";
+		private const string DrawBroadphaseKey = "Core.Physics.CollisionDebug.DrawBroadphase";
+		private const string DrawHitTrianglesKey = "Core.Physics.CollisionDebug.DrawHitTriangles";
 
 		[InitializeOnLoadMethod]
 		private static void Init()

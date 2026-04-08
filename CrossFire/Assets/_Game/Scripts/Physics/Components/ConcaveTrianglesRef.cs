@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public struct ConcaveTrianglesRef : IComponentData
 	{

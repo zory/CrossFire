@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	/// <summary>
 	/// sync physics pose

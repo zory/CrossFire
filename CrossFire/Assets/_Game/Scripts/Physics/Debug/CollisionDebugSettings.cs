@@ -1,22 +1,22 @@
 using UnityEngine;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public static class CollisionDebugSettings
 	{
 #if UNITY_EDITOR
-		private const string EnabledKey = "CrossFire.Physics.CollisionDebug.Enabled";
-		private const string DrawBroadphaseKey = "CrossFire.Physics.CollisionDebug.DrawBroadphase";
-		private const string DrawHitTrianglesKey = "CrossFire.Physics.CollisionDebug.DrawHitTriangles";
+		private const string EnabledKey = "Core.Physics.CollisionDebug.Enabled";
+		private const string DrawBroadphaseKey = "Core.Physics.CollisionDebug.DrawBroadphase";
+		private const string DrawHitTrianglesKey = "Core.Physics.CollisionDebug.DrawHitTriangles";
 
 
-		private const string GridCellColorKey = "CrossFire.Physics.CollisionDebug.GridCellColor";
-		private const string CircleShapeColorKey = "CrossFire.Physics.CollisionDebug.CircleShapeColor";
-		private const string ConcaveShapeColorKey = "CrossFire.Physics.CollisionDebug.ConcaveShapeColor";
-		private const string BoundRadiusColorKey = "CrossFire.Physics.CollisionDebug.BoundRadiusColor";
-		private const string BroadphaseLinkColorKey = "CrossFire.Physics.CollisionDebug.BroadphaseLinkColor";
-		private const string HitTriangleColorKey = "CrossFire.Physics.CollisionDebug.HitTriangleColor";
-		private const string TrianglesPreviewColorKey = "CrossFire.Physics.CollisionDebug.TrianglesPreviewColorKey";
+		private const string GridCellColorKey = "Core.Physics.CollisionDebug.GridCellColor";
+		private const string CircleShapeColorKey = "Core.Physics.CollisionDebug.CircleShapeColor";
+		private const string ConcaveShapeColorKey = "Core.Physics.CollisionDebug.ConcaveShapeColor";
+		private const string BoundRadiusColorKey = "Core.Physics.CollisionDebug.BoundRadiusColor";
+		private const string BroadphaseLinkColorKey = "Core.Physics.CollisionDebug.BroadphaseLinkColor";
+		private const string HitTriangleColorKey = "Core.Physics.CollisionDebug.HitTriangleColor";
+		private const string TrianglesPreviewColorKey = "Core.Physics.CollisionDebug.TrianglesPreviewColorKey";
 
 		public static bool Enabled => UnityEditor.EditorPrefs.GetBool(EnabledKey, false);
 		public static bool DrawBroadphase => UnityEditor.EditorPrefs.GetBool(DrawBroadphaseKey, true);

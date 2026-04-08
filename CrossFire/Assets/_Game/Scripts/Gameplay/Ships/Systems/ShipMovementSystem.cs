@@ -1,5 +1,5 @@
 using CrossFire.Core;
-using CrossFire.Physics;
+using Core.Physics;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;

@@ -2,7 +2,7 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	//[UpdateInGroup(typeof(SimulationSystemGroup))]
 	//[UpdateAfter(typeof(PositionIntegrationSystem))]

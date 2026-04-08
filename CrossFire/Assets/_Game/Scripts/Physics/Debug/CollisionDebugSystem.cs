@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	[DisableAutoCreation]
 	//[UpdateInGroup(typeof(PresentationSystemGroup))]

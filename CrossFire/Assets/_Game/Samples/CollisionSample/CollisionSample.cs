@@ -1,4 +1,4 @@
-using CrossFire.Physics;
+using Core.Physics;
 using CrossFire.Ships;
 using Unity.Entities;
 using Unity.Entities.UniversalDelegates;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public static class GeometryUtilities
 	{

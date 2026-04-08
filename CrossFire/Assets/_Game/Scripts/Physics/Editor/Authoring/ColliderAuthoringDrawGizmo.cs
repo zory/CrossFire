@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public static class ColliderAuthoringDrawGizmo
 	{

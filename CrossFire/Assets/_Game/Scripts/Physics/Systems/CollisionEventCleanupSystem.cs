@@ -2,7 +2,7 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	/// <summary>
 	/// prevent events from persisting next frame

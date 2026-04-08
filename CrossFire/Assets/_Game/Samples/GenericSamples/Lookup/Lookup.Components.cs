@@ -2,7 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
-using CrossFire.Physics;
+using Core.Physics;
 using CrossFire.Core;
 using CrossFire.Ships;
 

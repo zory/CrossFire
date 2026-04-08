@@ -2,7 +2,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public class BasicBodyAuthoring : MonoBehaviour
 	{

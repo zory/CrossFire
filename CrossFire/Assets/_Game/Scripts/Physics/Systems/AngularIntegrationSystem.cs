@@ -1,7 +1,7 @@
 using Unity.Burst;
 using Unity.Entities;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	/// <summary>
 	/// rotates stuff

@@ -1,5 +1,5 @@
 using CrossFire.Core;
-using CrossFire.Physics;
+using Core.Physics;
 using CrossFire.Ships;
 using CrossFire.Targeting;
 using Unity.Entities;

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	[CustomEditor(typeof(ColliderAuthoring))]
 	public class ColliderAuthoringEditor : Editor

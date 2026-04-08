@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	/// <summary>
 	/// broadphase grid, narrowphase triangle tests, generate collision events

@@ -2,7 +2,7 @@ using System;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	[Serializable]
 	public struct Pose2D

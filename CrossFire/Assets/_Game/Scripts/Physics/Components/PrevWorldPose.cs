@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CrossFire.Physics
+namespace Core.Physics
 {
 	public struct PrevWorldPose : IComponentData { public Pose2D Value; }
 }
