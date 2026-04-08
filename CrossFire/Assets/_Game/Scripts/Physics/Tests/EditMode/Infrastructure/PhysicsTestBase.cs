@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using Unity.Core;
 using Unity.Entities;
 
 namespace Core.Physics.Tests.EditMode
@@ -37,6 +38,16 @@ namespace Core.Physics.Tests.EditMode
 			SystemHandle handle = _world.GetOrCreateSystem<T>();
 			_simulationSystemGroup.AddSystemToUpdateList(handle);
 			return handle;
+		}
+
+		/// <summary>
+		/// Sets the world clock so that SystemAPI.Time.DeltaTime returns the given value.
+		/// Required by all integration systems (LinearDamping, AngularIntegration, Position).
+		/// Call this before _world.Update() in any test that depends on time-stepped math.
+		/// </summary>
+		protected void SetDeltaTime(float deltaTime)
+		{
+			_world.SetTime(new TimeData(elapsedTime: 0.0, deltaTime: deltaTime));
 		}
 	}
 }

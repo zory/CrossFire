@@ -22,6 +22,17 @@ namespace Core.Physics.Tests.EditMode
 		}
 
 		/// <summary>
+		/// Entity with only a Velocity component. Used by systems that operate on
+		/// velocity alone (e.g. LinearDampingSystem, MaxVelocityClampSystem).
+		/// </summary>
+		public static Entity CreateEntityWithVelocity(EntityManager entityManager, float2 velocity)
+		{
+			Entity entity = entityManager.CreateEntity();
+			entityManager.AddComponentData(entity, new Velocity { Value = velocity });
+			return entity;
+		}
+
+		/// <summary>
 		/// Entity with WorldPose, PrevWorldPose, Velocity and AngularVelocity.
 		/// The standard moving body used by integration systems.
 		/// </summary>
