@@ -1,19 +1,33 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace Core.Physics
 {
 	/// <summary>
-	/// Store previous frame state for interpolation / rollback / debug.
+	/// Copies <see cref="WorldPose"/> into <see cref="PrevWorldPose"/> at the start of
+	/// each simulation tick, giving downstream systems a stable reference to where each
+	/// body was at the beginning of the frame.
 	/// </summary>
+	/// <remarks>
+	/// Pipeline phase: Snapshot — must run first in the simulation, before any intent,
+	/// movement, or physics systems. In a new application, register it immediately after
+	/// any bootstrap / initialisation systems and before spawn or intent systems.
+	/// </remarks>
 	[DisableAutoCreation]
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
 	[BurstCompile]
 	public partial struct SnapshotSystem : ISystem
 	{
+		private EntityQuery _query;
+
 		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
+			_query = new EntityQueryBuilder(Allocator.Temp)
+				.WithAll<WorldPose, PrevWorldPose>()
+				.Build(ref state);
+
+			state.RequireForUpdate(_query);
 		}
 
 		[BurstCompile]
@@ -21,7 +35,6 @@ namespace Core.Physics
 		{
 			foreach (var (pose, prevPose) in SystemAPI.Query<RefRO<WorldPose>, RefRW<PrevWorldPose>>())
 			{
-				//This just current position to previous position before new update
 				prevPose.ValueRW.Value = pose.ValueRO.Value;
 			}
 		}
