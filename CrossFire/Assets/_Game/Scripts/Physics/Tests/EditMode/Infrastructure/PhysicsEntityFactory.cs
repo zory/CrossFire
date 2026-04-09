@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -62,6 +63,111 @@ namespace Core.Physics.Tests.EditMode
 		public static void AddMaxVelocity(EntityManager entityManager, Entity entity, float maxVelocity)
 		{
 			entityManager.AddComponentData(entity, new MaxVelocity { Value = maxVelocity });
+		}
+
+		/// <summary>
+		/// Creates the two singletons required by CollisionDetectionSystem:
+		/// a <see cref="CollisionGridSettings"/> entity and a <see cref="CollisionEventBufferTag"/>
+		/// entity with an empty <see cref="CollisionEvent"/> buffer.
+		/// Returns the buffer entity so tests can read collision results from it.
+		/// </summary>
+		public static Entity CreateCollisionSingletons(EntityManager entityManager, float cellSize)
+		{
+			Entity settingsEntity = entityManager.CreateEntity();
+			entityManager.AddComponentData(settingsEntity, new CollisionGridSettings { CellSize = cellSize });
+
+			Entity bufferEntity = entityManager.CreateEntity();
+			entityManager.AddComponentData(bufferEntity, new CollisionEventBufferTag());
+			entityManager.AddBuffer<CollisionEvent>(bufferEntity);
+
+			return bufferEntity;
+		}
+
+		/// <summary>
+		/// Creates a circle collider entity with WorldPose, CollisionLayer, CollisionMask, and
+		/// Collider2D. BoundRadius equals CircleRadius, which is the correct setup for circle
+		/// vs circle broadphase.
+		/// </summary>
+		public static Entity CreateCircleColliderEntity(
+			EntityManager entityManager,
+			float2 position,
+			float circleRadius,
+			uint layer,
+			uint mask)
+		{
+			return CreateCircleColliderEntity(entityManager, position, circleRadius, circleRadius, layer, mask);
+		}
+
+		/// <summary>
+		/// Creates a circle collider entity with an explicit BoundRadius separate from
+		/// CircleRadius. Use this overload when testing broadphase vs narrowphase disagreement
+		/// (e.g. BoundRadius large enough to enter the grid but CircleRadius too small to
+		/// actually touch the other collider).
+		/// </summary>
+		public static Entity CreateCircleColliderEntity(
+			EntityManager entityManager,
+			float2 position,
+			float circleRadius,
+			float boundRadius,
+			uint layer,
+			uint mask)
+		{
+			Entity entity = entityManager.CreateEntity();
+			entityManager.AddComponentData(entity, new WorldPose { Value = new Pose2D { Position = position, ThetaRad = 0f } });
+			entityManager.AddComponentData(entity, new CollisionLayer { Value = layer });
+			entityManager.AddComponentData(entity, new CollisionMask { Value = mask });
+			entityManager.AddComponentData(entity, new Collider2D
+			{
+				Type = Collider2DType.Circle,
+				CircleRadius = circleRadius,
+				BoundRadius = boundRadius
+			});
+			return entity;
+		}
+
+		/// <summary>
+		/// Builds a <see cref="BlobAssetReference{TriangleSoupBlob}"/> for a single triangle.
+		/// The caller owns the returned reference and must dispose it after the test completes.
+		/// </summary>
+		public static BlobAssetReference<TriangleSoupBlob> CreateSingleTriangleBlob(float2 a, float2 b, float2 c)
+		{
+			BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
+			ref TriangleSoupBlob blob = ref blobBuilder.ConstructRoot<TriangleSoupBlob>();
+			BlobBuilderArray<float2> vertices = blobBuilder.Allocate(ref blob.Vertices, 3);
+			vertices[0] = a;
+			vertices[1] = b;
+			vertices[2] = c;
+			BlobAssetReference<TriangleSoupBlob> blobRef =
+				blobBuilder.CreateBlobAssetReference<TriangleSoupBlob>(Allocator.Persistent);
+			blobBuilder.Dispose();
+			return blobRef;
+		}
+
+		/// <summary>
+		/// Creates a ConcaveTriangles collider entity.
+		/// The <paramref name="triangleBlob"/> must remain alive until after the final
+		/// world update in the test; the caller is responsible for disposing it.
+		/// </summary>
+		public static Entity CreateTriangleColliderEntity(
+			EntityManager entityManager,
+			float2 position,
+			float boundRadius,
+			BlobAssetReference<TriangleSoupBlob> triangleBlob,
+			uint layer,
+			uint mask)
+		{
+			Entity entity = entityManager.CreateEntity();
+			entityManager.AddComponentData(entity, new WorldPose { Value = new Pose2D { Position = position, ThetaRad = 0f } });
+			entityManager.AddComponentData(entity, new CollisionLayer { Value = layer });
+			entityManager.AddComponentData(entity, new CollisionMask { Value = mask });
+			entityManager.AddComponentData(entity, new Collider2D
+			{
+				Type = Collider2DType.ConcaveTriangles,
+				CircleRadius = 0f,
+				BoundRadius = boundRadius
+			});
+			entityManager.AddComponentData(entity, new ConcaveTrianglesRef { Value = triangleBlob });
+			return entity;
 		}
 	}
 }

@@ -6,23 +6,32 @@ using Unity.Mathematics;
 namespace Core.Physics
 {
 	/// <summary>
-	/// broadphase grid, narrowphase triangle tests, generate collision events
+	/// Broadphase grid + narrowphase intersection tests for all entities carrying a
+	/// <see cref="Collider2D"/>. Detected contacts are written as <see cref="CollisionEvent"/>
+	/// entries to the singleton <see cref="CollisionEventBufferTag"/> buffer, which is cleared
+	/// at the start of every update so downstream systems always see only the current frame's
+	/// contacts.
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(MaxVelocityClampSystem))]
+	/// <remarks>
+	/// Pipeline phase: Physics — runs after all integration systems have committed final world
+	/// positions and before combat-reaction systems read the collision buffer.
+	/// Requires a <see cref="CollisionGridSettings"/> singleton for broadphase cell sizing and
+	/// a <see cref="CollisionEventBufferTag"/> singleton as the output buffer.
+	/// The system intentionally runs even when no collider entities are present so the buffer
+	/// is always cleared and downstream systems never observe stale events.
+	/// </remarks>
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct CollisionDetectionSystem : ISystem
 	{
 		private EntityQuery _colliderQuery;
 
+		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
-			_colliderQuery = state.GetEntityQuery(
-				ComponentType.ReadOnly<WorldPose>(),
-				ComponentType.ReadOnly<CollisionLayer>(),
-				ComponentType.ReadOnly<CollisionMask>(),
-				ComponentType.ReadOnly<Collider2D>());
+			_colliderQuery = new EntityQueryBuilder(Allocator.Temp)
+				.WithAll<WorldPose, CollisionLayer, CollisionMask, Collider2D>()
+				.Build(ref state);
 
 			state.RequireForUpdate<CollisionGridSettings>();
 			state.RequireForUpdate<CollisionEventBufferTag>();
@@ -49,6 +58,9 @@ namespace Core.Physics
 			using NativeArray<CollisionMask> colliderCollisionMasks = _colliderQuery.ToComponentDataArray<CollisionMask>(Allocator.Temp);
 			using NativeArray<Collider2D> colliders = _colliderQuery.ToComponentDataArray<Collider2D>(Allocator.Temp);
 
+			// NativeArray and NativeParallelMultiHashMap/HashSet are mutated after creation,
+			// so they cannot use the `using` declaration (which makes the variable readonly).
+			// They are disposed explicitly at the end of OnUpdate.
 			NativeArray<ConcaveTrianglesRef> colliderTriangleReferences =
 				new NativeArray<ConcaveTrianglesRef>(
 					colliderEntities.Length,
@@ -92,7 +104,7 @@ namespace Core.Physics
 					math.max(1, colliderEntities.Length * 4),
 					Allocator.Temp);
 
-			//Broadphase search 3�3 neighboring cells
+			//Broadphase search 3×3 neighboring cells
 			for (int firstColliderIndex = 0; firstColliderIndex < colliderEntities.Length; firstColliderIndex++)
 			{
 				float2 firstColliderPositionWorld = colliderWorldPoses[firstColliderIndex].Value.Position;
