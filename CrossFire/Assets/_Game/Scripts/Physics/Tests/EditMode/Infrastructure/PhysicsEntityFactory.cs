@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace Core.Physics.Tests.EditMode
 {
@@ -46,6 +47,17 @@ namespace Core.Physics.Tests.EditMode
 			Entity entity = CreateEntityWithPose(entityManager, pose);
 			entityManager.AddComponentData(entity, new Velocity { Value = velocity });
 			entityManager.AddComponentData(entity, new AngularVelocity { Value = angularVelocity });
+			return entity;
+		}
+
+		/// <summary>
+		/// Entity with WorldPose, PrevWorldPose, and an identity LocalTransform.
+		/// Used by PostPhysicsSystem tests, which sync WorldPose into LocalTransform.
+		/// </summary>
+		public static Entity CreateEntityWithPoseAndTransform(EntityManager entityManager, Pose2D pose)
+		{
+			Entity entity = CreateEntityWithPose(entityManager, pose);
+			entityManager.AddComponentData(entity, LocalTransform.Identity);
 			return entity;
 		}
 
