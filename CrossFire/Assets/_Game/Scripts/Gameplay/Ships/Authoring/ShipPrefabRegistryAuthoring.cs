@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace CrossFire.Ships
 {
-	public struct ShipPrefabEntry : IBufferElementData
-	{
-		public ShipType Type;
-		public Entity Prefab;
-	}
-
+	/// <summary>
+	/// Authoring component for the ship-prefab registry.
+	/// Assign one entry per <see cref="ShipType"/> in the Inspector; the baker writes a
+	/// <see cref="DynamicBuffer{T}"/> of <see cref="ShipPrefabEntry"/> onto the singleton
+	/// entity that <see cref="ShipsSpawnSystem"/> reads at runtime.
+	/// </summary>
 	public class ShipPrefabRegistryAuthoring : MonoBehaviour
 	{
 		[Serializable]

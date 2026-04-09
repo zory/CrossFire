@@ -1,26 +1,33 @@
 using CrossFire.Core;
 using Core.Physics;
-using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace CrossFire.Ships
 {
+	/// <summary>
+	/// Drains the <see cref="DynamicBuffer{T}"/> of <see cref="SpawnShipsCommand"/> requests
+	/// and instantiates the corresponding ship prefab for each entry.
+	/// </summary>
+	/// <remarks>
+	/// Pipeline phase: Spawn — runs after Bootstrap systems have created the command buffer
+	/// entity and after <see cref="ShipsSpawnCommandBufferSystem"/> has registered the prefab
+	/// registry singleton. Runs only when the command buffer entity exists
+	/// (<see cref="SpawnShipsCommandBufferTag"/>) and at least one
+	/// <see cref="ShipPrefabEntry"/> is registered.
+	/// </remarks>
 	[DisableAutoCreation]
-	[BurstCompile]
 	public partial struct ShipsSpawnSystem : ISystem
 	{
 		private EntityQuery _requestQuery;
 
 		public void OnCreate(ref SystemState state)
 		{
-			_requestQuery = state.GetEntityQuery(
-				ComponentType.ReadOnly<SpawnShipsCommandBufferTag>(),
-				ComponentType.ReadOnly<SpawnShipsCommand>() // buffer type
-			);
+			_requestQuery = new EntityQueryBuilder(Allocator.Temp)
+				.WithAll<SpawnShipsCommandBufferTag, SpawnShipsCommand>()
+				.Build(ref state);
 
 			state.RequireForUpdate(_requestQuery);
 			state.RequireForUpdate<ShipPrefabEntry>();
@@ -62,11 +69,11 @@ namespace CrossFire.Ships
 				shipName.Append(new FixedString32Bytes("_Id"));
 				shipName.Append(command.Id);
 				entityManager.SetName(shipEntity, shipName);
-				SetId(entityManager, shipEntity, command.Id);
-				SetTeam(entityManager, shipEntity, teamId);
+				entityManager.SetComponentData(shipEntity, new StableId { Value = command.Id });
+				entityManager.SetComponentData(shipEntity, new TeamId { Value = teamId });
 
 				float4 teamColor = CoreHelpers.GetTeamColor(entityManager, teamId);
-				SetNativeColor(entityManager, shipEntity, teamColor);
+				entityManager.SetComponentData(shipEntity, new NativeColor { Value = teamColor });
 				entityManager.AddComponentData<NeedsColorRefresh>(shipEntity,
 					new NeedsColorRefresh()
 					{
@@ -107,25 +114,12 @@ namespace CrossFire.Ships
 			{
 				ShipPrefabEntry entry = entries[index];
 				if (entry.Type == shipType)
+				{
 					return entry.Prefab;
+				}
 			}
 
 			return Entity.Null;
-		}
-
-		private static void SetId(EntityManager entityManager, Entity entity, int id)
-		{
-			entityManager.SetComponentData(entity, new StableId { Value = id });
-		}
-
-		private static void SetTeam(EntityManager entityManager, Entity entity, byte teamId)
-		{
-			entityManager.SetComponentData(entity, new TeamId { Value = teamId });
-		}
-
-		public static void SetNativeColor(EntityManager entityManager, Entity entity, float4 color)
-		{
-			entityManager.SetComponentData(entity, new NativeColor { Value = color });
 		}
 
 		private static void SetPose(EntityManager entityManager, Entity entity, Pose2D pose)

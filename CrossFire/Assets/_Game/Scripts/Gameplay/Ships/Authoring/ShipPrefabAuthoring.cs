@@ -5,6 +5,12 @@ using UnityEngine;
 
 namespace CrossFire.Ships
 {
+	/// <summary>
+	/// Authoring component for ship prefabs.
+	/// Configure movement and health values here; the baker converts them into the
+	/// corresponding ECS components used by <see cref="ShipMovementSystem"/> and the
+	/// combat systems.
+	/// </summary>
 	public class ShipPrefabAuthoring : MonoBehaviour
 	{
 		public float TurnSpeed = 3f;
@@ -12,7 +18,7 @@ namespace CrossFire.Ships
 		public float BrakeAcceleration = 5f;
 		public short Health = 3;
 
-		class Baker : Baker<ShipPrefabAuthoring>
+		class ShipPrefabBaker : Baker<ShipPrefabAuthoring>
 		{
 			public override void Bake(ShipPrefabAuthoring authoring)
 			{
