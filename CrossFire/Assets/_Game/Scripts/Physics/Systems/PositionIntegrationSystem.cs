@@ -1,20 +1,33 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace Core.Physics
 {
 	/// <summary>
-	/// Moves stuff
+	/// Integrates <see cref="Velocity"/> into <see cref="WorldPose.Position"/> each tick:
+	/// <c>pose.Position += velocity * deltaTime</c>.
+	/// Only the position field is modified; rotation is left untouched.
 	/// </summary>
-	//[UpdateInGroup(typeof(SimulationSystemGroup))]
-	//[UpdateAfter(typeof(AngularIntegrationSystem))]
+	/// <remarks>
+	/// Pipeline phase: Movement — runs after <see cref="AngularIntegrationSystem"/> has
+	/// finalised rotation and before <see cref="MaxVelocityClampSystem"/>.
+	/// In a new application, register it as the third step of the physics integration chain.
+	/// </remarks>
 	[DisableAutoCreation]
 	[BurstCompile]
 	public partial struct PositionIntegrationSystem : ISystem
 	{
+		private EntityQuery _query;
+
 		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
+			_query = new EntityQueryBuilder(Allocator.Temp)
+				.WithAll<WorldPose, Velocity>()
+				.Build(ref state);
+
+			state.RequireForUpdate(_query);
 		}
 
 		[BurstCompile]
