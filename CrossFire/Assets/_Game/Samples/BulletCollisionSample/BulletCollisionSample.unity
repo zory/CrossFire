@@ -472,7 +472,7 @@ GameObject:
   - component: {fileID: 1996032962}
   - component: {fileID: 1996032963}
   m_Layer: 0
-  m_Name: CollisionDebugger
+  m_Name: BulletCollisionSample
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

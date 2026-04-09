@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CrossFire.Samples
 {
-	public class CollisionSample : MonoBehaviour
+	public class BulletCollisionSample : MonoBehaviour
 	{
 		public int ShipCount = 20;
 		// Start is called once before the first execution of Update after the MonoBehaviour is created
