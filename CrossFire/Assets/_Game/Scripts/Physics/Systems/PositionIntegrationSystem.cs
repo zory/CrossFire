@@ -10,9 +10,10 @@ namespace Core.Physics
 	/// Only the position field is modified; rotation is left untouched.
 	/// </summary>
 	/// <remarks>
-	/// Pipeline phase: Movement — runs after <see cref="AngularIntegrationSystem"/> has
-	/// finalised rotation and before <see cref="MaxVelocityClampSystem"/>.
-	/// In a new application, register it as the third step of the physics integration chain.
+	/// Pipeline phase: Movement — runs after <see cref="LinearDampingSystem"/>,
+	/// <see cref="MaxVelocityClampSystem"/>, and <see cref="AngularIntegrationSystem"/> have
+	/// all finalised their outputs, so position is always integrated with a fully clamped velocity.
+	/// In a new application, register it as the fourth step of the physics integration chain.
 	/// </remarks>
 	[DisableAutoCreation]
 	[BurstCompile]

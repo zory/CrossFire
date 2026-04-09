@@ -12,9 +12,10 @@ namespace Core.Physics
 	/// Result is wrapped to [-π, π] to prevent float32 precision loss over long play sessions.
 	/// </summary>
 	/// <remarks>
-	/// Pipeline phase: Movement — runs after <see cref="LinearDampingSystem"/> has
-	/// finalised velocity magnitudes and before <see cref="PositionIntegrationSystem"/>.
-	/// In a new application, register it as the second step of the physics integration chain.
+	/// Pipeline phase: Movement — runs after <see cref="LinearDampingSystem"/> and
+	/// <see cref="MaxVelocityClampSystem"/> have finalised velocity magnitudes and before
+	/// <see cref="PositionIntegrationSystem"/>.
+	/// In a new application, register it as the third step of the physics integration chain.
 	/// </remarks>
 	[DisableAutoCreation]
 	[BurstCompile]

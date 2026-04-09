@@ -53,9 +53,9 @@ namespace CrossFire.App
 			AddUnmanaged<WeaponCooldownSystem>(world);
 			AddUnmanaged<WeaponFireSystem>(world);
 			AddUnmanaged<LinearDampingSystem>(world);
+			AddUnmanaged<MaxVelocityClampSystem>(world);
 			AddUnmanaged<AngularIntegrationSystem>(world);
 			AddUnmanaged<PositionIntegrationSystem>(world);
-			AddUnmanaged<MaxVelocityClampSystem>(world);
 
 			// Physics
 			AddUnmanaged<CollisionDetectionSystem>(world);
