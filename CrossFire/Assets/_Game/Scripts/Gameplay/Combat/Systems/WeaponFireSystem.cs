@@ -14,8 +14,11 @@ namespace CrossFire.Combat
 	[BurstCompile]
 	public partial struct WeaponFireSystem : ISystem
 	{
+		private int _bulletCounter;
+
 		public void OnCreate(ref SystemState state)
 		{
+			_bulletCounter = 0;
 		}
 
 		[BurstCompile]
@@ -55,6 +58,17 @@ namespace CrossFire.Combat
 
 				//set owner/team
 				byte teamId = entityManager.GetComponentData<TeamId>(entity).Value;
+
+				FixedString64Bytes bulletName = default;
+				bulletName.Append(GetBulletTypeName(weaponConfigRO.ValueRO.BulletType));
+				bulletName.Append(new FixedString32Bytes("_T"));
+				bulletName.Append((int)teamId);
+				bulletName.Append(new FixedString32Bytes("_S"));
+				bulletName.Append(entityManager.GetComponentData<StableId>(entity).Value);
+				bulletName.Append(new FixedString32Bytes("_Id"));
+				bulletName.Append(_bulletCounter);
+				entityCommandBuffer.SetName(bullet, bulletName);
+				_bulletCounter++;
 				entityCommandBuffer.SetComponent<Owner>(bullet, new Owner { Value = entity });
 				entityCommandBuffer.SetComponent<TeamId>(bullet, new TeamId() { Value = teamId });
 
@@ -119,6 +133,15 @@ namespace CrossFire.Combat
 
 			entityCommandBuffer.Playback(entityManager);
 			entityCommandBuffer.Dispose();
+		}
+
+		private static FixedString32Bytes GetBulletTypeName(BulletType type)
+		{
+			switch (type)
+			{
+				case BulletType.SimpleBullet: return new FixedString32Bytes("SimpleBullet");
+				default:                      return new FixedString32Bytes("Bullet");
+			}
 		}
 
 		private Entity GetPrefabForType(ref SystemState state, BulletType bulletType)

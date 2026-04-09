@@ -54,6 +54,14 @@ namespace CrossFire.Ships
 				Entity shipEntity = entityManager.Instantiate(prefabEntity);
 
 				byte teamId = command.Team;
+
+				FixedString64Bytes shipName = default;
+				shipName.Append(GetShipTypeName(command.Type));
+				shipName.Append(new FixedString32Bytes("_T"));
+				shipName.Append((int)teamId);
+				shipName.Append(new FixedString32Bytes("_Id"));
+				shipName.Append(command.Id);
+				entityManager.SetName(shipEntity, shipName);
 				SetId(entityManager, shipEntity, command.Id);
 				SetTeam(entityManager, shipEntity, teamId);
 
@@ -75,6 +83,20 @@ namespace CrossFire.Ships
 			}
 
 			commands.Dispose();
+		}
+
+		private static FixedString32Bytes GetShipTypeName(ShipType type)
+		{
+			switch (type)
+			{
+				case ShipType.Fighter: return new FixedString32Bytes("Fighter");
+				case ShipType.Bomber:  return new FixedString32Bytes("Bomber");
+				case ShipType.Carrier: return new FixedString32Bytes("Carrier");
+				case ShipType.Sample1: return new FixedString32Bytes("Sample1");
+				case ShipType.Sample2: return new FixedString32Bytes("Sample2");
+				case ShipType.Sample3: return new FixedString32Bytes("Sample3");
+				default:               return new FixedString32Bytes("Ship");
+			}
 		}
 
 		private Entity GetPrefabForType(ref SystemState state, ShipType shipType)

@@ -36,6 +36,7 @@ namespace Core.Physics
 			Entity eventBufferEntity = state.EntityManager.CreateEntity();
 			state.EntityManager.AddComponent<CollisionEventBufferTag>(eventBufferEntity);
 			state.EntityManager.AddBuffer<CollisionEvent>(eventBufferEntity);
+			state.EntityManager.SetName(eventBufferEntity, new FixedString64Bytes("CollisionEventBuffer"));
 
 			state.Enabled = false;
 		}
