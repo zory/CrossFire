@@ -279,6 +279,11 @@ namespace Core.Physics
 		public static List<float2> Triangulate(float2[] outline)
 		{
 			var result = new List<float2>();
+			if (outline == null)
+			{
+				return result;
+			}
+
 			int n = outline.Length;
 			if (n < 3)
 			{
