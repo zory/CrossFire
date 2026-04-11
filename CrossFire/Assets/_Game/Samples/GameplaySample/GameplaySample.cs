@@ -1,7 +1,9 @@
+
 using CrossFire.Core;
 using Core.Physics;
 using CrossFire.Ships;
 using CrossFire.Targeting;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -10,9 +12,8 @@ namespace CrossFire.Samples
 {
 	public class GameplaySample : MonoBehaviour
 	{
-		[Header("SpawnShip")]
+		[Header("Spawn Single Ship")]
 		public bool SpawnShip;
-		public int SpawnShip_Id;
 		public ShipType SpawnShip_Type;
 		public byte SpawnShip_Team;
 		public Pose2D SpawnShip_Pose;
@@ -21,10 +22,10 @@ namespace CrossFire.Samples
 		public bool ListenForSelectableWithMouse;
 		public float PickRadius = 0.5f;
 
-		[Header("Ship controll")]
+		[Header("Ship Control")]
 		public bool ShipControl;
 
-		[Header("Ship controll")]
+		[Header("Battle")]
 		public bool CreateBattleGround;
 
 		[Header("Targeting")]
@@ -43,8 +44,6 @@ namespace CrossFire.Samples
 			{
 				CreateBattleGround = false;
 
-				EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
 				for (int teamIdx = 0; teamIdx < 2; teamIdx++)
 				{
 					byte team = (byte)teamIdx;
@@ -59,14 +58,7 @@ namespace CrossFire.Samples
 						else
 						{
 							int shipTypeInt = UnityEngine.Random.Range(0, 3);
-							if (shipTypeInt == 0)
-							{
-								type = ShipType.Bomber;
-							}
-							else
-							{
-								type = ShipType.Fighter;
-							}
+							type = (shipTypeInt == 0) ? ShipType.Bomber : ShipType.Fighter;
 						}
 
 						Pose2D pose = new Pose2D
@@ -74,21 +66,8 @@ namespace CrossFire.Samples
 							Position = UnityEngine.Random.insideUnitCircle * 50f,
 							ThetaRad = UnityEngine.Random.Range(0f, 2 * math.PI)
 						};
-						SpawnShipsCommand command = new SpawnShipsCommand()
-						{
-							Id = SpawnShip_Id,
-							Type = type,
-							Team = team,
-							Pose = pose
-						};
-						Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
 
-						EntityQuery query = entityManager.CreateEntityQuery(typeof(SpawnShipsCommandBufferTag));
-						Entity entity = query.GetSingletonEntity();
-						DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
-						commandBuffer.Add(command);
-
-						SpawnShip_Id++;
+						ShipSpawner.Spawn(type, team, pose);
 					}
 				}
 			}
@@ -96,27 +75,10 @@ namespace CrossFire.Samples
 
 		public void Update()
 		{
-			EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
 			if (SpawnShip)
 			{
 				SpawnShip = false;
-
-				SpawnShipsCommand command = new SpawnShipsCommand()
-				{
-					Id = SpawnShip_Id,
-					Type = SpawnShip_Type,
-					Team = SpawnShip_Team,
-					Pose = SpawnShip_Pose
-				};
-				Debug.Log($"PlayerDebug: SpawnShip Command: {command}");
-
-				EntityQuery query = entityManager.CreateEntityQuery(typeof(SpawnShipsCommandBufferTag));
-				Entity entity = query.GetSingletonEntity();
-				DynamicBuffer<SpawnShipsCommand> commandBuffer = entityManager.GetBuffer<SpawnShipsCommand>(entity);
-				commandBuffer.Add(command);
-
-				SpawnShip_Id++;
+				ShipSpawner.Spawn(SpawnShip_Type, SpawnShip_Team, SpawnShip_Pose);
 			}
 
 			if (ListenForSelectableWithMouse)
@@ -133,24 +95,26 @@ namespace CrossFire.Samples
 					};
 					Debug.Log($"PlayerDebug: Select Selectable Command: {command}");
 
+					EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 					EntityQuery query = entityManager.CreateEntityQuery(typeof(SelectionRequestBufferTag));
 					Entity entity = query.GetSingletonEntity();
 					DynamicBuffer<SelectionRequestCommand> commandBuffer = entityManager.GetBuffer<SelectionRequestCommand>(entity);
 					commandBuffer.Add(command);
+					query.Dispose();
 				}
 			}
 
 			if (ShipControl)
 			{
 				float turn = 0f;
-				if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) turn += 1f;
-				if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) turn -= 1f;
+				if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) { turn += 1f; }
+				if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) { turn -= 1f; }
 
 				float thrust = 0f;
-				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) thrust += 1f;
-				if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) thrust -= 1f;
+				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) { thrust += 1f; }
+				if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) { thrust -= 1f; }
 
-				bool fire = Input.GetKey(KeyCode.Space) ? true : false;
+				bool fire = Input.GetKey(KeyCode.Space);
 
 				ShipControlIntentCommand command = new ShipControlIntentCommand
 				{
@@ -158,18 +122,20 @@ namespace CrossFire.Samples
 					Thrust = thrust,
 					Fire = fire,
 				};
-				//Debug.Log($"PlayerDebug: Movement Command: {command}");
 
-				// Just for testing, set the PlayerInput singleton to some constant values
+				EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 				EntityQuery query = entityManager.CreateEntityQuery(typeof(ShipControlIntentCommandBufferTag));
 				Entity entity = query.GetSingletonEntity();
 				DynamicBuffer<ShipControlIntentCommand> commandBuffer = entityManager.GetBuffer<ShipControlIntentCommand>(entity);
 				commandBuffer.Add(command);
+				query.Dispose();
 			}
 
 			if (Targeting)
 			{
 				Targeting = false;
+
+				EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
 				Entity ship = FindShip(entityManager, Targeting_ShipId);
 				if (ship == Entity.Null)
@@ -209,19 +175,22 @@ namespace CrossFire.Samples
 			}
 		}
 
-		private Entity FindShip(EntityManager em, int id)
+		private Entity FindShip(EntityManager entityManager, int id)
 		{
-			var query = em.CreateEntityQuery(typeof(StableId));
+			EntityQuery query = entityManager.CreateEntityQuery(typeof(StableId));
 
-			using var entities = query.ToEntityArray(Unity.Collections.Allocator.Temp);
-			using var ids = query.ToComponentDataArray<StableId>(Unity.Collections.Allocator.Temp);
+			using NativeArray<Entity> entities = query.ToEntityArray(Allocator.Temp);
+			using NativeArray<StableId> ids = query.ToComponentDataArray<StableId>(Allocator.Temp);
 
 			for (int i = 0; i < entities.Length; i++)
 			{
 				if (ids[i].Value == id)
+				{
 					return entities[i];
+				}
 			}
 
+			query.Dispose();
 			return Entity.Null;
 		}
 	}
