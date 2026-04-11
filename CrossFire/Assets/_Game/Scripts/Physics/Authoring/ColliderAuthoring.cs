@@ -108,12 +108,12 @@ namespace Core.Physics
 
 				BlobAssetReference<TriangleSoupBlob> blob = builder.CreateBlobAssetReference<TriangleSoupBlob>(Allocator.Persistent);
 
+				AddBlobAsset(ref blob, out _);
+
 				AddComponent(entity, new ConcaveTrianglesRef
 				{
 					Value = blob
 				});
-
-				AddBlobAsset(ref blob, out _);
 			}
 		}
 	}

@@ -23,7 +23,7 @@ namespace Core.Physics
 	}
 
 	/// <summary>
-	/// Local-space triangle soup. Every 3 vertices form 1 triangle, CCW or CW doesn’t matter for distance tests.
+	/// Local-space triangle soup. Every 3 vertices form 1 triangle, CCW or CW winding doesn't matter for distance tests.
 	/// </summary>
 	public struct TriangleSoupBlob
 	{
