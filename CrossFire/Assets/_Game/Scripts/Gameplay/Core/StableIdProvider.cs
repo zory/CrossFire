@@ -16,6 +16,19 @@ namespace CrossFire.Core
 		public static int Next() => _nextId++;
 
 		/// <summary>
+		/// Returns the next ID that would be issued without consuming it.
+		/// Used by save/load to snapshot the counter state.
+		/// </summary>
+		public static int Peek() => _nextId;
+
+		/// <summary>
+		/// Restores the counter to a previously saved value.
+		/// Call after loading a simulation snapshot so future spawns
+		/// do not collide with IDs already present in the restored world.
+		/// </summary>
+		public static void Restore(int nextId) => _nextId = nextId;
+
+		/// <summary>
 		/// Resets the counter to zero. Call this at the start of each test that
 		/// requires predictable ID values.
 		/// </summary>

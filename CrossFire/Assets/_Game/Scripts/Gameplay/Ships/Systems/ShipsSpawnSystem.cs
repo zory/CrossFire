@@ -71,6 +71,7 @@ namespace CrossFire.Ships
 				entityManager.SetName(shipEntity, shipName);
 				entityManager.SetComponentData(shipEntity, new StableId { Value = command.Id });
 				entityManager.SetComponentData(shipEntity, new TeamId { Value = teamId });
+				entityManager.AddComponentData(shipEntity, new ShipTypeId { Value = command.Type });
 
 				float4 teamColor = CoreHelpers.GetTeamColor(entityManager, teamId);
 				entityManager.SetComponentData(shipEntity, new NativeColor { Value = teamColor });

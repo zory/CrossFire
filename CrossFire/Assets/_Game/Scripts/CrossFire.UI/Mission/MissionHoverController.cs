@@ -1,5 +1,6 @@
 using Core.UI;
 using Core.Utilities;
+using CrossFire.App;
 using CrossFire.HexMap;
 using UnityEngine;
 
@@ -42,6 +43,15 @@ namespace CrossFire.App.UI
         private void OnDisable()
         {
             InteractionBus.Unregister(this);
+
+            if (_state == HoverState.Charging)
+            {
+                CancelCharging();
+            }
+            else if (_state == HoverState.TooltipOpen)
+            {
+                CloseTooltip();
+            }
         }
 
         public void OnInteraction(InteractionEvent interactionEvent)
@@ -139,7 +149,7 @@ namespace CrossFire.App.UI
             UIRoot.Instance.Popups.Despawn(_progressInstance);
             _progressInstance = null;
 
-            MissionData missionData = MissionDataSaveData.Load(_activeMissionId);
+            MissionData missionData = MissionSaveData.LoadMetadata(_activeMissionId);
 
             _tooltipInstance = UIRoot.Instance.Popups.Spawn(_tooltipPrefab, Input.mousePosition);
             _tooltipInstance.SetDescription(missionData.Description);

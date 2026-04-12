@@ -6,7 +6,7 @@ using UnityEngine;
 namespace CrossFire.App.UI
 {
     // Listens for clicks on mission hex tiles and loads the gameplay scene.
-    // UI mediator: receives an interaction event, forwards to LevelLoader — no game logic here.
+    // UI mediator: receives an interaction event, sets the scene request, then loads.
     public class MissionLaunchHandler : MonoBehaviour, IInteractionListener
     {
         [SerializeField]
@@ -39,6 +39,7 @@ namespace CrossFire.App.UI
                 return;
             }
 
+            GameplaySceneRequest.Set(new GameplaySceneState { MissionId = ctx.MissionId });
             LevelLoader.Instance.LoadLevel(_gameplaySceneName);
         }
     }

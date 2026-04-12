@@ -71,6 +71,7 @@ namespace CrossFire.Combat
 				_bulletCounter++;
 				entityCommandBuffer.SetComponent<Owner>(bullet, new Owner { Value = entity });
 				entityCommandBuffer.SetComponent<TeamId>(bullet, new TeamId() { Value = teamId });
+				entityCommandBuffer.AddComponent(bullet, new BulletTypeId { Value = weaponConfigRO.ValueRO.BulletType });
 
 				//Request color change when possible
 				if (SystemAPI.HasSingleton<TeamColor>())

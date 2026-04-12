@@ -2,12 +2,14 @@ using UnityEngine;
 
 namespace CrossFire.HexMap
 {
-	public class HexMissionPaintTool : MonoBehaviour
+	public class HexMissionPaintTool : MonoBehaviour, IHexEditingTool
 	{
 		[SerializeField]
 		private HexMapController mapController;
 		[SerializeField]
 		private bool enableEditing = true;
+
+		public bool IsEditing => enableEditing;
 		[SerializeField]
 		private int missionId;
 		[SerializeField]

@@ -20,6 +20,12 @@ namespace CrossFire.App
 	[Serializable]
 	public class GameplaySceneState
 	{
+		/// <summary>
+		/// When set, <see cref="GameplayBootstrap"/> restores the saved simulation for
+		/// this mission instead of spawning ships from <see cref="Ships"/>.
+		/// 0 means no mission — fall back to the Ships list.
+		/// </summary>
+		public int MissionId;
 		public ShipSpawnEntry[] Ships;
 	}
 }
