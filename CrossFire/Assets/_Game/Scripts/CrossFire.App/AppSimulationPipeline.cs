@@ -12,17 +12,19 @@ namespace CrossFire.App
 	[UpdateInGroup(typeof(SimulationSystemGroup))]
 	public partial class AppSimulationPipeline : ComponentSystemGroup
 	{
+		private EntityQuery _pauseQuery;
+
 		protected override void OnCreate()
 		{
 			base.OnCreate();
 
 			World world = World;
-			
+
 			EnableSystemSorting = false;
 
 			AddUnmanaged<CollisionEventBufferBootstrapSystem>(world); //InitializationSystemGroup?
-			//Add(world.GetOrCreateSystemManaged<ShipsSpawnCommandBufferSystem>());   //InitializationSystemGroup?  
-			AddUnmanaged<ShipsSpawnCommandBufferSystem>(world);     //InitializationSystemGroup?  
+			//Add(world.GetOrCreateSystemManaged<ShipsSpawnCommandBufferSystem>());   //InitializationSystemGroup?
+			AddUnmanaged<ShipsSpawnCommandBufferSystem>(world);     //InitializationSystemGroup?
 			AddUnmanaged<ShipControlIntentCommandBufferSystem>(world);  //InitializationSystemGroup?
 			AddUnmanaged<LookupBootstrapSystem>(world);   //InitializationSystemGroup
 
@@ -72,12 +74,23 @@ namespace CrossFire.App
 
 			AddUnmanaged<ColorPresentationSystem>(world); //PresentationSystemGroup
 			AddUnmanaged<CollisionDebugSystem>(world);    //PresentationSystemGroup
-															
+
 			//SortSystems();
+
+			_pauseQuery = GetEntityQuery(ComponentType.ReadOnly<SimulationPaused>());
+		}
+
+		protected override void OnUpdate()
+		{
+			if (!_pauseQuery.IsEmpty)
+			{
+				return;
+			}
+			base.OnUpdate();
 		}
 
 		private void AddUnmanaged<T>(World world) where T : unmanaged, ISystem
-		{	
+		{
 			var handle = world.GetOrCreateSystem<T>();
 			AddSystemToUpdateList(handle);
 		}
