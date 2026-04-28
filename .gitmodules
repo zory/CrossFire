@@ -1,3 +1,6 @@
 [submodule "Submodules/HexMapLibrary"]
 	path = Submodules/HexMapLibrary
 	url = git@github.com:zory/HexMapLibrary.git
+[submodule "Submodules/FactorialFunShared"]
+	path = Submodules/FactorialFunShared
+	url = git@github.com:zory/FactorialFunShared.git
