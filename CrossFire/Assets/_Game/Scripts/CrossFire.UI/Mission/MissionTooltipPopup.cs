@@ -1,4 +1,4 @@
-using Core.UI;
+using FactorialFun.Core.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

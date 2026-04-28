@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Core.UI;
+using FactorialFun.Core.UI;
 using UnityEngine;
 
 namespace CrossFire.App.UI

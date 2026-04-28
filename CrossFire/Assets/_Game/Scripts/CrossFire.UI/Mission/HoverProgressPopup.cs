@@ -1,4 +1,4 @@
-using Core.UI;
+using FactorialFun.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
