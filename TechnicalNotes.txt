@@ -7,7 +7,7 @@ Dont remove comments;
 Add comments where needed;
 
 Always brackets even with one liners;
-Mostly working with ultra wide monitor so preferring long lines over many splits, unless really long line;
+Mostly working with ultra wide monitor so prefer long lines over many splits, unless really long line;
 
 Public variables in PascalCase;
 Private variables in _lowerCamelCaseWithLeadingUnderscore;
