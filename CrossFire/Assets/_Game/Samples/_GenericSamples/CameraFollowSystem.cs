@@ -1,5 +1,6 @@
 using Core.Physics;
 using CrossFire.Targeting;
+using FactorialFun.Core;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
