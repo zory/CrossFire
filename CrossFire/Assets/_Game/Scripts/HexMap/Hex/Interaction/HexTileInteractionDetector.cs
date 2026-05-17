@@ -1,4 +1,5 @@
-using Core.Utilities;
+using FactorialFun.Core;
+using FactorialFun.Core.HexMap;
 using UnityEngine;
 
 namespace CrossFire.HexMap

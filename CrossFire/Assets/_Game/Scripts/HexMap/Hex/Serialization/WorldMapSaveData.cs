@@ -1,4 +1,4 @@
-using Core.Utilities;
+using FactorialFun.Core;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

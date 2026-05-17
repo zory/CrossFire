@@ -1,5 +1,5 @@
 using System;
-using Core.Utilities;
+using FactorialFun.Core;
 using UnityEngine;
 
 namespace CrossFire.App

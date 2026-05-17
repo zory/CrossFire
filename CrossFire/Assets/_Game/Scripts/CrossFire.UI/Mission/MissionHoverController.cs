@@ -1,6 +1,7 @@
-using Core.Utilities;
 using CrossFire.App;
 using CrossFire.HexMap;
+using FactorialFun.Core;
+using FactorialFun.Core.HexMap;
 using FactorialFun.Core.UI;
 using UnityEngine;
 
